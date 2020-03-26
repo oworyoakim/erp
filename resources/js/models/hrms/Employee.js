@@ -1,0 +1,59 @@
+class Employee {
+    constructor() {
+        this.id = null;
+        this.title = '';
+        this.user_id = '';
+        this.employee_number = '';
+        this.first_name = '';
+        this.middle_name = '';
+        this.last_name = '';
+        this.username = '';
+        this.email = '';
+        this.password = '';
+        this.gender = '';
+        this.religion_id = '';
+        this.marital_status_id = '';
+        this.employment_term = '';
+        this.employment_type = '';
+        this.employment_status = '';
+        this.status = '';
+        this.company_id = '';
+        this.directorate_id = '';
+        this.department_id = '';
+        this.disivion_id = '';
+        this.section_id = '';
+        this.designation_id = '';
+        this.dob = '';
+        this.nin = '';
+        this.passport = '';
+        this.nssf = '';
+        this.tin = '';
+        this.permit = '';
+        this.date_joined = '';
+        this.avatar = '';
+        this.approved = false;
+        this.exit_date = '';
+        this.created_by = null;
+        this.approved_by = null;
+        this.approved_at = '';
+        this.role_id = '';
+        this.contacts = [];
+        this.addresses = [];
+        this.banks = [];
+        this.leaves = [];
+        this.leave_applications = [];
+        this.educations = [];
+        this.experiences = [];
+        this.related_persons = [];
+        this.histories = [];
+        this.subordinates = [];
+        this.directorate = null;
+        this.department = null;
+        this.designation = null;
+        this.created_at = null;
+        this.updated_at = null;
+        this.deleted_at = null;
+    }
+}
+
+export default Employee;
