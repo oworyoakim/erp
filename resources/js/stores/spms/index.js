@@ -5,11 +5,15 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 import routes from "../../routes";
+import usersModule from '../users';
+import rolesModule from '../roles';
 import plansModule from './plans';
 import objectivesModule from "./objectives";
 
 export default new Vuex.Store({
     modules: {
+        roles: rolesModule,
+        users: usersModule,
         plans: plansModule,
         objectives: objectivesModule,
     },

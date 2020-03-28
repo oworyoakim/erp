@@ -4,7 +4,7 @@ export default class Role {
         this.name = '';
         this.slug = '';
         this.description = '';
-        this.permissions = [];
+        this.parentId = null;
         this.createdAt = null;
         this.updatedAt = null;
         this.deletedAt = null;
