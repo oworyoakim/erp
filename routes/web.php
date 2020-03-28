@@ -12,7 +12,9 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::get('/', function (){
+    return redirect()->route('login');
+});
 Route::get('/login', 'AccountController@login')->name('login');
 Route::post('/login', 'AccountController@processLogin')->name('login');
 Route::get('/test', 'HomeController@test')->name('test');
@@ -168,18 +170,19 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
         // users
         Route::group(['prefix' => 'users'], function () {
             Route::get('', 'UsersController@index')->name('users.list');
-            Route::get('create', 'UsersController@create')->name('users.create');
-            Route::post('create', 'UsersController@store')->name('users.create');
+            Route::get('all-json', 'UsersController@getUsers')->name('users.json');
+            Route::post('', 'UsersController@store')->name('users.create');
+            Route::put('', 'UsersController@update')->name('users.update');
         });
 
         // roles
-        Route::group(['prefix' => 'roles', 'namespace' => 'Role'], function () {
-            Route::get('', 'RolesController')->name('roles.list');
+        Route::group(['prefix' => 'roles'], function () {
+            Route::get('', 'RolesController@index')->name('roles.list');
             Route::get('all-json', 'RolesController@getRoles')->name('roles.all-json');
-            Route::post('', 'StoreRoleController')->name('roles.create');
-            Route::put('', 'UpdateRoleController')->name('roles.update');
-            Route::patch('', 'UpdateRoleController@updatePermissions')->name('roles.update_permissions');
-            Route::delete('delete', 'RolesController@delete')->name('roles.delete');
+            Route::post('', 'RolesController@store')->name('roles.create');
+            Route::put('', 'RolesController@update')->name('roles.update');
+            Route::patch('', 'RolesController@updatePermissions')->name('roles.update_permissions');
+            Route::delete('', 'RolesController@delete')->name('roles.delete');
         });
 
         // settings
