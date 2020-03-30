@@ -10,7 +10,7 @@
                     </button>
                     <div class="roles-menu">
                         <ul>
-                            <li class="" v-for="plan in plans" v-bind:class="{active: !!activePlan && plan.id === activePlan.id}">
+                            <li class="" v-for="plan in plans" v-bind:class="{active: !!activePlan && plan.id === activePlan.id}" :key="plan.id">
                                 <a href="javascript:void(0)" @click="setActivePlan(plan)">{{plan.name}}</a>
                             </li>
                         </ul>
@@ -70,8 +70,19 @@
                             </ul>
                         </div>
                         <div class="m-b-30 table-responsive">
-                            <h6 class="card-title m-b-10">Strategic Objectives</h6>
+                            <div class="row align-items-center">
+							<div class="col">
+								<h6 class="card-title m-b-10">Strategic Objectives</h6>
+							</div>
+							<div class="col-auto float-right ml-auto">
+                                <button class="btn btn-primary btn-block m-b-10" @click="editObjective()">
+                                 <i class="fa fa-plus"></i> Add Objective
+                                </button>
+								<!-- <a href="#" class="btn add-btn m-b-10" data-toggle="modal" data-target="#add_promotion"><i class="fa fa-plus"></i> Add Objective</a> -->
+							</div>
+						</div>
                             <app-strategic-objectives :plan-id="activePlan.id"/>
+                            <app-objective-form :plan-id="activePlan.id"/>
                         </div>
                         <div class="m-b-30 table-responsive">
                             <h6 class="card-title m-b-10">SWOT Analysis</h6>
@@ -89,7 +100,6 @@
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
-
     export default {
         props: {
             title: String,
@@ -108,15 +118,20 @@
         created() {
             this.getPlans();
             EventBus.$on(['PLAN_SAVED'],this.getPlans);
+
+            this.getObjectives();
+            EventBus.$on(['OBJECTIVE_SAVED'],this.getObjectives);
         },
         methods: {
             setActivePlan(plan) {
                 this.activePlan = plan;
+                
             },
 
             editPlan(plan = null) {
                 EventBus.$emit("EDIT_PLAN", plan);
             },
+
             async getPlans() {
                 try {
                     this.isLoading = true;
@@ -126,6 +141,20 @@
                     console.error(error);
                 }
             },
+
+            editObjective(objective = null) {
+                EventBus.$emit("EDIT_OBJECTIVE", objective);
+            },
+            async getObjectives() {
+                try {
+                    this.isLoading = true;
+                    await this.$store.dispatch('GET_OBJECTIVES');
+                    this.isLoading = false;
+                } catch (error) {
+                    console.error(error);
+                }
+            },
+
             async deletePlan(plan){
                 try {
 
