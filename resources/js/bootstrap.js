@@ -50,6 +50,13 @@ try {
     }
     // Response Interceptor
 
+    Vue.prototype.$stringLimit = function (str,length=20) {
+        if (str.length > length){
+            return str.substring(0,length) + " ...";
+        }
+        return str;
+    };
+
     window.axios = Vue.prototype.$http = axios;
     // Moment
     window.moment = Vue.prototype.$moment = require('moment');

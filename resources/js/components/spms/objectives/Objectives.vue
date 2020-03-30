@@ -11,9 +11,11 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="objective in objectives">
-            <td>{{objective.name}}</td>
-            <td>{{objective.description}}</td>
+        
+        <!-- <tr v-if="objectives.length ===0"><td></td></tr> -->
+        <tr v-for="objective in objectives" :key="objective.id">
+            <td><a href="javascript:void(0)" @click="viewObjective(objective)">{{objective.name}}</a></td>
+            <td>{{$stringLimit(objective.description)}}</td>
             <td class="text-center">
                 {{objective.rank}}
             </td>
@@ -21,7 +23,8 @@
                 {{$moment(objective.dueDate).format('DD MMM, YYYY')}}
             </td>
             <td class="text-center">
-
+                <a @click="editObjective(objective)" class="" href="#" data-toggle="modal" data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>
+			    <a class="" href="#" data-toggle="modal" data-target="#delete_project"><i class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>
         </tbody>
@@ -30,6 +33,7 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import {EventBus} from "../../../app";
 
     export default {
         props: {
@@ -51,6 +55,12 @@
         created() {
             this.$nextTick(this.getObjectives);
         },
+        watch:{
+            planId(newValue, oldValue){
+                this.getObjectives();
+                // console.log("old>>>",oldValue, "new>>",newValue)
+            }
+        },
         methods: {
             async getObjectives() {
                 try {
@@ -60,7 +70,14 @@
                 } catch (error) {
                     this.isLoading = false;
                 }
-            }
+            },
+            editObjective(objective = null) {
+                EventBus.$emit("EDIT_OBJECTIVE", objective);
+            },
+            viewObjective(objective) {
+                console.log(">>>>ccc<<<<")
+                // EventBus.$emit("EDIT_OBJECTIVE", objective);
+            },
         }
     }
 </script>

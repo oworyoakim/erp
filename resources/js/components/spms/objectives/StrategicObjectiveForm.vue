@@ -1,11 +1,11 @@
 <template>
     <!-- Add Plan Modal -->
-    <div ref="planModal" id="planModal" class="modal custom-modal fade"
+    <div ref="objectiveModal" id="objectiveModal" class="modal custom-modal fade"
          role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Plan Information</h5>
+                    <h5 class="modal-title">Add New Objective</h5>
                     <button
                         @click="closePreview()"
                         type="button"
@@ -16,74 +16,40 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form @submit.prevent="savePlan">
+                    <form @submit.prevent="saveObjective">
                         <div class="form-group row">
                             <label class="col-sm-4">
-                                Title
+                                Name
                                 <span class="text-danger">*</span>
                             </label>
                             <div class="col-sm-8">
-                                <input type="text" v-model="plan.name" class="form-control"/>
+                                <input type="text" v-model="objective.name" class="form-control"/>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-4">Theme</label>
+                            <label class="col-sm-4">Description</label>
                             <div class="col-sm-8">
-                                <textarea v-model="plan.theme" class="form-control"></textarea>
+                                <textarea v-model="objective.description" class="form-control"></textarea>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label class="col-sm-4">Vision</label>
+                            <label class="col-sm-4">Rank</label>
                             <div class="col-sm-8">
-                                <textarea v-model="plan.vision" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Mission</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.mission" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Values</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.values" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Monitor Frequency</label>
-                            <div class="col-sm-8">
-                                <select v-model="plan.frequency" class="form-control">
+                                <select v-model="objective.rank" class="form-control">
                                     <option value="">Select...</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="4-months">Every 4 months</option>
-                                    <option value="6-months">Every 6 months</option>
-                                    <option value="yearly">Yearly</option>
+                                    <option v-for="i in 10" :key="i" :value="i">{{i}}</option>
                                 </select>
                             </div>
                         </div>
-
                         <div class="form-group row">
-                            <div class="col-sm-6">
-                                <label>Start Date</label>
+                            <label class="col-sm-4">Due Date</label>
+                            <div class="col-sm-8">
+                                <label>Select Due Date</label>
                                 <app-date-range-picker
-                                    v-model="plan.startDate"
-                                    :value="plan.startDate"
+                                    v-model="objective.dueDate"
+                                    :value="objective.dueDate"
                                     :config="dateConfig"
                                 />
-                            </div>
-
-                            <div class="col-sm-6">
-                                <label>End Date</label>
-                                <app-date-range-picker
-                                    v-model="plan.endDate"
-                                    :value="plan.endDate"
-                                    :config="dateConfig">
-                                </app-date-range-picker>
                             </div>
                         </div>
 
@@ -97,19 +63,32 @@
     </div>
     <!-- /Add Plan Modal -->
 </template>
-
 <script>
     import Plan from "../../../models/smps/Plan";
+    import Objective from "../../../models/smps/Objective";
     import {EventBus} from "../../../app";
+    import {deepClone} from "../../../utils/helpers";
+    // import {mapGetters} from "vuex";
 
     export default {
+        // computed: {
+        //     ...mapGetters({
+        //         plan: "ACTIVE_PLAN",
+        //     }),
+        // },
+        props: {
+            planId: {
+                type: Number,
+                required: true
+            }
+        },
         created() {
-            EventBus.$on('EDIT_PLAN', this.editPlan);
+            EventBus.$on('EDIT_OBJECTIVE', this.editObjective);
         },
         data() {
             return {
                 isSending: false,
-                plan: new Plan(),
+                objective: new Objective(),
                 dateConfig: {
                     showDropdowns: true,
                     singleDatePicker: true,
@@ -122,22 +101,23 @@
             }
         },
         methods: {
-            editPlan(plan) {
-                if (plan) {
-                    this.plan = plan;
+            editObjective(objective=null) {
+                // this.objective.planId = this.plan.id;
+                if (objective) {
+                    this.objective = deepClone(objective);
                 } else {
-                    this.plan.plan_id = this.plan.id;
-                    this.plan = new Plan();
+                    this.objective = new Objective();
                 }
-                $(this.$refs.planModal).modal('show');
+                $(this.$refs.objectiveModal).modal('show');
             },
-            async savePlan() {
+            async saveObjective() {
                 try {
                     this.isSending = true;
-                    let response = await this.$store.dispatch('SAVE_PLAN', this.plan);
+                    this.objective.planId=this.planId;
+                    let response = await this.$store.dispatch('SAVE_OBJECTIVE', this.objective);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('PLAN_SAVED');
+                    EventBus.$emit('OBJECTIVE_SAVED');
                     this.closePreview();
                 } catch (error) {
                     let message = document.createElement('div');
@@ -147,8 +127,8 @@
                 }
             },
             closePreview() {
-                this.plan = new Plan();
-                $(this.$refs.planModal).modal('hide');
+                this.objective = new Objective();
+                $(this.$refs.objectiveModal).modal('hide');
                 $(".modal-backdrop").remove();
             }
         }
