@@ -1,13 +1,11 @@
-export default class Objective {
+export default class Output {
     constructor() {
         this.id = null;
         this.name = '';
         this.description = '';
-        this.rank = '';
-        this.dueDate = '';
-        this.planId = '';
-        this.plan = null;
-        this.interventions = [];
+        this.interventionId = '';
+        this.intervention = null;
+        this.indicators = [];
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';

@@ -16,4 +16,9 @@ class SpmsController extends Controller
     {
         return view('spms.plans.index');
     }
+
+    public function objectiveDetails($id)
+    {
+        return view('spms.objectives.show', ['objectiveId' => $id]);
+    }
 }

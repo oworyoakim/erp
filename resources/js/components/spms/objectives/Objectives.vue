@@ -11,7 +11,7 @@
         </tr>
         </thead>
         <tbody>
-        
+
         <!-- <tr v-if="objectives.length ===0"><td></td></tr> -->
         <tr v-for="objective in objectives" :key="objective.id">
             <td><a href="javascript:void(0)" @click="viewObjective(objective)">{{objective.name}}</a></td>
@@ -23,8 +23,10 @@
                 {{$moment(objective.dueDate).format('DD MMM, YYYY')}}
             </td>
             <td class="text-center">
-                <a @click="editObjective(objective)" class="" href="#" data-toggle="modal" data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>
-			    <a class="" href="#" data-toggle="modal" data-target="#delete_project"><i class="fa fa-trash-o m-r-5"></i></a>
+                <a @click="editObjective(objective)" class="" href="#" data-toggle="modal"
+                   data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>
+                <a class="" href="#" data-toggle="modal" data-target="#delete_project"><i
+                    class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>
         </tbody>
@@ -42,21 +44,22 @@
                 required: true
             }
         },
-        computed:{
+        computed: {
             ...mapGetters({
                 objectives: "OBJECTIVES"
             }),
         },
-        data(){
+        data() {
             return {
                 isLoading: false,
             }
         },
         created() {
             this.$nextTick(this.getObjectives);
+            EventBus.$on(['OBJECTIVE_SAVED'], this.getObjectives);
         },
-        watch:{
-            planId(newValue, oldValue){
+        watch: {
+            planId(newValue, oldValue) {
                 this.getObjectives();
                 // console.log("old>>>",oldValue, "new>>",newValue)
             }
@@ -75,8 +78,9 @@
                 EventBus.$emit("EDIT_OBJECTIVE", objective);
             },
             viewObjective(objective) {
-                console.log(">>>>ccc<<<<")
+                // console.log(">>>>ccc<<<<")
                 // EventBus.$emit("EDIT_OBJECTIVE", objective);
+                window.location.href = '/spms/objectives/show/' + objective.id;
             },
         }
     }
