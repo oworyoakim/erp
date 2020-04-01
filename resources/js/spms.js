@@ -20,6 +20,8 @@ import StrategicPlanForm from "./components/spms/plans/StrategicPlanForm";
 import StrategicObjectives from "./components/spms/objectives/Objectives";
 import StrategicObjectiveForm from "./components/spms/objectives/StrategicObjectiveForm";
 import SwotsAnalysis from "./components/spms/swots/Swots";
+import SwotsAnalysisForm from "./components/spms/swots/SwotForm";
+import SwotCategoryForm from "./components/spms/swots/SwotCategoryForm";
 
 Vue.component("app-admin-dashboard", Dashboard);
 Vue.component('app-plans', StrategicPlans);
@@ -27,6 +29,8 @@ Vue.component('app-plan-form', StrategicPlanForm);
 Vue.component('app-objective-form', StrategicObjectiveForm);
 Vue.component('app-strategic-objectives', StrategicObjectives);
 Vue.component('app-swots-analysis', SwotsAnalysis);
+Vue.component('app-swots-analysis-form', SwotsAnalysisForm);
+Vue.component('app-swots-category-form', SwotCategoryForm);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

@@ -53,7 +53,7 @@ const routes = {
     PLANS: '/spms/plans',
     OBJECTIVES: '/spms/objectives',
     SWOTS: '/spms/swots',
-    SWOTCATEGORIES: '/spms/swots',
+    SWOT_CATEGORIES: '/spms/swot-categories',
 };
 
 export default routes;

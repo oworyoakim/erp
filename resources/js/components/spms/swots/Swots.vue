@@ -4,52 +4,76 @@
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseOne">Strengths</a>
+                    <a class="collapsed" data-toggle="collapse" href="#strengths">Strengths</a>
                 </h4>
             </div>
-            <div id="collapseOne" class="card-collapse collapse">
+            <div id="strengths" class="card-collapse collapse">
                 <div class="card-body">
-                    <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                    <p>Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+                    <div class="mb-2" v-for="category in strengths" :key="'strengths-'+category.id">
+                        <h4>{{category.name}}</h4>
+                        <ul>
+                            <li v-for="swot in category.swots" :key="swot.id">
+                                {{swot.description}}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseTwo">Weaknesses</a>
+                    <a class="collapsed" data-toggle="collapse" href="#weaknesses">Weaknesses</a>
                 </h4>
             </div>
-            <div id="collapseTwo" class="card-collapse collapse">
+            <div id="weaknesses" class="card-collapse collapse">
                 <div class="card-body">
-                    <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                    <p>Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+                    <div class="mb-2" v-for="category in weaknesses" :key="'weaknesses-'+category.id">
+                        <h4>{{category.name}}</h4>
+                        <ul>
+                            <li v-for="swot in category.swots" :key="swot.id">
+                                {{swot.description}}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseThree">Opportunities</a>
+                    <a class="collapsed" data-toggle="collapse" href="#opportunities">Opportunities</a>
                 </h4>
             </div>
-            <div id="collapseThree" class="card-collapse collapse">
+            <div id="opportunities" class="card-collapse collapse">
                 <div class="card-body">
-                    <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                    <p>Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+                    <div class="mb-2" v-for="category in opportunities" :key="'opportunities-'+category.id">
+                        <h4>{{category.name}}</h4>
+                        <ul>
+                            <li v-for="swot in category.swots" :key="swot.id">
+                                {{swot.description}}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="card">
             <div class="card-header">
                 <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#collapseFour">Threats</a>
+                    <a class="collapsed" data-toggle="collapse" href="#threats">Threats</a>
                 </h4>
             </div>
-            <div id="collapseFour" class="card-collapse collapse">
+            <div id="threats" class="card-collapse collapse">
                 <div class="card-body">
-                    <p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
-                    <p>Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.</p>
+                    <div class="mb-2" v-for="category in threats" :key="'threats-'+category.id">
+                        <h4>{{category.name}}</h4>
+                        <ul>
+                            <li v-for="swot in category.swots" :key="swot.id">
+                                {{swot.description}}
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
@@ -58,6 +82,7 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import {EventBus} from "../../../app";
 
     export default {
         props: {
@@ -66,18 +91,44 @@
                 required: true
             }
         },
-        computed:{
+        computed: {
             ...mapGetters({
                 swots: "SWOTS"
             }),
+            strengths() {
+                //return this.swots.filter(swot => swot.type === 'strengths');
+                return this.swots.strengths;
+            },
+            weaknesses() {
+                //return this.swots.filter(swot => swot.type === 'weaknesses');
+                return this.swots.weaknesses;
+            },
+            opportunities() {
+                //return this.swots.filter(swot => swot.type === 'opportunities');
+                return this.swots.opportunities;
+            },
+            threats() {
+                //return this.swots.filter(swot => swot.type === 'threats');
+                return this.swots.threats;
+            },
         },
-        data(){
+        data() {
             return {
                 isLoading: false,
             }
         },
+        watch: {
+            planId(newValue, oldValue) {
+                this.$nextTick(() => {
+                    this.getSwots();
+                });
+            }
+        },
         created() {
-            this.$nextTick(this.getSwots);
+            this.$nextTick(() => {
+                this.getSwots();
+            });
+            EventBus.$on(['SWOT_SAVED'], this.getSwots);
         },
         methods: {
             async getSwots() {
@@ -87,8 +138,9 @@
                     this.isLoading = false;
                 } catch (error) {
                     this.isLoading = false;
+                    console.error(error);
                 }
-            }
+            },
         }
     }
 </script>

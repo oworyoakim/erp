@@ -9,6 +9,7 @@ import usersModule from '../users';
 import rolesModule from '../roles';
 import plansModule from './plans';
 import objectivesModule from "./objectives";
+import swotsModule from "./swots";
 
 export default new Vuex.Store({
     modules: {
@@ -16,6 +17,7 @@ export default new Vuex.Store({
         users: usersModule,
         plans: plansModule,
         objectives: objectivesModule,
+        swots: swotsModule,
     },
     state: {
         user: null,
