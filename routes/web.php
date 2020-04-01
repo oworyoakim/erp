@@ -159,10 +159,23 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::post('', 'StrategicPlansGateway@store');
                     Route::put('', 'StrategicPlansGateway@update');
                 });
+
                 Route::group(['prefix' => 'objectives'], function () {
                     Route::get('', 'StrategicObjectivesGateway@index');
                     Route::post('', 'StrategicObjectivesGateway@store');
                     Route::put('', 'StrategicObjectivesGateway@update');
+                });
+
+                Route::group(['prefix' => 'swots'], function () {
+                    Route::get('', 'SwotsGateway@index');
+                    Route::post('', 'SwotsGateway@store');
+                    Route::put('', 'SwotsGateway@update');
+                });
+
+                Route::group(['prefix' => 'swot-categories'], function () {
+                    Route::get('', 'SwotCategoriesGateway@index');
+                    Route::post('', 'SwotCategoriesGateway@store');
+                    Route::put('', 'SwotCategoriesGateway@update');
                 });
             });
         });

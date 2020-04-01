@@ -4,16 +4,23 @@ import routes from "../../routes";
 export default {
     state: {
         plans: [],
+        activePlan: null,
     },
     getters: {
         PLANS: (state) => {
             return state.plans;
+        },
+        ACTIVE_PLAN: (state) => {
+            return state.activePlan;
         }
     },
     mutations: {
         SET_PLANS: (state, payload) => {
             state.plans = payload;
-        }
+        },
+        SET_ACTIVE_PLAN: (state, payload) => {
+            state.activePlan = payload;
+        },
     },
     actions: {
         GET_PLANS: async ({commit}, payload) => {
@@ -41,6 +48,10 @@ export default {
                 console.error(error.response);
                 return Promise.reject(error.response.data);
             }
+        },
+
+        SET_ACTIVE_PLAN: async ({commit}, payload) => {
+            commit("SET_ACTIVE_PLAN", payload);
         },
     },
 }
