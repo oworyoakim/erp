@@ -5,7 +5,7 @@
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New Objective</h5>
+                    <h5 class="modal-title">Manage Objective</h5>
                     <button
                         @click="closePreview()"
                         type="button"

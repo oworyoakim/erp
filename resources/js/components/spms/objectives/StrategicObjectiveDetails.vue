@@ -2,8 +2,8 @@
     <app-spinner v-if="isLoading || !objective"/>
     <div class="mt-2" v-else>
         <!-- Objective Details    -->
-        <h1>{{objective.name}}</h1>
         <app-objective-form :plan-id="objective.planId"/>
+        <app-strategic-objective-details-page :plan-id="objective.planId" :objective="objective"/>
     </div>
 </template>
 
