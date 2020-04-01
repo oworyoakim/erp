@@ -85,5 +85,26 @@ class StrategicObjectivesGateway extends Controller
         }
     }
 
-
+    public function getObjectiveDetails(Request $request)
+    {
+        try
+        {
+            $objectiveId = $request->get('objectiveId');
+            if (!$objectiveId)
+            {
+                throw new Exception("Strategic objective id required!");
+            }
+            $url = "{$this->urlEndpoint}/show?objectiveId={$objectiveId}";
+            $response = Http::get($url);
+            if (!$response->ok())
+            {
+                throw new Exception($response->body());
+            }
+            $data = $response->json();
+            return response()->json($data);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
 }

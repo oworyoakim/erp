@@ -8,7 +8,7 @@
             </li>
 
             {{--            Plans    --}}
-            <li class="@if(Request::is('spms/plans*')) active @endif">
+            <li class="@if(Request::is('spms/plans*') || Request::is('spms/objectives*')) active @endif">
                 <a href="{{route('spms.plans')}}"><i class="la la-paw"></i><span>Strategic Plans</span>
                 </a>
             </li>

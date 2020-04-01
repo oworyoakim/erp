@@ -164,6 +164,8 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::get('', 'StrategicObjectivesGateway@index');
                     Route::post('', 'StrategicObjectivesGateway@store');
                     Route::put('', 'StrategicObjectivesGateway@update');
+                    Route::get('show/{id}', 'SpmsController@objectiveDetails');
+                    Route::get('details', 'StrategicObjectivesGateway@getObjectiveDetails');
                 });
 
                 Route::group(['prefix' => 'swots'], function () {
