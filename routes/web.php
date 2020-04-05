@@ -154,7 +154,10 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
 
             Route::namespace('Spms')->group(function () {
                 Route::group(['prefix' => 'plans'], function () {
-                    Route::get('', 'SpmsController@plans')->name('spms.plans');
+                    Route::get('', 'SpmsController@plans')->name('spms.plans.plan');
+                    Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
+                    Route::get('execute', 'SpmsController@execute')->name('spms.plans.execute');
+                    Route::get('monitor', 'SpmsController@monitor')->name('spms.plans.monitor');
                     Route::get('all-json', 'StrategicPlansGateway@index');
                     Route::post('', 'StrategicPlansGateway@store');
                     Route::put('', 'StrategicPlansGateway@update');
@@ -178,6 +181,26 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::get('', 'SwotCategoriesGateway@index');
                     Route::post('', 'SwotCategoriesGateway@store');
                     Route::put('', 'SwotCategoriesGateway@update');
+                });
+
+                Route::group(['prefix' => 'interventions'], function () {
+                    Route::post('', 'InterventionsGateway@store');
+                    Route::put('', 'InterventionsGateway@update');
+                });
+
+                Route::group(['prefix' => 'outputs'], function () {
+                    Route::post('', 'OutputsGateway@store');
+                    Route::put('', 'OutputsGateway@update');
+                });
+
+                Route::group(['prefix' => 'output-indicators'], function () {
+                    Route::post('', 'OutputIndicatorsGateway@store');
+                    Route::put('', 'OutputIndicatorsGateway@update');
+                });
+
+                Route::group(['prefix' => 'output-indicator-targets'], function () {
+                    Route::post('', 'OutputIndicatorTargetsGateway@store');
+                    Route::put('', 'OutputIndicatorTargetsGateway@update');
                 });
             });
         });

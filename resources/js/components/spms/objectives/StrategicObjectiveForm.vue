@@ -41,17 +41,6 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Due Date</label>
-                            <div class="col-sm-8">
-                                <label>Select Due Date</label>
-                                <app-date-range-picker
-                                    v-model="objective.dueDate"
-                                    :value="objective.dueDate"
-                                    :config="dateConfig"
-                                />
-                            </div>
-                        </div>
 
                         <div class="submit-section">
                             <button :disabled="isSending" class="btn btn-info add-btn">Save</button>
@@ -89,15 +78,6 @@
             return {
                 isSending: false,
                 objective: new Objective(),
-                dateConfig: {
-                    showDropdowns: true,
-                    singleDatePicker: true,
-                    minDate: this.$moment(), // now
-                    opens: "center",
-                    locale: {
-                        format: 'DD MMM YYYY'
-                    }
-                }
             }
         },
         methods: {

@@ -115,7 +115,7 @@
                     </template>
                 </div>
             </div>
-            <app-plan-form/>
+            <app-plan-form :start-of-next-financial-year="startOfNextFinancialYear"/>
         </template>
     </div>
     <!-- /.card -->
@@ -127,7 +127,8 @@
 
     export default {
         props: {
-            title: String
+            title: String,
+            startOfNextFinancialYear: String,
         },
         computed: {
             ...mapGetters({

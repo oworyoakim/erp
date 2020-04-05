@@ -51,9 +51,21 @@ const routes = {
     // SPMS
     DASHBOARD_STATISTICS_SPMS: '/spms/dashboard/statistics',
     PLANS: '/spms/plans',
-    OBJECTIVES: '/spms/objectives',
     SWOTS: '/spms/swots',
     SWOT_CATEGORIES: '/spms/swot-categories',
+
+    OBJECTIVES: '/spms/objectives',
+    INTERVENTIONS: '/spms/interventions',
+    OUTPUTS: '/spms/outputs',
+    OUTPUT_INDICATORS: '/spms/output-indicators',
+    OUTPUT_TARGETS: '/spms/output-indicator-targets',
+    OUTPUT_ACHIEVEMENTS: '/spms/output-achievements',
+
+    KEY_RESULT_AREAS: '/spms/key-result-areas',
+    OUTCOMES: '/spms/outcomes',
+    OUTCOME_INDICATORS: '/spms/outcome-indicators',
+    OUTCOME_TARGETS: '/spms/outcome-indicator-targets',
+    OUTCOME_ACHIEVEMENTS: '/spms/outcome-achievements',
 };
 
 export default routes;

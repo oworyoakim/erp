@@ -27,6 +27,16 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <label class="col-sm-4">Start Date - End Date <small class="text-muted">{{dateConfig.locale.format}}</small></label>
+                            <div class="col-sm-8">
+                                <app-date-range-picker
+                                    v-model="dateRange"
+                                    :value="dateRange"
+                                    :config="dateConfig"
+                                />
+                            </div>
+                        </div>
+                        <div class="form-group row">
                             <label class="col-sm-4">Theme</label>
                             <div class="col-sm-8">
                                 <textarea v-model="plan.theme" class="form-control"></textarea>
@@ -67,28 +77,8 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
-                            <div class="col-sm-6">
-                                <label>Start Date</label>
-                                <app-date-range-picker
-                                    v-model="plan.startDate"
-                                    :value="plan.startDate"
-                                    :config="dateConfig"
-                                />
-                            </div>
-
-                            <div class="col-sm-6">
-                                <label>End Date</label>
-                                <app-date-range-picker
-                                    v-model="plan.endDate"
-                                    :value="plan.endDate"
-                                    :config="dateConfig">
-                                </app-date-range-picker>
-                            </div>
-                        </div>
-
                         <div class="submit-section">
-                            <button :disabled="isSending" class="btn btn-info add-btn">Save</button>
+                            <button :disabled="formInvalid" class="btn btn-info btn-block add-btn">Save</button>
                         </div>
                     </form>
                 </div>
@@ -101,33 +91,59 @@
 <script>
     import Plan from "../../../models/smps/Plan";
     import {EventBus} from "../../../app";
+    import {deepClone} from "../../../utils/helpers";
 
     export default {
+        props: {
+            startOfNextFinancialYear: String,
+        },
         created() {
             EventBus.$on('EDIT_PLAN', this.editPlan);
+            this.dateRange = moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
+        },
+        watch: {
+            dateRange(newValue, oldValue) {
+                this.setPlanDates(newValue);
+            },
+        },
+        computed: {
+            formInvalid() {
+                return this.isSending || !(!!this.plan.name && !!this.plan.theme && !!this.plan.frequency && !!this.plan.startDate && !!this.plan.endDate);
+            },
         },
         data() {
             return {
                 isSending: false,
+                dateRange: '',
                 plan: new Plan(),
                 dateConfig: {
                     showDropdowns: true,
-                    singleDatePicker: true,
                     minDate: this.$moment(), // now
+                    ranges: {
+                        'Next Financial Year': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days')],
+                        'Next 2 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(24, 'months').subtract(1, 'days')],
+                        'Next 3 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(36, 'months').subtract(1, 'days')],
+                        'Next 4 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(48, 'months').subtract(1, 'days')],
+                        'Next 5 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(60, 'months').subtract(1, 'days')],
+                    },
                     opens: "center",
                     locale: {
-                        format: 'DD MMM YYYY'
+                        format: 'YYYY-MM-DD',
+                        cancelLabel: 'Clear'
                     }
                 }
             }
         },
         methods: {
-            editPlan(plan) {
-                if (plan) {
-                    this.plan = plan;
+            editPlan(plan = null) {
+                if (!!plan) {
+                    this.plan = deepClone(plan);
+                    this.dateRange = this.plan.startDate + ' - ' + this.plan.endDate;
                 } else {
                     this.plan.plan_id = this.plan.id;
                     this.plan = new Plan();
+                    this.dateRange = this.$moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
+                    this.setPlanDates(this.dateRange);
                 }
                 $(this.$refs.planModal).modal('show');
             },
@@ -146,8 +162,15 @@
                     this.isSending = false;
                 }
             },
+            setPlanDates(dateRange) {
+                let dates = dateRange.split(' - ');
+                this.plan.startDate = dates[0];
+                this.plan.endDate = dates[dates.length - 1];
+            },
             closePreview() {
                 this.plan = new Plan();
+                this.dateRange = this.$moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
+                this.setPlanDates(this.dateRange);
                 $(this.$refs.planModal).modal('hide');
                 $(".modal-backdrop").remove();
             }

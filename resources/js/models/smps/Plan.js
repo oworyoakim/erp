@@ -9,6 +9,7 @@ export default class Plan {
         this.frequency = '';
         this.startDate = '';
         this.endDate = '';
+        this.reportPeriods = [];
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';

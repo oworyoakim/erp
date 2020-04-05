@@ -4,10 +4,13 @@ export default class Objective {
         this.name = '';
         this.description = '';
         this.rank = '';
-        this.dueDate = '';
         this.planId = '';
         this.plan = null;
         this.interventions = [];
+        this.outputs = [];
+        this.indicators = [];
+        this.targets = [];
+        this.achievements = [];
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';
