@@ -50,7 +50,11 @@ try {
     }
     // Response Interceptor
 
-    Vue.prototype.$stringLimit = function (str,length=20) {
+    Vue.prototype.$stringLimit = function (str,length= 20) {
+        if(!str){
+            return '';
+        }
+        str = String(str);
         if (str.length > length){
             return str.substring(0,length) + " ...";
         }

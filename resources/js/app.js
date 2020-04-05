@@ -23,6 +23,7 @@ import ProfileItemHeader from "./components/shared/ProfileItemHeader";
 import UserWidget from "./components/shared/UserWidget";
 import Users from "./components/users/Users";
 import UserForm from "./components/users/UserForm";
+import MainModal from "./components/shared/MainModal";
 
 Vue.component("app-profile-item-header", ProfileItemHeader);
 Vue.component("app-date-range-picker", DateRangePicker);
@@ -39,8 +40,10 @@ Vue.component("app-general-settings", GeneralSettings);
 Vue.component("app-approvals-settings", ApprovalsSettings);
 Vue.component("app-morris-bar-chart", MorrisBarChart);
 Vue.component('app-spinner', Spinner);
+Vue.component('app-main-modal', MainModal);
 
 import Datepicker from "vuejs-datepicker";
+
 
 
 Vue.use(Datepicker);

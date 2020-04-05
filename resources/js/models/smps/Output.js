@@ -3,6 +3,7 @@ export default class Output {
         this.id = null;
         this.name = '';
         this.description = '';
+        this.objectiveId = '';
         this.interventionId = '';
         this.intervention = null;
         this.indicators = [];

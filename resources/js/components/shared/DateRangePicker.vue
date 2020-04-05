@@ -17,7 +17,7 @@
         mounted() {
             this.dateRange = String(this.value);
             this.$nextTick(() => {
-                $(this.$refs.dateRangePicker).daterangepicker(this.config, this.handleChange);
+                $(this.$refs.dateRangePicker).daterangepicker({autoUpdateInput: false,...this.config}, this.handleChange);
             });
         },
         data() {

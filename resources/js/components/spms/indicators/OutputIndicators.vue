@@ -5,20 +5,23 @@
                 <thead>
                 <tr>
                     <th>Name</th>
+                    <th>Measured As</th>
                     <th>Description</th>
-                    <th>Rank</th>
                     <th class="text-right">Action</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="intervention in interventions" :key="intervention.id">
-                    <th>{{intervention.name}}</th>
-                    <td>{{intervention.description}}</td>
-                    <td>{{intervention.rank}}</td>
+                <tr v-for="indicator in indicators" :key="indicator.id">
+                    <th>{{indicator.name}}</th>
+                    <th>
+                        <span v-if="indicator.unit === 'percent'">Percentage (%)</span>
+                        <span v-else>Count</span>
+                    </th>
+                    <td>{{$stringLimit(indicator.description)}}</td>
                     <td class="text-right">
-                        <button class="btn btn-info btn-sm" title="Edit" @click="editIntervention(intervention)"><i
+                        <button class="btn btn-info btn-sm" title="Edit" @click="editOutputIndicator(indicator)"><i
                             class="fa fa-pencil m-r-5"></i></button>
-                        <button class="btn btn-danger btn-sm" title="Delete" @click="deleteIntervention(intervention)"><i
+                        <button class="btn btn-danger btn-sm" title="Delete" @click="deleteOutputIndicator(indicator)"><i
                             class="fa fa-trash-o m-r-5"></i></button>
                     </td>
                 </tr>
@@ -32,17 +35,17 @@
     import {EventBus} from "../../../app";
 
     export default {
-        props: {
-            interventions: {
+        props:{
+            indicators: {
                 type: Array,
                 required: true
-            },
+            }
         },
         methods: {
-            editIntervention(intervention = null){
-                EventBus.$emit("EDIT_INTERVENTION",intervention);
+            editOutputIndicator(indicator = null){
+                EventBus.$emit("EDIT_OUTPUT_INDICATOR",indicator);
             },
-            deleteIntervention(intervention){
+            deleteOutputIndicator(indicator){
 
             }
         },

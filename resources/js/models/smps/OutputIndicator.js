@@ -4,9 +4,10 @@ export default class OutputIndicator {
         this.name = '';
         this.description = '';
         this.unit = '';
+        this.objectiveId = '';
         this.outputId = '';
         this.output = null;
-        this.milestones = [];
+        this.targets = [];
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';

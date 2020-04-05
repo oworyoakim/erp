@@ -6,29 +6,28 @@
             <th>Name</th>
             <th>Description</th>
             <th class="text-center">Rank</th>
-            <th class="text-center">Due Date</th>
             <th class="text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
-
-        <!-- <tr v-if="objectives.length ===0"><td></td></tr> -->
-        <tr v-for="objective in objectives" :key="objective.id">
-            <td><a href="javascript:void(0)" @click="viewObjective(objective)">{{objective.name}}</a></td>
-            <td>{{$stringLimit(objective.description)}}</td>
-            <td class="text-center">
-                {{objective.rank}}
-            </td>
-            <td class="text-center">
-                {{$moment(objective.dueDate).format('DD MMM, YYYY')}}
-            </td>
-            <td class="text-center">
-                <a @click="editObjective(objective)" class="" href="#" data-toggle="modal"
-                   data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>
-                <a class="" href="#" data-toggle="modal" data-target="#delete_project"><i
-                    class="fa fa-trash-o m-r-5"></i></a>
-            </td>
-        </tr>
+         <tr v-if="objectives.length === 0">
+             <td colspan="5" class="text-center">No objectives</td>
+         </tr>
+        <template v-else>
+            <tr v-for="objective in objectives" :key="objective.id">
+                <td><a href="javascript:void(0)" @click="viewObjective(objective)">{{objective.name}}</a></td>
+                <td>{{$stringLimit(objective.description)}}</td>
+                <td class="text-center">
+                    {{objective.rank}}
+                </td>
+                <td class="text-center">
+                    <a @click="editObjective(objective)" class="" href="#" data-toggle="modal"
+                       data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>
+                    <a class="" href="#" data-toggle="modal" data-target="#delete_project"><i
+                        class="fa fa-trash-o m-r-5"></i></a>
+                </td>
+            </tr>
+        </template>
         </tbody>
     </table>
 </template>
