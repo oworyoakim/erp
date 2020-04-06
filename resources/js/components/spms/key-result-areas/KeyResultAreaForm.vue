@@ -1,25 +1,25 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
-        <form @submit.prevent="saveObjective">
+        <form @submit.prevent="saveKeyResultArea">
             <div class="form-group row">
                 <label class="col-sm-4">
                     Name
                     <span class="text-danger">*</span>
                 </label>
                 <div class="col-sm-8">
-                    <input type="text" v-model="objective.name" class="form-control"/>
+                    <input type="text" v-model="keyResultArea.name" class="form-control"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="objective.description" class="form-control"></textarea>
+                    <textarea v-model="keyResultArea.description" class="form-control"></textarea>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4">Rank</label>
                 <div class="col-sm-8">
-                    <select v-model="objective.rank" class="form-control">
+                    <select v-model="keyResultArea.rank" class="form-control">
                         <option value="">Select...</option>
                         <option v-for="i in 10" :key="i" :value="i">{{i}}</option>
                     </select>
@@ -36,7 +36,7 @@
     </app-main-modal>
 </template>
 <script>
-    import Objective from "../../../models/smps/Objective";
+    import KeyResultArea from "../../../models/smps/KeyResultArea";
     import {EventBus} from "../../../app";
     import {deepClone} from "../../../utils/helpers";
 
@@ -48,43 +48,43 @@
             }
         },
         created() {
-            EventBus.$on('EDIT_OBJECTIVE', this.editObjective);
+            EventBus.$on('EDIT_KEY_RESULT_AREA', this.editKeyResultArea);
         },
         computed: {
             title() {
-                return (!!this.objective.id) ? "Edit Strategic Objective" : "Add Strategic Objective";
+                return (!!this.keyResultArea.id) ? "Edit Key Result Area" : "Add Key Result Area";
             },
             formInvalid(){
-                return this.isSending || !(!!this.objective.name && !!this.objective.rank);
+                return this.isSending || !(!!this.keyResultArea.name && !!this.keyResultArea.rank);
             }
         },
 
         data() {
             return {
-                objective: new Objective(),
+                keyResultArea: new KeyResultArea(),
                 isEditing: false,
                 isSending: false,
             }
         },
         methods: {
-            editObjective(objective = null) {
-                if (objective) {
-                    this.objective = deepClone(objective);
+            editKeyResultArea(keyResultArea = null) {
+                if (keyResultArea) {
+                    this.keyResultArea = deepClone(keyResultArea);
                 } else {
-                    this.objective = new Objective();
+                    this.keyResultArea = new KeyResultArea();
                 }
                 this.isEditing = true;
             },
-            async saveObjective() {
+            async saveKeyResultArea() {
                 try {
                     this.isSending = true;
-                    if (!!!this.objective.planId) {
-                        this.objective.planId = this.planId;
+                    if (!!!this.keyResultArea.planId) {
+                        this.keyResultArea.planId = this.planId;
                     }
-                    let response = await this.$store.dispatch('SAVE_OBJECTIVE', this.objective);
+                    let response = await this.$store.dispatch('SAVE_KEY_RESULT_AREA', this.keyResultArea);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('OBJECTIVE_SAVED');
+                    EventBus.$emit('KEY_RESULT_AREA_SAVED');
                     this.resetForm();
                 } catch (error) {
                     let message = document.createElement('div');
@@ -94,7 +94,7 @@
                 }
             },
             resetForm() {
-                this.objective = new Objective();
+                this.keyResultArea = new KeyResultArea();
                 this.isEditing = false;
             }
         }

@@ -1,30 +1,16 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
-        <form @submit.prevent="saveOutputIndicator" autocomplete="off">
+        <form @submit.prevent="saveOutcomeIndicator" autocomplete="off">
             <div class="form-group row" v-if="!!!indicator.id">
-                <label class="col-sm-4">Intervention <span class="text-danger">*</span></label>
+                <label class="col-sm-4">Outcome <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="interventionId" :disabled="!!indicator.id">
+                    <select class="form-control" v-model="indicator.outcomeId" :disabled="!!indicator.id">
                         <option value="">Select...</option>
-                        <option v-for="intervention in interventionsOptions"
-                                :value="intervention.value"
-                                :key="intervention.value"
+                        <option v-for="outcome in outcomesOptions"
+                                :value="outcome.value"
+                                :key="outcome.value"
                         >
-                            {{intervention.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="!!!indicator.id">
-                <label class="col-sm-4">Output <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="indicator.outputId" :disabled="!!indicator.id">
-                        <option value="">Select...</option>
-                        <option v-for="output in outputsOptions"
-                                :value="output.value"
-                                :key="output.value"
-                        >
-                            {{output.text}}
+                            {{outcome.text}}
                         </option>
                     </select>
                 </div>
@@ -33,6 +19,13 @@
                 <label class="col-sm-4">Name <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <input v-model="indicator.name" class="form-control" type="text" required>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4">Baseline <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <input v-model="indicator.baseline" class="form-control" type="number" min="0" required>
                 </div>
             </div>
 
@@ -64,69 +57,58 @@
 <script>
     import {EventBus} from "../../../app";
     import {deepClone} from "../../../utils/helpers";
-    import OutputIndicator from "../../../models/smps/OutputIndicator";
+    import OutcomeIndicator from "../../../models/smps/OutcomeIndicator";
     import {mapGetters} from "vuex";
 
     export default {
         created() {
-            EventBus.$on(["EDIT_OUTPUT_INDICATOR"], this.editOutputIndicator);
+            EventBus.$on(["EDIT_OUTCOME_INDICATOR"], this.editOutcomeIndicator);
         },
         data() {
             return {
-                indicator: new OutputIndicator(),
-                interventionId: '',
+                indicator: new OutcomeIndicator(),
                 isSending: false,
                 isEditing: false,
             }
         },
         computed: {
             ...mapGetters({
-                objective: "OBJECTIVE_DETAILS",
+                keyResultArea: "KEY_RESULT_AREA_DETAILS",
             }),
             title(){
-                return (!!this.indicator.id) ? "Edit Output Indicator" : "Add Output Indicator";
+                return (!!this.indicator.id) ? "Edit Outcome Indicator" : "Add Outcome Indicator";
             },
-            interventionsOptions() {
-                return this.objective.interventions.map((intervention) => {
+            outcomesOptions() {
+                return this.keyResultArea.outcomes.map((outcome) => {
                     return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
-                });
-            },
-            outputsOptions() {
-                return this.objective.outputs.filter((output) => {
-                    return output.interventionId === this.interventionId;
-                }).map((output) => {
-                    return {
-                        text: output.name,
-                        value: output.id,
+                        text: outcome.name,
+                        value: outcome.id,
                     }
                 });
             },
             formInvalid() {
-                return this.isSending || !(!!this.indicator.outputId && !!this.indicator.name && !!this.indicator.description);
+                return this.isSending || !(!!this.indicator.outcomeId && !!this.indicator.name && !!this.indicator.description);
             },
         },
         methods: {
-            editOutputIndicator(indicator = null) {
+            editOutcomeIndicator(indicator = null) {
                 if (indicator) {
                     this.indicator = deepClone(indicator);
                 } else {
-                    this.indicator = new OutputIndicator();
+                    this.indicator = new OutcomeIndicator();
                 }
                 this.isEditing = true;
             },
-            async saveOutputIndicator() {
+            async saveOutcomeIndicator() {
                 try {
                     this.isSending = true;
-                    if (!this.indicator.objectiveId) {
-                        this.indicator.objectiveId = this.objective.id;
+                    if (!this.indicator.keyResultAreaId) {
+                        this.indicator.keyResultAreaId = this.keyResultArea.id;
                     }
-                    let response = await this.$store.dispatch('SAVE_OUTPUT_INDICATOR', this.indicator);
+                    let response = await this.$store.dispatch('SAVE_OUTCOME_INDICATOR', this.indicator);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('OUTPUT_INDICATOR_SAVED');
+                    EventBus.$emit('OUTCOME_INDICATOR_SAVED');
                     this.resetForm();
                 } catch (error) {
                     let message = document.createElement('div');
@@ -137,7 +119,7 @@
                 }
             },
             resetForm() {
-                this.indicator = new OutputIndicator();
+                this.indicator = new OutcomeIndicator();
                 this.isEditing = false;
             }
         }

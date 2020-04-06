@@ -34,6 +34,7 @@
             </div>
         </div>
         <!-- /Page Tab -->
+
         <!-- Tab Content -->
         <div class="tab-content">
             <!-- Interventions Tab -->
@@ -53,6 +54,7 @@
                 <!-- /intervention form -->
             </div>
             <!-- /Interventions Tab -->
+
             <!-- Outputs Tab -->
             <div class="tab-pane" id="tab_outputs">
                 <div class="row mb-4">
@@ -202,7 +204,8 @@
 
     export default {
         props: {
-            objectiveId: String
+            objectiveId: String,
+            startOfNextFinancialYear: String,
         },
         created() {
             this.getObjectiveDetails();

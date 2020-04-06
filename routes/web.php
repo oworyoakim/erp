@@ -202,6 +202,27 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::post('', 'OutputIndicatorTargetsGateway@store');
                     Route::put('', 'OutputIndicatorTargetsGateway@update');
                 });
+
+
+                Route::group(['prefix' => 'key-result-areas'], function () {
+                    Route::get('', 'KeyResultAreasGateway@index');
+                    Route::post('', 'KeyResultAreasGateway@store');
+                    Route::put('', 'KeyResultAreasGateway@update');
+                    Route::get('show/{id}', 'SpmsController@keyResultAreaDetails');
+                    Route::get('details', 'KeyResultAreasGateway@getKeyResultAreaDetails');
+                });
+                Route::group(['prefix' => 'outcomes'], function () {
+                    Route::post('', 'OutcomesGateway@store');
+                    Route::put('', 'OutcomesGateway@update');
+                });
+                Route::group(['prefix' => 'outcome-indicators'], function () {
+                    Route::post('', 'OutcomeIndicatorsGateway@store');
+                    Route::put('', 'OutcomeIndicatorsGateway@update');
+                });
+                Route::group(['prefix' => 'outcome-indicator-targets'], function () {
+                    Route::post('', 'OutcomeIndicatorTargetsGateway@store');
+                    Route::put('', 'OutcomeIndicatorTargetsGateway@update');
+                });
             });
         });
 

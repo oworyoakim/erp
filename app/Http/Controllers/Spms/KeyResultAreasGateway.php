@@ -1,0 +1,110 @@
+<?php
+
+namespace App\Http\Controllers\Spms;
+
+use App\Http\Controllers\Controller;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Exception;
+use Illuminate\Support\Facades\Http;
+use stdClass;
+
+class KeyResultAreasGateway extends Controller
+{
+    /**
+     * @var string
+     */
+    protected $urlEndpoint;
+
+    public function __construct()
+    {
+        $this->urlEndpoint = env('SPMS_URL') . '/v1/key-result-areas';
+    }
+
+    public function index(Request $request)
+    {
+        try
+        {
+            $planId = $request->get('planId');
+            if (!$planId)
+            {
+                throw new Exception("Strategic plan id required!");
+            }
+            $url = "{$this->urlEndpoint}?planId={$planId}";
+            $response = Http::get($url);
+            if (!$response->ok())
+            {
+                throw new Exception($response->body());
+            }
+            $data = $response->json();
+            return response()->json($data);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            $user = Sentinel::getUser();
+            $data['userId'] = $user->getUserId();
+            $response = Http::post($this->urlEndpoint, $data);
+            if (!$response->ok())
+            {
+                throw new Exception($response->body());
+            }
+            $data = $response->json();
+            return response()->json($data);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function update(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            $user = Sentinel::getUser();
+            $data['userId'] = $user->getUserId();
+            $response = Http::put($this->urlEndpoint, $data);
+            if (!$response->ok())
+            {
+                throw new Exception($response->body());
+            }
+            $data = $response->json();
+            return response()->json($data);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function getKeyResultAreaDetails(Request $request)
+    {
+        try
+        {
+            $keyResultAreaId = $request->get('keyResultAreaId');
+            if (!$keyResultAreaId)
+            {
+                throw new Exception("Key result area id required!");
+            }
+            $url = "{$this->urlEndpoint}/show?keyResultAreaId={$keyResultAreaId}";
+            $response = Http::get($url);
+            if (!$response->ok())
+            {
+                throw new Exception($response->body());
+            }
+            $data = $response->json();
+            return response()->json($data);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+}

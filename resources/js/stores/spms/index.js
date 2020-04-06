@@ -9,6 +9,7 @@ import usersModule from '../users';
 import rolesModule from '../roles';
 import plansModule from './plans';
 import objectivesModule from "./objectives";
+import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
 
 export default new Vuex.Store({
@@ -17,6 +18,7 @@ export default new Vuex.Store({
         users: usersModule,
         plans: plansModule,
         objectives: objectivesModule,
+        keyResultAreas: keyResultAreasModule,
         swots: swotsModule,
     },
     state: {

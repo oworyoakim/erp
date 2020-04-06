@@ -92,6 +92,21 @@
                             <app-strategic-objectives :plan-id="activePlan.id"/>
                             <app-objective-form :plan-id="activePlan.id"/>
                         </div>
+                        <div class="m-b-30 table-responsive">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h6 class="card-title m-b-10">Key Result Areas</h6>
+                                </div>
+                                <div class="col-auto float-right ml-auto">
+                                    <button class="btn btn-primary btn-block m-b-10" @click="editKeyResultArea()">
+                                        <i class="fa fa-plus"></i> Add Key Result Area
+                                    </button>
+                                    <!-- <a href="#" class="btn add-btn m-b-10" data-toggle="modal" data-target="#add_promotion"><i class="fa fa-plus"></i> Add Objective</a> -->
+                                </div>
+                            </div>
+                            <app-key-result-areas :plan-id="activePlan.id"/>
+                            <app-key-result-area-form :plan-id="activePlan.id"/>
+                        </div>
                         <div class="m-b-30">
                             <div class="row mb-2">
                                 <div class="col-sm-6">
@@ -181,6 +196,9 @@
             },
             editObjective(objective = null) {
                 EventBus.$emit("EDIT_OBJECTIVE", objective);
+            },
+            editKeyResultArea(keyResultArea = null) {
+                EventBus.$emit("EDIT_KEY_RESULT_AREA", keyResultArea);
             },
             editSwot(swot = null) {
                 EventBus.$emit("EDIT_SWOT", swot);
