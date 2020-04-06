@@ -1,91 +1,75 @@
 <template>
-    <!-- Add Plan Modal -->
-    <div ref="planModal" id="planModal" class="modal custom-modal fade"
-         role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Plan Information</h5>
-                    <button
-                        @click="closePreview()"
-                        type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="savePlan">
-                        <div class="form-group row">
-                            <label class="col-sm-4">
-                                Title
-                                <span class="text-danger">*</span>
-                            </label>
-                            <div class="col-sm-8">
-                                <input type="text" v-model="plan.name" class="form-control"/>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Start Date - End Date <small class="text-muted">{{dateConfig.locale.format}}</small></label>
-                            <div class="col-sm-8">
-                                <app-date-range-picker
-                                    v-model="dateRange"
-                                    :value="dateRange"
-                                    :config="dateConfig"
-                                />
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Theme</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.theme" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Vision</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.vision" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Mission</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.mission" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Values</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="plan.values" class="form-control"></textarea>
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label class="col-sm-4">Monitor Frequency</label>
-                            <div class="col-sm-8">
-                                <select v-model="plan.frequency" class="form-control">
-                                    <option value="">Select...</option>
-                                    <option value="monthly">Monthly</option>
-                                    <option value="quarterly">Quarterly</option>
-                                    <option value="4-months">Every 4 months</option>
-                                    <option value="6-months">Every 6 months</option>
-                                    <option value="yearly">Yearly</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="submit-section">
-                            <button :disabled="formInvalid" class="btn btn-info btn-block add-btn">Save</button>
-                        </div>
-                    </form>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+        <form @submit.prevent="savePlan" autocomplete="off">
+            <div class="form-group row">
+                <label class="col-sm-4">
+                    Title
+                    <span class="text-danger">*</span>
+                </label>
+                <div class="col-sm-8">
+                    <input type="text" v-model="plan.name" class="form-control"/>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- /Add Plan Modal -->
+            <div class="form-group row">
+                <label class="col-sm-4">Start Date - End Date <br/>
+                    <small class="text-muted">Format: {{dateConfig.locale.format}}</small></label>
+                <div class="col-sm-8">
+                    <app-date-range-picker
+                        v-model="dateRange"
+                        :value="dateRange"
+                        :config="dateConfig"
+                    />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Theme</label>
+                <div class="col-sm-8">
+                    <textarea v-model="plan.theme" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Vision</label>
+                <div class="col-sm-8">
+                    <textarea v-model="plan.vision" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4">Mission</label>
+                <div class="col-sm-8">
+                    <textarea v-model="plan.mission" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4">Values</label>
+                <div class="col-sm-8">
+                    <textarea v-model="plan.values" class="form-control"></textarea>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-sm-4">Monitor Frequency</label>
+                <div class="col-sm-8">
+                    <select v-model="plan.frequency" class="form-control">
+                        <option value="">Select...</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="4-months">Every 4 months</option>
+                        <option value="6-months">Every 6 months</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-info btn-block add-btn">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Save</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
@@ -107,12 +91,16 @@
             },
         },
         computed: {
+            title() {
+                return (!!this.plan.id) ? "Edit Strategic Plan" : "Add Strategic Plan";
+            },
             formInvalid() {
                 return this.isSending || !(!!this.plan.name && !!this.plan.theme && !!this.plan.frequency && !!this.plan.startDate && !!this.plan.endDate);
             },
         },
         data() {
             return {
+                isEditing: false,
                 isSending: false,
                 dateRange: '',
                 plan: new Plan(),
@@ -145,7 +133,7 @@
                     this.dateRange = this.$moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
                     this.setPlanDates(this.dateRange);
                 }
-                $(this.$refs.planModal).modal('show');
+                this.isEditing = true;
             },
             async savePlan() {
                 try {
@@ -153,8 +141,8 @@
                     let response = await this.$store.dispatch('SAVE_PLAN', this.plan);
                     toastr.success(response);
                     this.isSending = false;
+                    this.resetForm();
                     EventBus.$emit('PLAN_SAVED');
-                    this.closePreview();
                 } catch (error) {
                     let message = document.createElement('div');
                     message.innerHTML = error.trim('"');
@@ -167,12 +155,11 @@
                 this.plan.startDate = dates[0];
                 this.plan.endDate = dates[dates.length - 1];
             },
-            closePreview() {
+            resetForm() {
                 this.plan = new Plan();
+                this.isEditing = false;
                 this.dateRange = this.$moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
                 this.setPlanDates(this.dateRange);
-                $(this.$refs.planModal).modal('hide');
-                $(".modal-backdrop").remove();
             }
         }
     }

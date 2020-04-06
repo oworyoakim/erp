@@ -1,14 +1,17 @@
 <template>
     <div id="mainModal" ref="mainModal" class="modal custom-modal fade" role="dialog"
-         tabindex="-1"
-         data-backdrop="static" data-keyboard="false">
+         tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
                         {{title}}
                     </h5>
-                    <button type="button" class="close" @click="closePreview()" data-dismiss="modal" aria-label="Close">
+                    <button type="button"
+                            class="close"
+                            @click="closeModal()"
+                            data-dismiss="modal"
+                            aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -24,10 +27,26 @@
 
     export default {
         props: {
-            title: String,
+            title: {
+                type: String,
+                required: true
+            },
+            isOpen: {
+                type: Boolean,
+                required: true
+            },
+        },
+        watch: {
+            isOpen(newVal, oldVal) {
+                if (!!newVal) {
+                    $(this.$refs.mainModal).modal('show');
+                } else {
+                    this.closeModal();
+                }
+            }
         },
         methods: {
-            closePreview() {
+            closeModal() {
                 $(this.$refs.mainModal).modal('hide');
                 $(".modal-backdrop").remove();
                 this.$emit('modal-closed');

@@ -1,25 +1,16 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
-        <form @submit.prevent="saveIntervention" autocomplete="off">
+        <form @submit.prevent="saveOutcome" autocomplete="off">
             <div class="form-group row">
                 <label class="col-sm-4">Name <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <input type="text" v-model="intervention.name" class="form-control" required>
-                </div>
-            </div>
-            <div class="form-group row">
-                <label class="col-sm-4">Rank <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select v-model="intervention.rank" class="form-control">
-                        <option value="">Select...</option>
-                        <option v-for="i in 10" :key="i" :value="i">{{i}}</option>
-                    </select>
+                    <input v-model="outcome.name" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4">Description <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <textarea v-model="intervention.description" class="form-control" rows="5"></textarea>
+                    <textarea v-model="outcome.description" class="form-control" rows="5" required></textarea>
                 </div>
             </div>
             <div class="submit-section">
@@ -32,62 +23,63 @@
     </app-main-modal>
 </template>
 <script>
-    import {mapGetters} from "vuex";
-    import Intervention from "../../../models/smps/Intervention";
     import {EventBus} from "../../../app";
     import {deepClone} from "../../../utils/helpers";
+    import Outcome from "../../../models/smps/Outcome";
+    import {mapGetters} from "vuex";
 
     export default {
         created() {
-            EventBus.$on(["EDIT_INTERVENTION"], this.editIntervention);
+            EventBus.$on(["EDIT_OUTCOME"], this.editOutcome);
         },
         data() {
             return {
-                intervention: new Intervention(),
+                outcome: new Outcome(),
                 isEditing: false,
                 isSending: false,
             }
         },
         computed: {
             ...mapGetters({
-                objective: "OBJECTIVE_DETAILS"
+                keyResultArea: "KEY_RESULT_AREA_DETAILS",
             }),
             title() {
-                return (!!this.intervention.id) ? "Edit Intervention" : "Add Intervention";
+                return (!!this.outcome.id) ? "Edit Outcome" : "Add Outcome";
             },
             formInvalid() {
-                return this.isSending || !(!!this.intervention.name && !!this.intervention.rank && !!this.intervention.description);
+                return this.isSending || !(!!this.outcome.name && !!this.outcome.description);
             },
         },
         methods: {
-            editIntervention(intervention = null) {
-                if (intervention) {
-                    this.intervention = deepClone(intervention);
+            editOutcome(outcome = null) {
+                if (outcome) {
+                    this.outcome = deepClone(outcome);
                 } else {
-                    this.intervention = new Intervention();
+                    this.outcome = new Outcome();
                 }
                 this.isEditing = true;
             },
-            async saveIntervention() {
+            async saveOutcome() {
                 try {
                     this.isSending = true;
-                    if (!this.intervention.objectiveId) {
-                        this.intervention.objectiveId = this.objective.id;
+                    if (!this.outcome.keyResultAreaId) {
+                        this.outcome.keyResultAreaId = this.keyResultArea.id;
                     }
-                    let response = await this.$store.dispatch('SAVE_INTERVENTION', this.intervention);
+                    let response = await this.$store.dispatch('SAVE_OUTCOME', this.outcome);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('INTERVENTION_SAVED');
+                    EventBus.$emit('OUTCOME_SAVED');
                     this.resetForm();
                 } catch (error) {
                     let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
                     message.innerHTML = error;
                     await swal({content: message, icon: 'error'});
                     this.isSending = false;
                 }
             },
             resetForm() {
-                this.intervention = new Intervention();
+                this.outcome = new Outcome();
                 this.isEditing = false;
             }
         }

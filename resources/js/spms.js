@@ -23,7 +23,6 @@ import StrategicObjectiveForm from "./components/spms/objectives/StrategicObject
 import SwotsAnalysis from "./components/spms/swots/Swots";
 import SwotsAnalysisForm from "./components/spms/swots/SwotForm";
 import SwotCategoryForm from "./components/spms/swots/SwotCategoryForm";
-import StrageticObjectivePageView from "./components/spms/objectives/StrageticObjectivePageView";
 import Interventions from "./components/spms/interventions/Interventions";
 import InterventionForm from "./components/spms/interventions/InterventionForm";
 import Outputs from "./components/spms/outputs/Outputs";
@@ -33,16 +32,27 @@ import OutputIndicatorForm from "./components/spms/indicators/OutputIndicatorFor
 import OutputIndicatorTargets from "./components/spms/targets/OutputIndicatorTargets";
 import OutputIndicatorTargetForm from "./components/spms/targets/OutputIndicatorTargetForm";
 
+import KeyResultAreas from "./components/spms/key-result-areas/KeyResultAreas";
+import KeyResultAreaDetails from "./components/spms/key-result-areas/KeyResultAreaDetails";
+import KeyResultAreaForm from "./components/spms/key-result-areas/KeyResultAreaForm";
+import Outcomes from "./components/spms/outcomes/Outcomes";
+import OutcomeForm from "./components/spms/outcomes/OutcomeForm";
+import OutcomeIndicators from "./components/spms/indicators/OutcomeIndicators";
+import OutcomeIndicatorForm from "./components/spms/indicators/OutcomeIndicatorForm";
+import OutcomeIndicatorTargets from "./components/spms/targets/OutcomeIndicatorTargets";
+import OutcomeIndicatorTargetForm from "./components/spms/targets/OutcomeIndicatorTargetForm";
+
 Vue.component("app-admin-dashboard", Dashboard);
 Vue.component('app-plans', StrategicPlans);
 Vue.component('app-plan-form', StrategicPlanForm);
-Vue.component('app-objective-form', StrategicObjectiveForm);
-Vue.component('app-strategic-objectives', StrategicObjectives);
-Vue.component('app-strategic-objective-details', StrategicObjectiveDetails);
-Vue.component('app-strategic-objective-details-page', StrageticObjectivePageView);
 Vue.component('app-swots-analysis', SwotsAnalysis);
 Vue.component('app-swots-analysis-form', SwotsAnalysisForm);
 Vue.component('app-swots-category-form', SwotCategoryForm);
+
+// output-based
+Vue.component('app-objective-form', StrategicObjectiveForm);
+Vue.component('app-strategic-objectives', StrategicObjectives);
+Vue.component('app-strategic-objective-details', StrategicObjectiveDetails);
 Vue.component('app-interventions', Interventions);
 Vue.component('app-intervention-form', InterventionForm);
 Vue.component('app-outputs', Outputs);
@@ -51,6 +61,17 @@ Vue.component('app-output-indicators', OutputIndicators);
 Vue.component('app-output-indicator-form', OutputIndicatorForm);
 Vue.component('app-output-indicator-targets', OutputIndicatorTargets);
 Vue.component('app-output-indicator-target-form', OutputIndicatorTargetForm);
+
+// outcome-base
+Vue.component('app-key-result-areas', KeyResultAreas);
+Vue.component('app-key-result-area-form', KeyResultAreaForm);
+Vue.component('app-key-result-area-details', KeyResultAreaDetails);
+Vue.component('app-outcomes', Outcomes);
+Vue.component('app-outcome-form', OutcomeForm);
+Vue.component('app-outcome-indicators', OutcomeIndicators);
+Vue.component('app-outcome-indicator-form', OutcomeIndicatorForm);
+Vue.component('app-outcome-indicator-targets', OutcomeIndicatorTargets);
+Vue.component('app-outcome-indicator-target-form', OutcomeIndicatorTargetForm);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

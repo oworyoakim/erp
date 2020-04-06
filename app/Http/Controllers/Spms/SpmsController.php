@@ -35,6 +35,12 @@ class SpmsController extends Controller
         return view('spms.objectives.show', ['objectiveId' => $id,'startOfNextFinancialYear' => $startOfNFF->toDateString()]);
     }
 
+    public function keyResultAreaDetails($id)
+    {
+        $startOfNFF = $this->getNextFinancialYearStartDate();
+        return view('spms.key-result-areas.show', ['keyResultAreaId' => $id,'startOfNextFinancialYear' => $startOfNFF->toDateString()]);
+    }
+
     /**
      * @return Carbon
      */

@@ -1,30 +1,16 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
-        <form @submit.prevent="saveOutputIndicatorTarget" autocomplete="off">
+        <form @submit.prevent="saveOutcomeIndicatorTarget" autocomplete="off">
             <div class="form-group row" v-if="!!!target.id">
-                <label class="col-sm-4">Intervention <span class="text-danger">*</span></label>
+                <label class="col-sm-4">Outcome <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="interventionId" :disabled="!!target.id">
+                    <select class="form-control" v-model="outcomeId" :disabled="!!target.id">
                         <option value="">Select...</option>
-                        <option v-for="intervention in interventionsOptions"
-                                :value="intervention.value"
-                                :key="intervention.value"
+                        <option v-for="outcome in outcomesOptions"
+                                :value="outcome.value"
+                                :key="outcome.value"
                         >
-                            {{intervention.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="!!!target.id">
-                <label class="col-sm-4">Output <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="outputId" :disabled="!!target.id">
-                        <option value="">Select...</option>
-                        <option v-for="output in outputsOptions"
-                                :value="output.value"
-                                :key="output.value"
-                        >
-                            {{output.text}}
+                            {{outcome.text}}
                         </option>
                     </select>
                 </div>
@@ -32,7 +18,7 @@
             <div class="form-group row" v-if="!!!target.id">
                 <label class="col-sm-4">Indicator <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="target.outputIndicatorId" :disabled="!!target.id">
+                    <select class="form-control" v-model="target.outcomeIndicatorId" :disabled="!!target.id">
                         <option value="">Select...</option>
                         <option v-for="indicator in indicatorsOptions"
                                 :value="indicator.value"
@@ -79,56 +65,45 @@
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
     import {deepClone} from "../../../utils/helpers";
-    import OutputIndicatorTarget from "../../../models/smps/OutputIndicatorTarget";
+    import OutcomeIndicatorTarget from "../../../models/smps/OutcomeIndicatorTarget";
 
     export default {
         created() {
-            EventBus.$on(["EDIT_OUTPUT_INDICATOR_TARGET"], this.editOutputIndicatorTarget);
+            EventBus.$on(["EDIT_OUTCOME_INDICATOR_TARGET"], this.editOutcomeIndicatorTarget);
         },
         data() {
             return {
-                target: new OutputIndicatorTarget(),
-                interventionId: '',
-                outputId: '',
-                outputIndicatorId: '',
+                target: new OutcomeIndicatorTarget(),
+                outcomeId: '',
+                outcomeIndicatorId: '',
                 isEditing: false,
                 isSending: false,
             }
         },
         computed: {
             ...mapGetters({
-                objective: "OBJECTIVE_DETAILS",
+                keyResultArea: "KEY_RESULT_AREA_DETAILS",
             }),
-            interventionsOptions() {
-                return this.objective.interventions.map((intervention) => {
+            outcomesOptions() {
+                return this.keyResultArea.outcomes.map((outcome) => {
                     return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
-                });
-            },
-            outputsOptions() {
-                return this.objective.outputs.filter((output) => {
-                    return output.interventionId === this.interventionId;
-                }).map((output) => {
-                    return {
-                        text: output.name,
-                        value: output.id,
+                        text: outcome.name,
+                        value: outcome.id,
                     }
                 });
             },
             indicatorsOptions() {
-                return this.objective.indicators.filter((indicator) => {
-                    return indicator.outputId === this.outputId;
-                }).map((output) => {
+                return this.keyResultArea.indicators.filter((indicator) => {
+                    return indicator.outcomeId === this.outcomeId;
+                }).map((outcome) => {
                     return {
-                        text: output.name,
-                        value: output.id,
+                        text: outcome.name,
+                        value: outcome.id,
                     }
                 });
             },
             reportPeriodsOptions() {
-                return this.objective.reportPeriods.map((period) => {
+                return this.keyResultArea.reportPeriods.map((period) => {
                     return {
                         text: period.name,
                         value: period.id,
@@ -136,31 +111,31 @@
                 });
             },
             title() {
-                return (!!this.target.id) ? "Edit Output Indicator Target" : "Add Output Indicator Target";
+                return (!!this.target.id) ? "Edit Outcome Indicator Target" : "Add Outcome Indicator Target";
             },
             formInvalid() {
-                return this.isSending || !(!!this.target.target && !!this.target.outputIndicatorId && !!this.target.reportPeriodId);
+                return this.isSending || !(!!this.target.target && !!this.target.outcomeIndicatorId && !!this.target.reportPeriodId);
             },
         },
         methods: {
-            editOutputIndicatorTarget(target = null) {
+            editOutcomeIndicatorTarget(target = null) {
                 if (target) {
                     this.target = deepClone(target);
                 } else {
-                    this.target = new OutputIndicatorTarget();
+                    this.target = new OutcomeIndicatorTarget();
                 }
                 this.isEditing = true;
             },
-            async saveOutputIndicatorTarget() {
+            async saveOutcomeIndicatorTarget() {
                 try {
                     this.isSending = true;
-                    if (!this.target.objectiveId) {
-                        this.target.objectiveId = this.objective.id;
+                    if (!this.target.keyResultAreaId) {
+                        this.target.keyResultAreaId = this.keyResultArea.id;
                     }
-                    let response = await this.$store.dispatch('SAVE_OUTPUT_INDICATOR_TARGET', this.target);
+                    let response = await this.$store.dispatch('SAVE_OUTCOME_INDICATOR_TARGET', this.target);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('OUTPUT_INDICATOR_TARGET_SAVED');
+                    EventBus.$emit('OUTCOME_INDICATOR_TARGET_SAVED');
                     this.resetForm();
                 } catch (error) {
                     let message = document.createElement('div');
@@ -171,7 +146,7 @@
                 }
             },
             resetForm() {
-                this.indicator = new OutputIndicatorTarget();
+                this.indicator = new OutcomeIndicatorTarget();
                 this.isEditing = false;
             }
         }

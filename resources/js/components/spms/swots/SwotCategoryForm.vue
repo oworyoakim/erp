@@ -1,54 +1,34 @@
 <template>
-    <!-- Add User Modal -->
-    <div ref="swotCategoryModal" id="swotCategoryModal" class="modal custom-modal fade" role="dialog" tabindex="-1"
-         data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Swot Category Information</h5>
-                    <button
-                        @click="closeModal()"
-                        type="button"
-                        class="close"
-                        data-dismiss="modal"
-                        aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="saveSwotCategory" autocomplete="off">
-                        <div class="form-group row">
-                            <label class="col-sm-3">Name</label>
-                            <div class="col-sm-9">
-                                <input type="text"
-                                       v-model="swotCategory.name"
-                                       class="form-control"
-                                       placeholder="Enter first name"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-3">Description</label>
-                            <div class="col-sm-9">
-                                <textarea type="text"
-                                          v-model="swotCategory.description"
-                                          class="form-control">
-                                </textarea>
-                            </div>
-                        </div>
-
-                        <div class="submit-section">
-                            <button :disabled="formIsInvalid" class="btn btn-info btn-block add-btn">
-                                <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
-                                <span v-else>Save</span>
-                            </button>
-                        </div>
-                    </form>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+        <form @submit.prevent="saveSwotCategory" autocomplete="off">
+            <div class="form-group row">
+                <label class="col-sm-3">Name</label>
+                <div class="col-sm-9">
+                    <input type="text"
+                           v-model="swotCategory.name"
+                           class="form-control"
+                           placeholder="Enter first name"
+                           required>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- /Add User Modal -->
+            <div class="form-group row">
+                <label class="col-sm-3">Description</label>
+                <div class="col-sm-9">
+                    <textarea type="text"
+                              v-model="swotCategory.description"
+                              class="form-control">
+                    </textarea>
+                </div>
+            </div>
+
+            <div class="submit-section">
+                <button :disabled="formIsInvalid" class="btn btn-info btn-block add-btn">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Save</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
@@ -69,6 +49,9 @@
                 plan: "ACTIVE_PLAN",
                 swotCategories: "SWOT_CATEGORIES",
             }),
+            title() {
+                return (!!this.swotCategory.id) ? "Edit Swot Category" : "Add Swot Category";
+            },
             formIsInvalid() {
                 return this.isSending || !!!this.swotCategory.name.trim();
             },
@@ -76,6 +59,7 @@
         data() {
             return {
                 swotCategory: new SwotCategory(),
+                isEditing: false,
                 isSending: false,
             }
         },
@@ -86,8 +70,7 @@
                 } else {
                     this.swotCategory = new SwotCategory();
                 }
-                $(this.$refs.swotCategoryModal).modal("show");
-
+                this.isEditing = true;
             },
             async saveSwotCategory() {
                 try {
@@ -95,7 +78,7 @@
                     let response = await this.$store.dispatch("SAVE_SWOT_CATEGORY", this.swotCategory);
                     this.isSending = false;
                     toastr.success(response);
-                    this.closeModal();
+                    this.resetForm();
                     EventBus.$emit("SWOT_CATEGORY_SAVED");
                 } catch (error) {
                     console.error(error);
@@ -105,10 +88,9 @@
                     this.isSending = false;
                 }
             },
-            closeModal() {
+            resetForm() {
                 this.swotCategory = new SwotCategory();
-                $(this.$refs.swotCategoryModal).modal("hide");
-                $(".modal-backdrop").remove();
+                this.isEditing = false;
             }
         }
     }
