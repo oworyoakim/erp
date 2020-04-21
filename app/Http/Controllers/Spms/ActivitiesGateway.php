@@ -9,24 +9,20 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class StrategicObjectivesGateway extends Controller
+class ActivitiesGateway extends Controller
 {
     use MakesRemoteHttpRequests;
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/objectives';
+        $this->urlEndpoint = env('SPMS_URL') . '/v1/activities';
     }
 
     public function index(Request $request)
     {
         try
         {
-            $params = $request->only(['planId']);
-            if (empty($params['planId']))
-            {
-                throw new Exception("Strategic plan id required!");
-            }
+            $params = $request->only(['workPlanId', 'interventionId']);
 
             $responseData = $this->get($this->urlEndpoint, $params);
 
@@ -71,22 +67,4 @@ class StrategicObjectivesGateway extends Controller
         }
     }
 
-    public function getObjectiveDetails(Request $request)
-    {
-        try
-        {
-            $params = $request->only(['objectiveId']);
-            if (empty($params['objectiveId']))
-            {
-                throw new Exception("Strategic objective id required!");
-            }
-
-            $responseData = $this->get("{$this->urlEndpoint}/show", $params);
-
-            return response()->json($responseData);
-        } catch (Exception $ex)
-        {
-            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
-        }
-    }
 }

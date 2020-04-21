@@ -42,6 +42,13 @@ import OutcomeIndicatorForm from "./components/spms/indicators/OutcomeIndicatorF
 import OutcomeIndicatorTargets from "./components/spms/targets/OutcomeIndicatorTargets";
 import OutcomeIndicatorTargetForm from "./components/spms/targets/OutcomeIndicatorTargetForm";
 
+
+
+import ExecuteStrategicPlan from "./components/spms/plans/ExecuteStrategicPlan";
+import WorkPlanForm from "./components/spms/work-plans/WorkPlanForm";
+import Activities from "./components/spms/activities/Activities";
+import ActivityForm from "./components/spms/activities/ActivityForm";
+
 Vue.component("app-admin-dashboard", Dashboard);
 Vue.component('app-plans', StrategicPlans);
 Vue.component('app-plan-form', StrategicPlanForm);
@@ -72,6 +79,12 @@ Vue.component('app-outcome-indicators', OutcomeIndicators);
 Vue.component('app-outcome-indicator-form', OutcomeIndicatorForm);
 Vue.component('app-outcome-indicator-targets', OutcomeIndicatorTargets);
 Vue.component('app-outcome-indicator-target-form', OutcomeIndicatorTargetForm);
+
+Vue.component('app-plan-execute', ExecuteStrategicPlan);
+Vue.component('app-work-plan-form', WorkPlanForm);
+
+Vue.component('app-activities', Activities);
+Vue.component('app-activity-form', ActivityForm);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
