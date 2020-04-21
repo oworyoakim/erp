@@ -66,6 +66,8 @@ const routes = {
     OUTCOME_INDICATORS: '/spms/outcome-indicators',
     OUTCOME_TARGETS: '/spms/outcome-indicator-targets',
     OUTCOME_ACHIEVEMENTS: '/spms/outcome-achievements',
+    WORK_PLANS: '/spms/work-plans',
+    ACTIVITIES: '/spms/activities',
 };
 
 export default routes;

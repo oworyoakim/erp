@@ -11,6 +11,7 @@ import plansModule from './plans';
 import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
+import workPlansModule from "./work-plans";
 
 export default new Vuex.Store({
     modules: {
@@ -20,6 +21,7 @@ export default new Vuex.Store({
         objectives: objectivesModule,
         keyResultAreas: keyResultAreasModule,
         swots: swotsModule,
+        workPlans: workPlansModule,
     },
     state: {
         user: null,

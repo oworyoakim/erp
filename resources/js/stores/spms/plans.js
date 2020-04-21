@@ -12,7 +12,7 @@ export default {
         },
         ACTIVE_PLAN: (state) => {
             return state.activePlan;
-        }
+        },
     },
     mutations: {
         SET_PLANS: (state, payload) => {

@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Spms;
 
 use App\Http\Controllers\Controller;
+use App\Traits\MakesRemoteHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
-use Illuminate\Support\Facades\Http;
-use stdClass;
 
 class KeyResultAreasGateway extends Controller
 {
-    /**
-     * @var string
-     */
-    protected $urlEndpoint;
+    use MakesRemoteHttpRequests;
 
     public function __construct()
     {
@@ -26,19 +22,16 @@ class KeyResultAreasGateway extends Controller
     {
         try
         {
-            $planId = $request->get('planId');
-            if (!$planId)
+            $params = $request->only(['planId']);
+
+            if (empty($params['planId']))
             {
                 throw new Exception("Strategic plan id required!");
             }
-            $url = "{$this->urlEndpoint}?planId={$planId}";
-            $response = Http::get($url);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->get($this->urlEndpoint, $params);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
@@ -52,13 +45,10 @@ class KeyResultAreasGateway extends Controller
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['userId'] = $user->getUserId();
-            $response = Http::post($this->urlEndpoint, $data);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->post($this->urlEndpoint, $data);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
@@ -72,13 +62,10 @@ class KeyResultAreasGateway extends Controller
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['userId'] = $user->getUserId();
-            $response = Http::put($this->urlEndpoint, $data);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->put($this->urlEndpoint, $data);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
@@ -89,19 +76,16 @@ class KeyResultAreasGateway extends Controller
     {
         try
         {
-            $keyResultAreaId = $request->get('keyResultAreaId');
-            if (!$keyResultAreaId)
+            $params = $request->only(['keyResultAreaId']);
+
+            if (empty($params['keyResultAreaId']))
             {
                 throw new Exception("Key result area id required!");
             }
-            $url = "{$this->urlEndpoint}/show?keyResultAreaId={$keyResultAreaId}";
-            $response = Http::get($url);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->get("{$this->urlEndpoint}/show", $params);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);

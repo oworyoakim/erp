@@ -3,19 +3,15 @@
 namespace App\Http\Controllers\Spms;
 
 use App\Http\Controllers\Controller;
+use App\Traits\MakesRemoteHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
-use Illuminate\Support\Facades\Http;
-use stdClass;
 
 class OutputIndicatorTargetsGateway extends Controller
 {
-    /**
-     * @var string
-     */
-    protected $urlEndpoint;
+    use MakesRemoteHttpRequests;
 
     public function __construct()
     {
@@ -29,13 +25,10 @@ class OutputIndicatorTargetsGateway extends Controller
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['userId'] = $user->getUserId();
-            $response = Http::post($this->urlEndpoint, $data);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->post($this->urlEndpoint, $data);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
@@ -49,13 +42,10 @@ class OutputIndicatorTargetsGateway extends Controller
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['userId'] = $user->getUserId();
-            $response = Http::put($this->urlEndpoint, $data);
-            if (!$response->ok())
-            {
-                throw new Exception($response->body());
-            }
-            $data = $response->json();
-            return response()->json($data);
+
+            $responseData = $this->put($this->urlEndpoint, $data);
+
+            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);

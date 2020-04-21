@@ -184,6 +184,7 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                 });
 
                 Route::group(['prefix' => 'interventions'], function () {
+                    Route::get('', 'InterventionsGateway@index');
                     Route::post('', 'InterventionsGateway@store');
                     Route::put('', 'InterventionsGateway@update');
                 });
@@ -211,17 +212,32 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::get('show/{id}', 'SpmsController@keyResultAreaDetails');
                     Route::get('details', 'KeyResultAreasGateway@getKeyResultAreaDetails');
                 });
+
                 Route::group(['prefix' => 'outcomes'], function () {
                     Route::post('', 'OutcomesGateway@store');
                     Route::put('', 'OutcomesGateway@update');
                 });
+
                 Route::group(['prefix' => 'outcome-indicators'], function () {
                     Route::post('', 'OutcomeIndicatorsGateway@store');
                     Route::put('', 'OutcomeIndicatorsGateway@update');
                 });
+
                 Route::group(['prefix' => 'outcome-indicator-targets'], function () {
                     Route::post('', 'OutcomeIndicatorTargetsGateway@store');
                     Route::put('', 'OutcomeIndicatorTargetsGateway@update');
+                });
+
+                Route::group(['prefix' => 'work-plans'], function () {
+                    Route::get('', 'WorkPlansGateway@index');
+                    Route::post('', 'WorkPlansGateway@store');
+                    Route::put('', 'WorkPlansGateway@update');
+                });
+
+                Route::group(['prefix' => 'activities'], function () {
+                    Route::get('', 'ActivitiesGateway@index');
+                    Route::post('', 'ActivitiesGateway@store');
+                    Route::put('', 'ActivitiesGateway@update');
                 });
             });
         });
