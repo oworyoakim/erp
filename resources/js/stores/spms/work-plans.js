@@ -99,5 +99,21 @@ export default {
                 return Promise.reject(error.response.data);
             }
         },
+        SAVE_STAGE: async ({commit}, payload) => {
+            try {
+                let response;
+                if (!!payload.id) {
+                    // update
+                    response = await axios.put(routes.STAGES, payload);
+                } else {
+                    // insert new
+                    response = await axios.post(routes.STAGES, payload);
+                }
+                return Promise.resolve(response.data);
+            } catch (error) {
+                console.error(error.response);
+                return Promise.reject(error.response.data);
+            }
+        },
     },
 }

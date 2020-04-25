@@ -111,7 +111,9 @@
                                     <!-- /Activities Tab -->
                                     <!-- Activity Stages Tab -->
                                     <div class="tab-pane" id="tab_stages">
-                                        <!--  //TODO: implement this   -->
+                                        <!--  stages   -->
+                                        <app-stages/>
+                                        <!--/stages   -->
                                     </div>
                                     <!-- /Activity Stages Tab -->
                                     <!-- Stage Tasks Tab -->

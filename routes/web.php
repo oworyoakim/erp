@@ -239,6 +239,12 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                     Route::post('', 'ActivitiesGateway@store');
                     Route::put('', 'ActivitiesGateway@update');
                 });
+
+                Route::group(['prefix' => 'stages'], function () {
+                    Route::get('', 'StagesGateway@index');
+                    Route::post('', 'StagesGateway@store');
+                    Route::put('', 'StagesGateway@update');
+                });
             });
         });
 
