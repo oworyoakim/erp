@@ -67,7 +67,7 @@
     export default {
         created() {
             this.dateConfig.minDate = this.workPlan.startDate;
-            this.dateConfig.maxDate = this.workPlan.endDate;
+            this.dateConfig.maxDate = this.workPlan.dueDate;
             EventBus.$on(["EDIT_ACTIVITY"], this.editActivity);
         },
         data() {

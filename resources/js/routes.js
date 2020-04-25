@@ -69,6 +69,7 @@ const routes = {
     WORK_PLANS: '/spms/work-plans',
     ACTIVITIES: '/spms/activities',
     STAGES: '/spms/stages',
+    TASKS: '/spms/tasks',
 };
 
 export default routes;

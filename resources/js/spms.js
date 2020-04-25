@@ -50,6 +50,8 @@ import Activities from "./components/spms/activities/Activities";
 import ActivityForm from "./components/spms/activities/ActivityForm";
 import Stages from "./components/spms/stages/Stages";
 import StageForm from "./components/spms/stages/StageForm";
+import Tasks from "./components/spms/tasks/Tasks";
+import TaskForm from "./components/spms/tasks/TaskForm";
 
 Vue.component("app-admin-dashboard", Dashboard);
 Vue.component('app-plans', StrategicPlans);
@@ -90,6 +92,9 @@ Vue.component('app-activity-form', ActivityForm);
 
 Vue.component('app-stages', Stages);
 Vue.component('app-stage-form', StageForm);
+
+Vue.component('app-tasks', Tasks);
+Vue.component('app-task-form', TaskForm);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
