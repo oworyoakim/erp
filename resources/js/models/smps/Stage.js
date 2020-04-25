@@ -1,4 +1,4 @@
-export default class Activity {
+export default class Stage {
     constructor() {
         this.id = null;
         this.title = '';
@@ -10,9 +10,8 @@ export default class Activity {
         this.status = '';
         this.workPlanId = '';
         this.workPlan = null;
-        this.interventionId = '';
-        this.intervention = null;
-        this.stages = [];
+        this.activityId = '';
+        this.activity = null;
         this.tasks = [];
         this.createdBy = null;
         this.updatedBy = null;
