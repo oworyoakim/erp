@@ -1,10 +1,10 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
-        <form @submit.prevent="saveStage" autocomplete="off">
-            <div class="form-group row" v-if="!stage.id">
+        <form @submit.prevent="saveTask" autocomplete="off">
+            <div class="form-group row" v-if="!task.id">
                 <label class="col-sm-4">Intervention <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="interventionId" :disabled="!!stage.id" required>
+                    <select class="form-control" v-model="interventionId" :disabled="!!task.id" required>
                         <option value="">Select...</option>
                         <option v-for="intervention in interventionsOptions"
                                 :value="intervention.value"
@@ -14,10 +14,10 @@
                     </select>
                 </div>
             </div>
-            <div class="form-group row" v-if="!stage.id">
+            <div class="form-group row" v-if="!task.id">
                 <label class="col-sm-4">Activity <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="stage.activityId" :disabled="!!stage.id" required>
+                    <select class="form-control" v-model="task.activityId" :disabled="!!task.id" required>
                         <option value="">Select...</option>
                         <option v-for="activity in activitiesOptions"
                                 :value="activity.value"
@@ -27,18 +27,31 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group row" v-if="!task.id">
+                <label class="col-sm-4">Stage <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" v-model="task.stageId" :disabled="!!task.id" required>
+                        <option value="">Select...</option>
+                        <option v-for="stage in stagesOptions"
+                                :value="stage.value"
+                                :key="stage.value">
+                            {{stage.text}}
+                        </option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-sm-4">Title <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <input v-model="stage.title" class="form-control" type="text" required>
+                    <input v-model="task.title" class="form-control" type="text" required>
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4">Start Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <app-date-range-picker
-                        v-model="stage.startDate"
-                        :value="stage.startDate"
+                        v-model="task.startDate"
+                        :value="task.startDate"
                         :config="dateConfig"
                         :key="Math.random()"
                     />
@@ -48,8 +61,8 @@
                 <label class="col-sm-4">Due Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <app-date-range-picker
-                        v-model="stage.dueDate"
-                        :value="stage.dueDate"
+                        v-model="task.dueDate"
+                        :value="task.dueDate"
                         :config="dateConfig"
                         :key="Math.random() * 10"
                     />
@@ -58,7 +71,7 @@
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="stage.description" class="form-control" rows="5"></textarea>
+                    <textarea v-model="task.description" class="form-control" rows="5"></textarea>
                 </div>
             </div>
             <div class="submit-section">
@@ -73,17 +86,17 @@
 
 <script>
     import {EventBus} from "../../../app";
-    import Stage from "../../../models/smps/Stage";
+    import Task from "../../../models/smps/Task";
     import {mapGetters} from "vuex";
     import {deepClone} from "../../../utils/helpers";
 
     export default {
         created() {
-            EventBus.$on(["EDIT_STAGE"], this.editStage);
+            EventBus.$on(["EDIT_TASK"], this.editTask);
         },
         data() {
             return {
-                stage: new Stage(),
+                task: new Task(),
                 isEditing: false,
                 isSending: false,
                 interventionId: '',
@@ -125,46 +138,59 @@
                     }
                 });
             },
+            stagesOptions() {
+                if (!this.workPlan) {
+                    return [];
+                }
+                return this.workPlan.stages.filter((stage) => {
+                    return stage.activityId === this.task.activityId;
+                }).map((stage) => {
+                    return {
+                        text: stage.title,
+                        value: stage.id,
+                    }
+                });
+            },
             title() {
-                return (!!this.stage.id) ? "Edit Stage" : "Add Stage";
+                return (!!this.task.id) ? "Edit Task" : "Add Task";
             },
             formInvalid() {
-                return this.isSending || !(!!this.stage.activityId && !!this.stage.title && !!this.stage.startDate && !!this.stage.dueDate && this.$moment(this.stage.startDate).isBefore(this.stage.dueDate));
+                return this.isSending || !(!!this.task.activityId && !!this.task.stageId && !!this.task.title && !!this.task.startDate && !!this.task.dueDate && this.$moment(this.task.startDate).isBefore(this.task.dueDate));
             },
-            selectedActivity() {
+            selectedStage() {
                 if (!this.workPlan) {
                     return null;
                 }
-                return this.workPlan.activities.find((activity) => activity.id === this.stage.activityId) || null;
+                return this.workPlan.stages.find((stage) => stage.id === this.task.stageId) || null;
             },
         },
         watch: {
-            selectedActivity(newVal, oldVal) {
-                if (!!this.selectedActivity) {
-                    this.dateConfig.minDate = this.selectedActivity.startDate;
-                    this.dateConfig.maxDate = this.selectedActivity.dueDate;
+            selectedStage(newVal, oldVal) {
+                if (!!this.selectedStage) {
+                    this.dateConfig.minDate = this.selectedStage.startDate;
+                    this.dateConfig.maxDate = this.selectedStage.dueDate;
                 }
             }
         },
         methods: {
-            editStage(stage = null) {
-                if (stage) {
-                    this.stage = deepClone(stage);
+            editTask(task = null) {
+                if (task) {
+                    this.task = deepClone(task);
                 } else {
-                    this.stage = new Stage();
+                    this.task = new Task();
                 }
                 this.isEditing = true;
             },
-            async saveStage() {
+            async saveTask() {
                 try {
                     this.isSending = true;
-                    if (!this.stage.workPlanId) {
-                        this.stage.workPlanId = this.workPlan.id;
+                    if (!this.task.workPlanId) {
+                        this.task.workPlanId = this.workPlan.id;
                     }
-                    let response = await this.$store.dispatch('SAVE_STAGE', this.stage);
+                    let response = await this.$store.dispatch('SAVE_TASK', this.task);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('STAGE_SAVED');
+                    EventBus.$emit('TASK_SAVED');
                     this.resetForm();
                 } catch (error) {
                     let message = document.createElement('div');
@@ -175,9 +201,8 @@
                 }
             },
             resetForm() {
-                this.stage = new Stage();
+                this.task = new Task();
                 this.interventionId = '';
-                this.activityId = '';
                 this.isEditing = false;
             }
         }

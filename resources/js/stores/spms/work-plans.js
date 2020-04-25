@@ -115,5 +115,21 @@ export default {
                 return Promise.reject(error.response.data);
             }
         },
+        SAVE_TASK: async ({commit}, payload) => {
+            try {
+                let response;
+                if (!!payload.id) {
+                    // update
+                    response = await axios.put(routes.TASKS, payload);
+                } else {
+                    // insert new
+                    response = await axios.post(routes.TASKS, payload);
+                }
+                return Promise.resolve(response.data);
+            } catch (error) {
+                console.error(error.response);
+                return Promise.reject(error.response.data);
+            }
+        },
     },
 }
