@@ -4,18 +4,21 @@
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col">
-                    <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
+                    <app-breadcrumb dashboard-link="/hrms" :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <a href="/employees" class="btn btn-dark btn-sm pull-right">
+                    <a href="/hrms/employees" class="btn btn-dark btn-sm pull-right">
                         <i class="fa fa-list"></i> Back
                     </a>
                 </div>
             </div>
         </div>
         <!-- /Page Header -->
-        <span v-if="isLoading || !!!employee" class="fa fa-spinner fa-spin fa-5x"></span>
-        <div v-else>
+        <app-spinner v-if="isLoading"/>
+        <template v-else-if="!!!employee">
+            <h4>Employee with username {{username}} not found!</h4>
+        </template>
+        <template v-else>
             <div class="card mb-0">
                 <div class="card-body text-lg">
                     <div class="profile-view">
@@ -37,10 +40,10 @@
                             <div class="row">
                                 <div class="col-md-6 basic-info">
                                     <div class="personal-info">
-                                        <h3 class="user-name m-t-0 mb-0">{{employee.full_name}}</h3>
+                                        <h3 class="user-name m-t-0 mb-0">{{employee.fullName}}</h3>
                                         <div class="title">
                                             <span>Employee ID :</span>
-                                            <span class="text-muted">{{employee.employee_number}}</span>
+                                            <span class="text-muted">{{employee.employeeNumber}}</span>
                                         </div>
                                         <div class="title">
                                             <span>Position:</span>
@@ -50,23 +53,32 @@
                                             <span>Date of Join :</span>
                                             <span
                                                 class="small text-muted"
-                                            >{{$moment(employee.date_joined).format('MMM D YYYY')}}</span>
+                                            >{{$moment(employee.joinDate).format('MMM D YYYY')}}</span>
                                         </div>
                                         <div class="title row">
                                             <span class="col-4">Reports to:</span>
                                             <div class="col-8 small text-muted supervisor-widget">
-                                                <app-employee-widget
+                                                <EmployeeWidget
                                                     v-if="!!employee.supervisor"
                                                     :username="employee.supervisor.username"
-                                                    :name="employee.supervisor.full_name"
+                                                    :name="employee.supervisor.fullName"
                                                     :avatar="employee.supervisor.avatar"
-                                                ></app-employee-widget>
+                                                />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="personal-info"></div>
+                                    <div class="personal-info">
+                                        <div class="title">
+                                            <span>Next Work Anniversary: </span>
+                                            <span class="text-muted">
+                                                <template v-if="!!employee.nextWorkAnniversary">
+                                                    {{$moment(employee.nextWorkAnniversary).format("DD MMM, YYYY")}}
+                                                </template>
+                                            </span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -95,25 +107,29 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-bank" data-toggle="tab" class="nav-link">Bank</a>
+                                <a href="#employee-bank" @click="getBankInfo()" data-toggle="tab"
+                                   class="nav-link">Bank</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-education" data-toggle="tab" class="nav-link">Education</a>
+                                <a href="#employee-education" @click="getEducationInfo()" data-toggle="tab"
+                                   class="nav-link">Education</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-experience" data-toggle="tab" class="nav-link">Experience</a>
+                                <a href="#employee-experience" @click="getExperienceInfo()" data-toggle="tab"
+                                   class="nav-link">Experience</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-related-persons" data-toggle="tab" class="nav-link">
-                                    Related
-                                    Persons
+                                <a href="#employee-related-persons" @click="getRelatedPersonsInfo()" data-toggle="tab"
+                                   class="nav-link">
+                                    Related Persons
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-leaves" data-toggle="tab" class="nav-link">Leaves</a>
+                                <a href="#employee-leaves" @click="getLeavesInfo()" data-toggle="tab" class="nav-link">Leaves</a>
                             </li>
                             <li class="nav-item">
-                                <a href="#employee-documents" data-toggle="tab" class="nav-link">Documents</a>
+                                <a href="#employee-documents" @click="getDocumentsInfo()" data-toggle="tab"
+                                   class="nav-link">Documents</a>
                             </li>
                             <li class="nav-item">
                                 <a
@@ -145,7 +161,7 @@
                 <div id="employee-info" class="pro-overview tab-pane fade active show">
                     <div class="row">
                         <div class="col-md-6 d-flex">
-                            <app-personal-info :employee.sync="employee"></app-personal-info>
+<!--                            <PersonalInfo :employee.sync="employee"/>-->
                         </div>
                         <div class="col-md-6 d-flex">
                             <div class="card card-body">
@@ -163,7 +179,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 d-flex">
-                            <app-contacts-info :contacts="employee.contacts"></app-contacts-info>
+<!--                            <ContactsInfo :contacts="employee.contacts"/>-->
                         </div>
                     </div>
                 </div>
@@ -173,13 +189,7 @@
                 <div class="tab-pane fade" id="employee-bank">
                     <div class="row">
                         <div class="col-md-12">
-                            <span v-if="bankLoading || !!!employee" class="fa fa-spinner fa-spin fa-5x"></span>
-                            <app-bank-info
-                                v-else
-                                :employee_id="employee.id"
-                                :banks="banks"
-                                v-on:bankInfoSaved="getBankInfo"
-                            ></app-bank-info>
+                            <BankInfo :employee-id="employee.id"/>
                         </div>
                     </div>
                 </div>
@@ -189,7 +199,7 @@
                 <div class="tab-pane fade" id="employee-education">
                     <div class="row">
                         <div class="col-md-12">
-                            <app-education-info :employee_id="employee.id"></app-education-info>
+                            <EducationInfo :employee-id="employee.id"/>
                         </div>
                     </div>
                 </div>
@@ -199,7 +209,7 @@
                 <div class="tab-pane fade" id="employee-experience">
                     <div class="row">
                         <div class="col-md-12">
-                            <app-experience-info :employee_id="employee.id"></app-experience-info>
+                            <ExperienceInfo :employee-id="employee.id"/>
                         </div>
                     </div>
                 </div>
@@ -209,7 +219,7 @@
                 <div class="tab-pane fade" id="employee-related-persons">
                     <div class="row">
                         <div class="col-md-12">
-                            <app-related-persons-info :employee_id="employee.id"></app-related-persons-info>
+                            <RelatedPersonsInfo :employee-id="employee.id"/>
                         </div>
                     </div>
                 </div>
@@ -221,7 +231,7 @@
                     <template v-else>
                         <div class="row">
                             <div class="col-md-12">
-                                <app-leaves-info :employee="employee"></app-leaves-info>
+                                <!--                                <app-leaves-info :employee="employee"></app-leaves-info>-->
                             </div>
                         </div>
                         <div class="row">
@@ -229,10 +239,10 @@
                                 <div class="card profile-box flex-fill">
                                     <div class="card-body">
                                         <h3 class="card-title">Leave Applications</h3>
-                                        <app-leave-applications-list
-                                            :leave-applications="leaveApplications"></app-leave-applications-list>
-                                        <app-leave-application-form
-                                            :employee_id="employee.id"></app-leave-application-form>
+                                        <!--                                        <app-leave-applications-list-->
+                                        <!--                                            :leave-applications="leaveApplications"></app-leave-applications-list>-->
+                                        <!--                                        <app-leave-application-form-->
+                                        <!--                                            :employee_id="employee.id"></app-leave-application-form>-->
                                     </div>
                                 </div>
                             </div>
@@ -243,7 +253,7 @@
 
                 <!-- Documents Tab -->
                 <div class="tab-pane fade" id="employee-documents">
-                    <app-employee-documents :employee="employee" title="Employee Documents"></app-employee-documents>
+                    <!--                    <app-employee-documents :employee="employee" title="Employee Documents"></app-employee-documents>-->
                 </div>
                 <!-- /Documents Tab -->
                 <!-- Profile Download Tab -->
@@ -264,112 +274,133 @@
                 </div>
                 <!-- /Delegations  Tab -->
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
-    import {mapActions, mapGetters} from "vuex";
+    import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import EducationInfo from "../education/EducationInfo";
+    import ExperienceInfo from "../experience/ExperienceInfo";
+    import RelatedPersonsInfo from "../related-persons/RelatedPersonsInfo";
+    import PersonalInfo from "./PersonalInfo";
+    import ContactsInfo from "./ContactsInfo";
+    import BankInfo from "../bank/BankInfo";
+    import EmployeeWidget from "./EmployeeWidget";
+    import BankForm from "../bank/BankForm";
 
     export default {
+        components: {
+            EmployeeWidget,
+            BankInfo, ContactsInfo, PersonalInfo, RelatedPersonsInfo, ExperienceInfo, EducationInfo
+        },
         props: {
-            username: String,
+            username: {type: String, required: true},
             title: String
         },
         created() {
+            this.$store.dispatch("GET_FORM_SELECTIONS_OPTIONS", {});
+            this.$store.dispatch("GET_LEAVE_TYPES");
             this.getEmployeeProfileData()
                 .then(() => {
-                    this.getBankInfo();
-                    this.$store.dispatch("getFormSelections", {});
-                    this.$store.dispatch("GET_LEAVE_TYPES");
-                    this.getLeaveApplications();
+                    //this.getLeaveApplications();
                 })
                 .catch(error => {
                     console.log(error);
                 });
-            EventBus.$on(
-                ["profileInfoSaved", "profilePictureUploaded"],
-                this.getEmployeeProfileData
-            );
-            EventBus.$on(
-                ["leaveApplicationSaved", "leaveApplicationDeleted"],
-                this.getLeaveApplications
-            );
+            // EventBus.$on(
+            //     ["PROFILE_INFO_SAVED", "PROFILE_PICTURE_UPLOADED"],
+            //     this.getEmployeeProfileData
+            // );
+            // EventBus.$on(
+            //     ["LEAVE_APPLICATION_SAVED", "LEAVE_APPLICATION_DELETED"],
+            //     this.getLeaveApplications
+            // );
         },
         computed: {
             ...mapGetters({
-                leaveApplications: "GET_LEAVE_APPLICATIONS",
-                formSelectionOptions: "getFormSelections"
+                employee: "ACTIVE_EMPLOYEE",
+                leaveApplications: "LEAVE_APPLICATIONS",
+                formSelectionOptions: "FORM_SELECTIONS_OPTIONS"
             })
         },
         data() {
             return {
-                employee: null,
-                banks: [],
                 delegations: [],
                 breadcrumbItems: [
-                    {href: "/employees", text: "Employees", class: ""},
+                    {href: "/hrms/employees", text: "Employees", class: ""},
                     {href: "#", text: this.title, class: "active"}
                 ],
                 profilePhoto: null,
                 isLoading: false,
-                bankLoading: false,
+                personsLoading: false,
+                applicationsLoading: false,
                 leavesLoading: false,
+                documentsLoading: false,
                 isUploading: false
             };
         },
         methods: {
-            ...mapActions([
-                "getRelationships",
-                "getTitles",
-                "getGenders",
-                "getMaritalStatuses",
-                "getReligions",
-                "getLeaveApplicationStatuses"
-            ]),
             async getEmployeeProfileData() {
                 try {
                     this.isLoading = true;
-                    let response = await this.$http.get(
-                        "/employees/get-profile-data?username=" + this.username
-                    );
-                    this.employee = response.data;
+                    await this.$store.dispatch("GET_EMPLOYEE_PROFILE", {username: this.username});
                     this.isLoading = false;
                 } catch (error) {
                     console.log(error);
-                    toastr.error(error.response.data);
+                    toastr.error(error);
                     this.isLoading = false;
                 }
             },
 
             async getBankInfo() {
+                this.$emit('LOAD_BANK_INFO');
+            },
+
+            getEducationInfo() {
+                this.$emit('LOAD_EDUCATION_INFO');
+            },
+            async getExperienceInfo() {
+                this.$emit('LOAD_EXPERIENCE_INFO');
+            },
+
+            async getRelatedPersonsInfo() {
+                this.$emit('LOAD_RELATED_PERSONS_INFO');
+            },
+            async getLeaveApplicationsInfo() {
                 try {
-                    this.bankLoading = true;
-                    let response = await this.$http.get(
-                        "/employees/bank?employee_id=" + this.employee.id
-                    );
-                    this.banks = response.data;
-                    this.bankLoading = false;
+                    this.applicationsLoading = true;
+                    //await this.$store.dispatch("GET_LEAVE_APPLICATIONS_INFO", {employeeId: this.employee.id});
+                    this.applicationsLoading = false;
                 } catch (error) {
-                    console.log(error);
-                    toastr.error(error.response.data);
-                    this.bankLoading = false;
+                    console.error(error);
+                    this.applicationsLoading = false;
                 }
             },
 
-            async getLeaveApplications() {
+            async getLeavesInfo() {
                 try {
                     this.leavesLoading = true;
-                    await this.$store.dispatch("GET_LEAVE_APPLICATIONS", {
-                        employee_id: this.employee.id
-                    });
+                    //await this.$store.dispatch("GET_RELATED_PERSONS_INFO", {employeeId: this.employee.id});
                     this.leavesLoading = false;
                 } catch (error) {
                     console.error(error);
                     this.leavesLoading = false;
                 }
             },
+
+            async getDocumentsInfo() {
+                try {
+                    this.documentsLoading = true;
+                    //await this.$store.dispatch("GET_DOCUMENTS_INFO", {employeeId: this.employee.id});
+                    this.documentsLoading = false;
+                } catch (error) {
+                    console.error(error);
+                    this.documentsLoading = false;
+                }
+            },
+
             async profilePictureChanged() {
                 if (!this.$refs.profilePicture.files.length) {
                     this.profilePhoto = null;
@@ -386,7 +417,7 @@
                     }
                     let data = new FormData();
                     data.append("avatar", this.profilePhoto);
-                    data.append("employee_id", this.employee.id);
+                    data.append("employeeId", this.employee.id);
                     this.isUploading = true;
                     let response = await this.$store.dispatch(
                         "UPLOAD_PROFILE_PICTURE",
@@ -402,7 +433,7 @@
                     //this.$refs.profilePicture.click = null;
                     await swal({title: error, icon: "error"});
                 }
-            }
+            },
         }
     };
 </script>

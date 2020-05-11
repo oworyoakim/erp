@@ -201,8 +201,8 @@
         },
         computed: {
             ...mapGetters({
-                educations: "GET_EDUCATIONS",
-                experiences: "GET_EXPERIENCES"
+                educations: "EDUCATIONS",
+                experiences: "EXPERIENCES"
             })
         },
         methods: {

@@ -1,5 +1,5 @@
 <template>
-    <select class="form-control"
+    <select class="form-control select"
             ref="select2Dropdown"
             style='width: 100%'
             v-bind:class="{'is-invalid': !!hasErrors}"
@@ -28,11 +28,20 @@
                 required: false,
                 default: false
             },
+            searchable: {
+                type: Boolean,
+                required: false,
+                default: false
+            },
             hasErrors: Boolean,
         },
         mounted() {
             setTimeout(() => {
-                $(this.$refs.select2Dropdown).select2(this.config).on('change', this.handleChange);
+                if (!!this.searchable) {
+                    $(this.$refs.select2Dropdown).select2(this.config).on('change', this.handleChange);
+                } else {
+                    $(this.$refs.select2Dropdown).on('change', this.handleChange);
+                }
                 $(this.$refs.select2Dropdown).val(this.value).trigger('change');
             }, 300);
         },

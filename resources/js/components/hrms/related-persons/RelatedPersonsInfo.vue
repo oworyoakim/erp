@@ -1,34 +1,49 @@
 <template>
-    <span v-if="isLoading || !!!employee_id" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else class="card profile-box flex-fill">
-        <div class="card-body">
-            <h3 class="card-title">Family Members
-                <button class="edit-icon" data-toggle="modal"
-                        data-target="#personModal"><i class="fa fa-plus"></i></button>
-            </h3>
-            <div class="table-responsive">
-                <app-related-persons-info-list :related-persons="relatedPersons"></app-related-persons-info-list>
+    <div class="related-persons">
+        <app-spinner v-if="isLoading"/>
+        <template v-else-if="!!!employeeId">
+            <h4>No employee selected!</h4>
+        </template>
+        <template v-else>
+            <div class="card profile-box flex-fill">
+                <div class="card-body">
+                    <h3 class="card-title">Family Members
+                        <button class="edit-icon" @click="editRelatedPersonInfo()"><i class="fa fa-plus"></i></button>
+                    </h3>
+                    <div class="table-responsive">
+                        <RelatedPersonsInfoList
+                            :employee-id="employeeId"
+                            :related-persons="relatedPersons"
+                        />
+                    </div>
+                    <RelatedPersonsInfoForm :employee-id="employeeId"/>
+                </div>
             </div>
-            <app-related-persons-info-form :employee_id="employee_id"></app-related-persons-info-form>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
     import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
+    import RelatedPersonsInfoList from "./RelatedPersonsInfoList";
+    import RelatedPersonsInfoForm from "./RelatedPersonsInfoForm";
 
     export default {
+        components: {RelatedPersonsInfoList, RelatedPersonsInfoForm},
         props: {
-            employee_id: Number,
+            employeeId: {type: Number, required: true},
         },
         created() {
-            this.getRelatedPersonInfo();
-            EventBus.$on(['relatedPersonSaved','relatedPersonDeleted'],this.getRelatedPersonInfo);
+            this.$parent.$on('LOAD_RELATED_PERSONS_INFO', this.getRelatedPersons);
+            EventBus.$on([
+                'RELATED_PERSON_SAVED',
+                'RELATED_PERSON_DELETED'
+            ], this.getRelatedPersons);
         },
         computed: {
             ...mapGetters({
-                relatedPersons: 'getRelatedPersons',
+                relatedPersons: 'RELATED_PERSONS',
             }),
         },
         data() {
@@ -37,10 +52,10 @@
             }
         },
         methods: {
-            async getRelatedPersonInfo() {
+            async getRelatedPersons() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('getRelatedPersons', {employee_id: this.employee_id});
+                    await this.$store.dispatch('GET_RELATED_PERSONS', {employeeId: this.employeeId});
                     this.isLoading = false;
                 } catch (error) {
                     console.log(error);
@@ -48,6 +63,9 @@
                     this.isLoading = false;
                 }
             },
+            editRelatedPersonInfo(relatedPerson = null) {
+                EventBus.$emit("EDIT_RELATED_PERSON", relatedPerson)
+            }
         },
     }
 </script>

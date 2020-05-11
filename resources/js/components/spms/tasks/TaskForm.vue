@@ -47,17 +47,6 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Start Date <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <app-date-range-picker
-                        v-model="task.startDate"
-                        :value="task.startDate"
-                        :config="dateConfig"
-                        :key="Math.random()"
-                    />
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-sm-4">Due Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <app-date-range-picker
@@ -155,7 +144,7 @@
                 return (!!this.task.id) ? "Edit Task" : "Add Task";
             },
             formInvalid() {
-                return this.isSending || !(!!this.task.activityId && !!this.task.stageId && !!this.task.title && !!this.task.startDate && !!this.task.dueDate && this.$moment(this.task.startDate).isBefore(this.task.dueDate));
+                return this.isSending || !(!!this.task.activityId && !!this.task.stageId && !!this.task.title && !!this.task.dueDate);
             },
             selectedStage() {
                 if (!this.workPlan) {

@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Spms;
 
-use App\Http\Controllers\Controller;
-use App\Traits\MakesRemoteHttpRequests;
+use App\Http\Controllers\GatewayController;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class OutputsGateway extends Controller
+class OutputsGateway extends GatewayController
 {
-    use MakesRemoteHttpRequests;
 
     public function __construct()
     {

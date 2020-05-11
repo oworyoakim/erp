@@ -39,7 +39,6 @@ export default new Vuex.Store({
     state: {
         user: null,
         generalSettings: [],
-        relatedPersons: [],
         formSelections: {
             directorates: [],
             departments: [],
@@ -72,17 +71,14 @@ export default new Vuex.Store({
         getRole: (state) => {
             return state.user ? state.user.role : null;
         },
-        getMonths: (state) => {
+        MONTHS: (state) => {
             return state.months;
         },
-        getFormSelections: (state) => {
+        FORM_SELECTIONS_OPTIONS: (state) => {
             return state.formSelections;
         },
         getSalaryScales: (state) => {
             return state.salaryScales;
-        },
-        getRelatedPersons: (state) => {
-            return state.relatedPersons;
         },
     },
     mutations: {
@@ -92,14 +88,11 @@ export default new Vuex.Store({
         setGeneralSettings: (state, payload) => {
             state.generalSettings = payload;
         },
-        setFormSelections: (state, payload) => {
+        SET_FORM_SELECTIONS_OPTIONS: (state, payload) => {
             state.formSelections = payload;
         },
         setSalaryScales: (state, payload) => {
             state.salaryScales = payload || [];
-        },
-        setRelatedPersons: (state, payload) => {
-            state.relatedPersons = payload || [];
         },
     },
     actions: {
@@ -118,27 +111,17 @@ export default new Vuex.Store({
                 return Promise.reject(error.response.data);
             }
         },
-        getFormSelections: async ({commit}, payload) => {
+        GET_FORM_SELECTIONS_OPTIONS: async ({commit}, payload) => {
             try {
                 let params = [];
-                if (!!payload.directorate_id) {
-                    params.push('directorate_id=' + payload.directorate_id);
-                }
-                if (!!payload.department_id) {
-                    params.push('department_id=' + payload.department_id);
-                }
-                if (!!payload.division_id) {
-                    params.push('division_id=' + payload.division_id);
-                }
-                if (!!payload.section_id) {
-                    params.push('section_id=' + payload.section_id);
-                }
-                if (!!payload.scope) {
-                    params.push('scope=' + payload.scope);
+                for (let filter in payload) {
+                    if (!!payload[filter]) {
+                        params.push(`${filter}=${payload[filter]}`);
+                    }
                 }
                 let queryParams = params.join('&');
                 let response = await axios.get(routes.EMPLOYEES_ATTRIBUTES + '?' + queryParams);
-                commit('setFormSelections', response.data);
+                commit('SET_FORM_SELECTIONS_OPTIONS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
                 console.error(error.response.data);
@@ -153,35 +136,6 @@ export default new Vuex.Store({
                 return Promise.resolve('Ok');
             } catch (error) {
                 console.log(error.response);
-
-                return Promise.reject(error.response.data);
-            }
-        },
-
-        getRelatedPersons: async ({commit}, payload) => {
-            try {
-                let response = await axios.get(routes.EMPLOYEES_RELATED_PERSONS + '?employee_id=' + payload.employee_id);
-                commit('setRelatedPersons', response.data);
-                return Promise.resolve('Ok');
-            } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
-            }
-        },
-        saveRelatedPerson: async ({commit}, payload) => {
-            try {
-                let response;
-                if (!!payload.id) {
-                    // update
-                    response = await axios.put(routes.EMPLOYEES_RELATED_PERSONS, payload);
-                } else {
-                    // insert new
-                    response = await axios.post(routes.EMPLOYEES_RELATED_PERSONS, payload);
-                }
-                return Promise.resolve(response.data);
-            } catch (error) {
-                console.error(error.response.data);
 
                 return Promise.reject(error.response.data);
             }

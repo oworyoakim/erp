@@ -43,11 +43,15 @@
                     <tbody>
                     <tr v-for="activity in activities" :key="activity.id">
                         <th>{{activity.title}}</th>
-                        <td>{{$moment(activity.startDate).format("DD MM, YYYY")}}</td>
-                        <td>{{$moment(activity.dueDate).format("DD MM, YYYY")}}</td>
+                        <td>
+                            <template v-if="!!activity.startDate">
+                            {{$moment(activity.startDate).format("DD MMM, YYYY")}}
+                            </template>
+                        </td>
+                        <td>{{$moment(activity.dueDate).format("DD MMM, YYYY")}}</td>
                         <td>
                             <template v-if="!!activity.endDate">
-                                {{$moment(activity.endDate).format("DD MM, YYYY")}}
+                                {{$moment(activity.endDate).format("DD MMM, YYYY")}}
                             </template>
                         </td>
                         <td>{{activity.status}}</td>

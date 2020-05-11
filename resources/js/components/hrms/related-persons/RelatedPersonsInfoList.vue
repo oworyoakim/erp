@@ -13,9 +13,13 @@
         <tbody>
         <tr v-for="person in relatedPersons">
             <td>{{person.fullName}}</td>
-            <td>{{person.relationship.title}}</td>
+            <td>
+                <template v-if="!!person.relationship">
+                    {{person.relationship.title}}
+                </template>
+            </td>
             <td>{{person.dob}}</td>
-            <td>{{person.mobile}}</td>
+            <td>{{person.phone}}</td>
             <td>{{person.email}}</td>
             <td class="text-right">
                 <div class="dropdown dropdown-action">
@@ -24,7 +28,7 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a href="javascript:void(0)" class="dropdown-item" @click="editRelatedPerson(person)"><i
                             class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a href="javascript:void(0)" class="dropdown-item" @click="deleteRelatedPerson(person.id)"><i
+                        <a href="javascript:void(0)" class="dropdown-item" @click="deleteRelatedPerson(person)"><i
                             class="fa fa-trash-o m-r-5"></i> Delete</a>
                     </div>
                 </div>
@@ -40,13 +44,14 @@
 
     export default {
         props: {
-            relatedPersons: Array
+            employeeId: {type: Number, required: true},
+            relatedPersons: {type: Array, default: () => []}
         },
         methods: {
-            editRelatedPerson(person) {
-                EventBus.$emit('editRelatedPerson', person);
+            editRelatedPerson(person = null) {
+                EventBus.$emit('EDIT_RELATED_PERSON', person);
             },
-            async deleteRelatedPerson(id) {
+            async deleteRelatedPerson(person) {
 
             },
         },

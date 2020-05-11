@@ -4,28 +4,36 @@
         <tr>
             <th style="width: 30px;">#</th>
             <th>Title</th>
-            <th>Directorate</th>
-            <th>Department</th>
-            <th>Division</th>
+            <th v-if="!!!directorateId">Directorate</th>
+            <th v-if="!!!departmentId">Department</th>
+            <th v-if="!!!divisionId">Division</th>
             <th class="text-right">Action</th>
         </tr>
         </thead>
         <tbody>
-        <tr v-for="section in sections">
-            <td>{{section.id}}</td>
+        <tr v-for="(section, index) in sections">
+            <td>{{index + 1}}</td>
             <td>{{section.title}}</td>
-            <td>{{section.directorate ? section.directorate.title : ''}}</td>
-            <td>{{section.department ? section.department.title : ''}}</td>
-            <td>{{section.division ? section.division.title : ''}}</td>
+            <td v-if="!!!directorateId">
+                <template v-if="!!section.directorate">
+                    <a :href="'/hrms/directorates/view/' + section.directorateId">{{section.directorate.title}}</a>
+                </template>
+            </td>
+            <td v-if="!!!departmentId">
+                <template v-if="!!section.department">
+                    <a :href="'/hrms/departments/view/' + section.departmentId">{{section.department.title}}</a>
+                </template>
+            </td>
+            <td v-if="!!!divisionId">
+                <template v-if="!!section.division">
+                    <a :href="'/hrms/divisions/view/' + section.divisionId">{{section.division.title}}</a>
+                </template>
+            </td>
             <td class="text-right">
-                <div class="dropdown dropdown-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                       aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a @click="editSection(section)" class="dropdown-item" href="javascript:void(0)"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a @click="deleteSection(section.id)" class="dropdown-item" href="javascript:void(0)"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                    </div>
-                </div>
+                <a @click="editSection(section)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
+                    class="fa fa-pencil m-r-5"></i></a>
+                <a @click="deleteSection(section)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
+                    class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>
         </tbody>
@@ -37,14 +45,17 @@
 
     export default {
         props: {
-            sections: Array,
+            sections: {type: Array,required: true},
+            directorateId: Number,
+            departmentId: Number,
+            divisionId: Number,
             scope: String,
         },
         methods: {
-            editSection(section) {
-                EventBus.$emit('editSection',section);
+            editSection(section = null) {
+                EventBus.$emit('EDIT_SECTION',section);
             },
-            async deleteSection(id) {
+            async deleteSection(section) {
                 try {
                     let isConfirm = await swal({
                         title: 'Are you sure?',
@@ -58,9 +69,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_SECTION', id);
+                        let response = await this.$store.dispatch('DELETE_SECTION', section.id);
                         toastr.success(response);
-                        EventBus.$emit('sectionDeleted');
+                        EventBus.$emit('SECTION_DELETED');
                     }
                 } catch (error) {
                     console.log(error);

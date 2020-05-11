@@ -1,18 +1,19 @@
 class Division {
     constructor(data = {}) {
         this.id = null;
-        this.company_id = '';
-        this.directorate_id = data.directorate_id || '';
-        this.department_id = data.department_id || '';
-        this.scope = data.scope || '';
+        this.directorateId = data.directorateId || null;
+        this.departmentId = data.departmentId || null;
+        this.scope = data.scope || null;
         this.title = '';
         this.description = '';
         this.active = null;
         this.directorate = null;
         this.department = null;
-        this.created_at = null;
-        this.updated_at = null;
-        this.deleted_at = null;
+        this.createdBy = null;
+        this.updatedBy = null;
+        this.createdAt = null;
+        this.updatedAt = null;
+        this.deletedAt = null;
     }
 }
 

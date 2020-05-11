@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function (){
+Route::get('/', function () {
     return redirect()->route('login');
 });
 Route::get('/login', 'AccountController@login')->name('login');
@@ -28,11 +28,12 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
         Route::get('/user-data', 'AccountController@getUserData')->name('user-data');
         Route::get('/profile', 'AccountController@profile')->name('profile');
         Route::post('/logout', 'AccountController@logout')->name('logout');
-        Route::get('/form-selections-options', 'HomeController@getFormSelectionsOptions')->name('form-selections-options');
 
-        Route::group(['prefix' => 'hrms'], function () {
-            Route::get('', 'HomeController@indexHrms')->name('hrms.dashboard');
-            Route::get('dashboard', 'HomeController@indexHrms')->name('hrms.dashboard');
+        Route::prefix('hrms')->namespace('Hrms')->group(function () {
+            Route::get('', 'HrmsController@indexHrms')->name('hrms.dashboard');
+            Route::get('dashboard', 'HrmsController@indexHrms')->name('hrms.dashboard');
+            Route::get('dashboard-statistics', 'HrmsController@getDashboardStatistics')->name('hrms.dashboard.statistics');
+            Route::get('form-selections-options', 'HrmsController@getFormSelectionsOptions')->name('hrms.form-selections-options');
 
             // executive-secretary
             Route::group(['prefix' => 'executive-secretary'], function () {
@@ -42,32 +43,55 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
             // directorates
             Route::group(['prefix' => 'directorates'], function () {
                 Route::get('', 'HrmsController@directorates')->name('hrms.directorates.list');
+                Route::get('view/{id}', 'HrmsController@directorateDetails')->name('hrms.directorates.details');
+                Route::get('all-json', 'DirectoratesGateway@index');
+                Route::get('details', 'DirectoratesGateway@show');
+                Route::post('', 'DirectoratesGateway@store');
+                Route::put('', 'DirectoratesGateway@update');
             });
 
             // departments
             Route::group(['prefix' => 'departments'], function () {
                 Route::get('', 'HrmsController@departments')->name('hrms.departments.list');
-
+                Route::get('view/{id}', 'HrmsController@departmentDetails')->name('hrms.departments.details');
+                Route::get('all-json', 'DepartmentsGateway@index');
+                Route::get('details', 'DepartmentsGateway@show');
+                Route::post('', 'DepartmentsGateway@store');
+                Route::put('', 'DepartmentsGateway@update');
             });
 
             // divisions
             Route::group(['prefix' => 'divisions'], function () {
                 Route::get('', 'HrmsController@divisions')->name('hrms.divisions.list');
+                Route::get('view/{id}', 'HrmsController@divisionDetails')->name('hrms.divisions.details');
+                Route::get('all-json', 'DivisionsGateway@index');
+                Route::get('details', 'DivisionsGateway@show');
+                Route::post('', 'DivisionsGateway@store');
+                Route::put('', 'DivisionsGateway@update');
             });
 
             // sections
             Route::group(['prefix' => 'sections'], function () {
                 Route::get('', 'HrmsController@sections')->name('hrms.sections.list');
+                Route::get('all-json', 'SectionsGateway@index');
+                Route::post('', 'SectionsGateway@store');
+                Route::put('', 'SectionsGateway@update');
             });
 
             // designations
             Route::group(['prefix' => 'designations'], function () {
                 Route::get('', 'HrmsController@designations')->name('hrms.designations.list');
+                Route::get('all-json', 'DesignationsGateway@index');
+                Route::post('', 'DesignationsGateway@store');
+                Route::put('', 'DesignationsGateway@update');
             });
 
             // salary-scales
             Route::group(['prefix' => 'salary-scales'], function () {
                 Route::get('', 'HrmsController@salaryScales')->name('hrms.salary-scales.list');
+                Route::get('all-json', 'SalaryScalesGateway@index');
+                Route::post('', 'SalaryScalesGateway@store');
+                Route::put('', 'SalaryScalesGateway@update');
 
             });
 
@@ -75,27 +99,30 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
             Route::group(['prefix' => 'employees'], function () {
                 // employees
                 Route::get('', 'HrmsController@employees')->name('hrms.employees.list');
+                Route::get('profile/{username}', 'HrmsController@employeeProfile')->name('hrms.employees.profile');
                 Route::get('create', 'HrmsController@createEmployee')->name('hrms.employees.create');
+                Route::get('all-json', 'EmployeesGateway@index');
+                Route::get('profile-data', 'EmployeesGateway@profileData');
 
                 // employees/education
-                //Route::get('education', 'EducationInfoController')->name('hrms.employees.education');
-                //Route::post('education', 'EducationInfoController@addEducationInfo')->name('hrms.employees.education.add');
-                //Route::put('education', 'EducationInfoController@updateEducationInfo')->name('hrms.employees.education.update');
+                Route::get('education', 'EducationInfoGateway@index');
+                Route::post('education', 'EducationInfoGateway@store');
+                Route::put('education', 'EducationInfoGateway@update');
 
                 // employees/bank
-                //Route::get('bank', 'BankInfoController')->name('hrms.employees.bank');
-                //Route::post('bank', 'BankInfoController@addBankInfo')->name('hrms.employees.bank.add');
-                //Route::put('bank', 'BankInfoController@updateBankInfo')->name('hrms.employees.bank.update');
+                Route::get('bank', 'BankInfoGateway@index');
+                Route::post('bank', 'BankInfoGateway@store');
+                Route::put('bank', 'BankInfoGateway@update');
 
                 // employees/experience
-                //Route::get('experience', 'ExperienceInfoController')->name('hrms.employees.experience');
-                //Route::post('experience', 'ExperienceInfoController@addExperienceInfo')->name('hrms.employees.experience.add');
-                //Route::put('experience', 'ExperienceInfoController@updateExperienceInfo')->name('hrms.employees.experience.update');
+                Route::get('experience', 'ExperienceInfoGateway@index');
+                Route::post('experience', 'ExperienceInfoGateway@store');
+                Route::put('experience', 'ExperienceInfoGateway@update');
 
                 // employees/related-persons
-                //Route::get('related-persons', 'RelatedPersonInfoController')->name('hrms.employees.related-persons');
-                //Route::post('related-persons', 'RelatedPersonInfoController@addRelatedPersonInfo')->name('hrms.employees.related-persons.add');
-                //Route::put('related-persons', 'RelatedPersonInfoController@updateRelatedPersonInfo')->name('hrms.employees.related-persons.update');
+                Route::get('related-persons', 'RelatedPersonInfoGateway@index');
+                Route::post('related-persons', 'RelatedPersonInfoGateway@store');
+                Route::put('related-persons', 'RelatedPersonInfoGateway@update');
             });
 
             // leaves
@@ -148,110 +175,110 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
             });
         });
 
-        Route::group(['prefix' => 'spms'], function () {
-            Route::get('', 'HomeController@indexSpms')->name('spms.dashboard');
-            Route::get('dashboard', 'HomeController@indexSpms')->name('spms.dashboard');
+        Route::prefix('spms')->namespace('Spms')->group(function () {
 
-            Route::namespace('Spms')->group(function () {
-                Route::group(['prefix' => 'plans'], function () {
-                    Route::get('', 'SpmsController@plans')->name('spms.plans.plan');
-                    Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
-                    Route::get('execute', 'SpmsController@execute')->name('spms.plans.execute');
-                    Route::get('monitor', 'SpmsController@monitor')->name('spms.plans.monitor');
-                    Route::get('all-json', 'StrategicPlansGateway@index');
-                    Route::post('', 'StrategicPlansGateway@store');
-                    Route::put('', 'StrategicPlansGateway@update');
-                });
+            Route::get('', 'SpmsController@indexSpms')->name('spms.dashboard');
+            Route::get('dashboard', 'SpmsController@indexSpms')->name('spms.dashboard');
 
-                Route::group(['prefix' => 'objectives'], function () {
-                    Route::get('', 'StrategicObjectivesGateway@index');
-                    Route::post('', 'StrategicObjectivesGateway@store');
-                    Route::put('', 'StrategicObjectivesGateway@update');
-                    Route::get('show/{id}', 'SpmsController@objectiveDetails');
-                    Route::get('details', 'StrategicObjectivesGateway@getObjectiveDetails');
-                });
-
-                Route::group(['prefix' => 'swots'], function () {
-                    Route::get('', 'SwotsGateway@index');
-                    Route::post('', 'SwotsGateway@store');
-                    Route::put('', 'SwotsGateway@update');
-                });
-
-                Route::group(['prefix' => 'swot-categories'], function () {
-                    Route::get('', 'SwotCategoriesGateway@index');
-                    Route::post('', 'SwotCategoriesGateway@store');
-                    Route::put('', 'SwotCategoriesGateway@update');
-                });
-
-                Route::group(['prefix' => 'interventions'], function () {
-                    Route::get('', 'InterventionsGateway@index');
-                    Route::post('', 'InterventionsGateway@store');
-                    Route::put('', 'InterventionsGateway@update');
-                });
-
-                Route::group(['prefix' => 'outputs'], function () {
-                    Route::post('', 'OutputsGateway@store');
-                    Route::put('', 'OutputsGateway@update');
-                });
-
-                Route::group(['prefix' => 'output-indicators'], function () {
-                    Route::post('', 'OutputIndicatorsGateway@store');
-                    Route::put('', 'OutputIndicatorsGateway@update');
-                });
-
-                Route::group(['prefix' => 'output-indicator-targets'], function () {
-                    Route::post('', 'OutputIndicatorTargetsGateway@store');
-                    Route::put('', 'OutputIndicatorTargetsGateway@update');
-                });
-
-
-                Route::group(['prefix' => 'key-result-areas'], function () {
-                    Route::get('', 'KeyResultAreasGateway@index');
-                    Route::post('', 'KeyResultAreasGateway@store');
-                    Route::put('', 'KeyResultAreasGateway@update');
-                    Route::get('show/{id}', 'SpmsController@keyResultAreaDetails');
-                    Route::get('details', 'KeyResultAreasGateway@getKeyResultAreaDetails');
-                });
-
-                Route::group(['prefix' => 'outcomes'], function () {
-                    Route::post('', 'OutcomesGateway@store');
-                    Route::put('', 'OutcomesGateway@update');
-                });
-
-                Route::group(['prefix' => 'outcome-indicators'], function () {
-                    Route::post('', 'OutcomeIndicatorsGateway@store');
-                    Route::put('', 'OutcomeIndicatorsGateway@update');
-                });
-
-                Route::group(['prefix' => 'outcome-indicator-targets'], function () {
-                    Route::post('', 'OutcomeIndicatorTargetsGateway@store');
-                    Route::put('', 'OutcomeIndicatorTargetsGateway@update');
-                });
-
-                Route::group(['prefix' => 'work-plans'], function () {
-                    Route::get('', 'WorkPlansGateway@index');
-                    Route::post('', 'WorkPlansGateway@store');
-                    Route::put('', 'WorkPlansGateway@update');
-                });
-
-                Route::group(['prefix' => 'activities'], function () {
-                    Route::get('', 'ActivitiesGateway@index');
-                    Route::post('', 'ActivitiesGateway@store');
-                    Route::put('', 'ActivitiesGateway@update');
-                });
-
-                Route::group(['prefix' => 'stages'], function () {
-                    Route::get('', 'StagesGateway@index');
-                    Route::post('', 'StagesGateway@store');
-                    Route::put('', 'StagesGateway@update');
-                });
-
-                Route::group(['prefix' => 'tasks'], function () {
-                    Route::get('', 'TasksGateway@index');
-                    Route::post('', 'TasksGateway@store');
-                    Route::put('', 'TasksGateway@update');
-                });
+            Route::group(['prefix' => 'plans'], function () {
+                Route::get('', 'SpmsController@plans')->name('spms.plans.plan');
+                Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
+                Route::get('execute', 'SpmsController@execute')->name('spms.plans.execute');
+                Route::get('monitor', 'SpmsController@monitor')->name('spms.plans.monitor');
+                Route::get('all-json', 'StrategicPlansGateway@index');
+                Route::post('', 'StrategicPlansGateway@store');
+                Route::put('', 'StrategicPlansGateway@update');
             });
+
+            Route::group(['prefix' => 'objectives'], function () {
+                Route::get('', 'StrategicObjectivesGateway@index');
+                Route::post('', 'StrategicObjectivesGateway@store');
+                Route::put('', 'StrategicObjectivesGateway@update');
+                Route::get('show/{id}', 'SpmsController@objectiveDetails');
+                Route::get('details', 'StrategicObjectivesGateway@getObjectiveDetails');
+            });
+
+            Route::group(['prefix' => 'swots'], function () {
+                Route::get('', 'SwotsGateway@index');
+                Route::post('', 'SwotsGateway@store');
+                Route::put('', 'SwotsGateway@update');
+            });
+
+            Route::group(['prefix' => 'swot-categories'], function () {
+                Route::get('', 'SwotCategoriesGateway@index');
+                Route::post('', 'SwotCategoriesGateway@store');
+                Route::put('', 'SwotCategoriesGateway@update');
+            });
+
+            Route::group(['prefix' => 'interventions'], function () {
+                Route::get('', 'InterventionsGateway@index');
+                Route::post('', 'InterventionsGateway@store');
+                Route::put('', 'InterventionsGateway@update');
+            });
+
+            Route::group(['prefix' => 'outputs'], function () {
+                Route::post('', 'OutputsGateway@store');
+                Route::put('', 'OutputsGateway@update');
+            });
+
+            Route::group(['prefix' => 'output-indicators'], function () {
+                Route::post('', 'OutputIndicatorsGateway@store');
+                Route::put('', 'OutputIndicatorsGateway@update');
+            });
+
+            Route::group(['prefix' => 'output-indicator-targets'], function () {
+                Route::post('', 'OutputIndicatorTargetsGateway@store');
+                Route::put('', 'OutputIndicatorTargetsGateway@update');
+            });
+
+
+            Route::group(['prefix' => 'key-result-areas'], function () {
+                Route::get('', 'KeyResultAreasGateway@index');
+                Route::post('', 'KeyResultAreasGateway@store');
+                Route::put('', 'KeyResultAreasGateway@update');
+                Route::get('show/{id}', 'SpmsController@keyResultAreaDetails');
+                Route::get('details', 'KeyResultAreasGateway@getKeyResultAreaDetails');
+            });
+
+            Route::group(['prefix' => 'outcomes'], function () {
+                Route::post('', 'OutcomesGateway@store');
+                Route::put('', 'OutcomesGateway@update');
+            });
+
+            Route::group(['prefix' => 'outcome-indicators'], function () {
+                Route::post('', 'OutcomeIndicatorsGateway@store');
+                Route::put('', 'OutcomeIndicatorsGateway@update');
+            });
+
+            Route::group(['prefix' => 'outcome-indicator-targets'], function () {
+                Route::post('', 'OutcomeIndicatorTargetsGateway@store');
+                Route::put('', 'OutcomeIndicatorTargetsGateway@update');
+            });
+
+            Route::group(['prefix' => 'work-plans'], function () {
+                Route::get('', 'WorkPlansGateway@index');
+                Route::post('', 'WorkPlansGateway@store');
+                Route::put('', 'WorkPlansGateway@update');
+            });
+
+            Route::group(['prefix' => 'activities'], function () {
+                Route::get('', 'ActivitiesGateway@index');
+                Route::post('', 'ActivitiesGateway@store');
+                Route::put('', 'ActivitiesGateway@update');
+            });
+
+            Route::group(['prefix' => 'stages'], function () {
+                Route::get('', 'StagesGateway@index');
+                Route::post('', 'StagesGateway@store');
+                Route::put('', 'StagesGateway@update');
+            });
+
+            Route::group(['prefix' => 'tasks'], function () {
+                Route::get('', 'TasksGateway@index');
+                Route::post('', 'TasksGateway@store');
+                Route::put('', 'TasksGateway@update');
+            });
+
         });
 
         // users
@@ -287,5 +314,7 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
         });
 
     });
+
+
 
 });

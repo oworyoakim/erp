@@ -1,29 +1,46 @@
 <template>
-    <span v-if="isLoading || !!!employee_id" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else class="card profile-box flex-fill">
-        <div class="card-body table-responsive">
-            <h3 class="card-title">
-                Education Background
-                <button class="edit-icon" data-toggle="modal"
-                        data-target="#educationModal" title="Add Education"><i class="fa fa-plus"></i></button>
-            </h3>
-            <app-education-info-list :educations="educations"></app-education-info-list>
-            <app-education-info-form :employee_id="employee_id"></app-education-info-form>
-        </div>
+    <div class="education-info">
+        <app-spinner v-if="isLoading"/>
+        <template v-else-if="!!!employeeId">
+            <h4>No employee selected!</h4>
+        </template>
+        <template v-else>
+            <div class="card profile-box flex-fill">
+                <div class="card-body table-responsive">
+                    <h3 class="card-title">
+                        Education Background
+                        <button class="edit-icon" @click="editEducation()" title="Add Education">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                    </h3>
+                    <EducationInfoList
+                        :employee-id="employeeId"
+                        :educations="educations"
+                    />
+                    <EducationInfoForm :employee-id="employeeId"/>
+                </div>
+            </div>
+        </template>
     </div>
 </template>
 
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import EducationInfoList from "./EducationInfoList";
+    import EducationInfoForm from "./EducationInfoForm";
 
     export default {
+        components: {EducationInfoForm, EducationInfoList},
         props: {
-            employee_id: Number,
+            employeeId: {type: Number, required: true},
         },
         created() {
-            this.getEducationInfo();
-            EventBus.$on(['educationInfoSaved', 'educationInfoDeleted'], this.getEducationInfo);
+            this.$parent.$on('LOAD_EDUCATION_INFO', this.getEducationInfo);
+            EventBus.$on([
+                'EDUCATION_INFO_SAVED',
+                'EDUCATION_INFO_DELETED',
+            ], this.getEducationInfo);
         },
         data() {
             return {
@@ -32,15 +49,14 @@
         },
         computed: {
             ...mapGetters({
-                educations: 'GET_EDUCATIONS',
-                months: 'getMonths',
+                educations: 'EDUCATIONS',
             }),
         },
         methods: {
             async getEducationInfo() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('GET_EDUCATIONS', {employee_id: this.employee_id});
+                    await this.$store.dispatch('GET_EDUCATIONS', {employeeId: this.employeeId});
                     this.isLoading = false;
                 } catch (error) {
                     console.log(error);
@@ -48,6 +64,9 @@
                     this.isLoading = false;
                 }
             },
+            editEducation(education = null) {
+                EventBus.$emit('EDIT_EDUCATION', education);
+            }
         },
     }
 </script>

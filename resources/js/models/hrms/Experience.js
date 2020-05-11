@@ -1,19 +1,18 @@
 class Experience {
     constructor(){
         this.id = null;
-        this.employee_id = '';
+        this.employeeId = '';
         this.company = '';
         this.position = '';
         this.description = '';
-        this.start_year = '';
-        this.start_month = '';
-        this.end_year = '';
-        this.end_month = '';
-        this.recommendation_path = '';
-        this.is_current = false;
-        this.created_at = null;
-        this.updated_at = null;
-        this.deleted_at = null;
+        this.startYear = '';
+        this.startMonth = '';
+        this.endYear = '';
+        this.endMonth = '';
+        this.recommendationPath = '';
+        this.isCurrent = false;
+        this.createdAt = null;
+        this.updatedAt = null;
     }
 }
 
