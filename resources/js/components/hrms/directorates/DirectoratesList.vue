@@ -9,20 +9,17 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="directorate in directorates">
-            <td>{{directorate.id}}</td>
+        <tr v-for="(directorate, index) in directorates">
+            <td>{{index + 1}}</td>
             <td>{{directorate.title}}</td>
             <td>{{directorate.description}}</td>
             <td class="text-right">
-                <div class="dropdown dropdown-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                       aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a class="dropdown-item" :href="'/directorates/view/' + directorate.id"><i class="fa fa-eye m-r-5"></i> View</a>
-                        <a @click="editDirectorate(directorate)" class="dropdown-item" href="#"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a @click="deleteDirectorate(directorate.id)" class="dropdown-item" href="#"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                    </div>
-                </div>
+                <a class="btn btn-info btn-sm" title="View Details" :href="'/hrms/directorates/view/' + directorate.id"><i
+                    class="fa fa-eye m-r-5"></i></a>
+                <a @click="editDirectorate(directorate)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
+                    class="fa fa-pencil m-r-5"></i></a>
+                <a @click="deleteDirectorate(directorate)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
+                    class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>
         </tbody>
@@ -37,10 +34,10 @@
             directorates: Array,
         },
         methods: {
-            editDirectorate(directorate) {
-                EventBus.$emit('editDirectorate',directorate);
+            editDirectorate(directorate = null) {
+                EventBus.$emit('EDIT_DIRECTORATE',directorate);
             },
-            async deleteDirectorate(id) {
+            async deleteDirectorate(directorate) {
                 try {
                     let isConfirm = await swal({
                         title: 'Are you sure?',
@@ -54,9 +51,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_DIRECTORATE', id);
+                        let response = await this.$store.dispatch('DELETE_DIRECTORATE', directorate.id);
                         toastr.success(response);
-                        EventBus.$emit('directorateDeleted');
+                        EventBus.$emit('DIRECTORATE_DELETED');
                     }
                 } catch (error) {
                     console.log(error);

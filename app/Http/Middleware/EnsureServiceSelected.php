@@ -20,13 +20,29 @@ class EnsureServiceSelected
         $service = $request->session()->get('service');
         if ($service)
         {
-            return $next($request);
-        }
-        if ($request->isXmlHttpRequest())
-        {
-            return response()->json('Select a service!', Response::HTTP_BAD_REQUEST);
-        }
+            $action = $request->route()->getAction();
+            if (!empty($action['prefix']))
+            {
+                $prefixes = explode('/', trim($action['prefix'], '/'));
 
-        return redirect()->route('service');
+                $prefix = $prefixes[0];
+
+                if ($prefix != $service && !$request->isXmlHttpRequest())
+                {
+                    $request->session()->remove('service');
+
+                    return redirect()->route('service');
+                }
+            }
+            return $next($request);
+        } else
+        {
+            if ($request->isXmlHttpRequest())
+            {
+                return response()->json('Select a service!', Response::HTTP_BAD_REQUEST);
+            }
+
+            return redirect()->route('service');
+        }
     }
 }

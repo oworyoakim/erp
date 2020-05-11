@@ -33,7 +33,7 @@
         },
         computed:{
           ...mapGetters({
-              statisticsInfo: 'GET_DASHBOARD_STATISTICS',
+              statisticsInfo: 'DASHBOARD_STATISTICS',
           }),
             morrisBarChartConfig() {
               return {

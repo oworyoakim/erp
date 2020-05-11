@@ -1,9 +1,9 @@
 <template>
     <h2 class="table-avatar">
-        <a :href="`/employees/profile/${username}`" class="avatar">
+        <a :href="`/hrms/employees/profile/${username}`" class="avatar">
             <img alt="" :src="avatar">
         </a>
-        <a :href="`/employees/profile/${username}`">
+        <a :href="`/hrms/employees/profile/${username}`">
             <span class="employee-name">{{name}} <span v-if="!!position">{{position}}</span></span>
         </a>
     </h2>

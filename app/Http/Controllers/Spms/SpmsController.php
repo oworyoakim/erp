@@ -2,16 +2,25 @@
 
 namespace App\Http\Controllers\Spms;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\GatewayController;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Exception;
 use Carbon\Carbon;
-use stdClass;
+use Exception;
 
-class SpmsController extends Controller
+class SpmsController extends GatewayController
 {
+    public function __construct()
+    {
+        $this->urlEndpoint = env('SPMS_URL') . '/v1';
+    }
+
+
+    public function indexSpms()
+    {
+        return view('spms.dashboard');
+    }
 
     public function plan()
     {

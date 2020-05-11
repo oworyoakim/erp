@@ -12,11 +12,9 @@
     <tbody>
       <tr v-for="experience in experiences" :key="experience.id">
         <td>
-          <span>{{experience.start_month}} {{experience.start_year}}</span>
+          <span>{{experience.startMonth}} {{experience.startYear}}</span>
           -
-          <span
-            v-if="!!experience.end_month && !!experience.end_year"
-          >{{experience.end_month}} {{experience.end_year}}</span>
+          <span v-if="!!experience.endMonth && !!experience.endYear">{{experience.endMonth}} {{experience.endYear}}</span>
           <span v-else>Present</span>
         </td>
         <td>{{experience.company}}</td>
@@ -42,11 +40,12 @@ import { EventBus } from "../../../app";
 
 export default {
   props: {
-    experiences: Array
+      employeeId: Number,
+    experiences: {type: Array,required: true}
   },
   methods: {
     editExperience(experience) {
-      EventBus.$emit("editExperience", experience);
+      EventBus.$emit("EDIT_EXPERIENCE", experience);
     }
   }
 };

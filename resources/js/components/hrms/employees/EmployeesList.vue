@@ -15,19 +15,20 @@
         <tbody>
         <tr v-for="employee in employees">
             <td>
-                <app-employee-widget :key="employee.username"
-                                     :username="employee.username"
-                                     :name="employee.fullName"
-                                     :avatar="employee.avatar"
-                                     :position="employee.designation.title">
-                </app-employee-widget>
+                <EmployeeWidget
+                    :key="employee.username"
+                    :username="employee.username"
+                    :name="employee.fullName"
+                    :avatar="employee.avatar"
+                    :position="employee.designation.title"
+                />
             </td>
-            <td>{{employee.employee_number}}</td>
+            <td>{{employee.employeeNumber}}</td>
             <td>{{employee.email}}</td>
             <td>{{employee.mobile}}</td>
-            <td>{{$moment(employee.date_joined).format('MMM D YYYY')}}</td>
+            <td>{{$moment(employee.dateJoined).format('MMM D YYYY')}}</td>
             <td>{{employee.designation.title}}</td>
-            <td>{{employee.employee_status}}</td>
+            <td>{{employee.employeeStatus}}</td>
             <td class="text-right">
             </td>
         </tr>
@@ -36,12 +37,15 @@
 </template>
 
 <script>
+    import EmployeeWidget from "./EmployeeWidget";
+
     export default {
+        components: {EmployeeWidget},
         props: {
-            employees: Array,
+            employees: {type: Array, required: true},
         },
         mounted() {
-            this.$nextTick(()=>{
+            this.$nextTick(() => {
                 $(this.$refs.employeesDataTable).DataTable();
             });
         }

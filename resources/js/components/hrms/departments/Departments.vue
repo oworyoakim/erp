@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="departments">
         <!-- Page Header -->
         <div class="page-header">
             <div class="row align-items-center">
@@ -7,32 +7,39 @@
                     <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <button type="button" class="btn add-btn" data-toggle="modal" data-target="#departmentModal"><i class="fa fa-plus"></i> New Department</button>
+                    <button type="button" class="btn add-btn" @click="editDepartment()"><i class="fa fa-plus"></i> New Department</button>
                 </div>
             </div>
         </div>
         <!-- /Page Header -->
-        <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-        <div class="row" v-else>
-            <div class="col-md-12">
-                <app-departments-list :departments="departments"></app-departments-list>
-                <app-department-form></app-department-form>
+        <app-spinner v-if="isLoading"></app-spinner>
+        <template v-else>
+            <div class="row">
+                <div class="col-md-12">
+                    <DepartmentsList :departments="departments"/>
+                    <DepartmentForm />
+                </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
-    import {mapActions, mapGetters} from "vuex";
+    import DepartmentForm from "./DepartmentForm";
+    import DepartmentsList from "./DepartmentsList";
 
     export default {
-        props: ['title',,'returnUri'],
+        props: ['directorateId','title','returnUri'],
+        components:{
+            DepartmentsList,
+            DepartmentForm,
+        },
         created() {
-            this.$store.dispatch('GET_DIRECTORATES');
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS',{directorateId: this.directorateId});
             this.getDepartments();
-            EventBus.$on('departmentDeleted', this.getDepartments);
-            EventBus.$on('departmentSaved', this.getDepartments);
+            EventBus.$on(['DEPARTMENT_SAVED','DEPARTMENT_DELETED'], this.getDepartments);
         },
         data() {
             return {
@@ -44,15 +51,18 @@
         },
         computed: {
             ...mapGetters({
-                directorates: 'GET_DIRECTORATES',
-                departments: 'GET_DEPARTMENTS',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
+                departments: 'DEPARTMENTS',
             }),
+            directorates(){
+                return this.formSelectionOptions.directorates;
+            }
         },
         methods: {
-            async getDepartments(directorate_id = null) {
+            async getDepartments() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('GET_DEPARTMENTS', {directorate_id: directorate_id});
+                    await this.$store.dispatch('GET_DEPARTMENTS', {directorateId: this.directorateId});
                     this.isLoading = false;
                     this.$nextTick(() => {
                         $('.departments-datatable').DataTable();
@@ -62,6 +72,9 @@
                     toastr.error(error);
                 }
             },
+            editDepartment(department = null){
+                EventBus.$emit("EDIT_DEPARTMENT",department);
+            }
         },
     }
 </script>

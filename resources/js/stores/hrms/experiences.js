@@ -1,12 +1,13 @@
 import axios from "axios";
 import routes from "../../routes";
+import {resolveError} from "../../utils/helpers";
 
 export default {
     state: {
         experiences: [],
     },
     getters: {
-        GET_EXPERIENCES: (state) => {
+        EXPERIENCES: (state) => {
             return state.experiences;
         },
     },
@@ -18,12 +19,16 @@ export default {
     actions: {
         GET_EXPERIENCES: async ({commit}, payload) => {
             try {
-                let response = await axios.get(routes.EMPLOYEES_EXPERIENCE + '?employee_id=' + payload.employee_id);
+                if (!payload.employeeId) {
+                    return Promise.reject("Employee ID required!");
+                }
+                let response = await axios.get(routes.EMPLOYEES_EXPERIENCE + '?employeeId=' + payload.employeeId);
                 commit('SET_EXPERIENCES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_EXPERIENCE: async ({commit}, payload) => {
@@ -38,8 +43,9 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

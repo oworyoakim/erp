@@ -18,8 +18,8 @@ export default {
     actions: {
         GET_SALARY_SCALES: async ({commit}) => {
             try {
-                let response = await axios.get(routes.SALARY_SCALES_JSON);
-                commit('setSalaryScales', response.data);
+                let response = await axios.get(routes.SALARY_SCALES + '/all-json');
+                commit('SET_SALARY_SCALES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
                 console.error(error.response.data);
@@ -46,7 +46,7 @@ export default {
         },
         DELETE_SALARY_SCALE: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.SALARY_SCALES + '?salary_scale_id=' + payload);
+                let response = await axios.delete(routes.SALARY_SCALES + '?salaryScaleId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {

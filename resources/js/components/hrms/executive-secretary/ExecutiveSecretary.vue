@@ -17,16 +17,16 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                     <ul class="nav nav-tabs nav-tabs-bottom">
                         <li class="nav-item">
-                            <a href="#executive-secretary-departments" data-toggle="tab" class="nav-link active">Departments</a>
+                            <a href="#executive-secretary-departments" @click="getDepartments()" data-toggle="tab" class="nav-link active">Departments</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-divisions" data-toggle="tab" class="nav-link">Divisions</a>
+                            <a href="#executive-secretary-divisions" @click="getDivisions()" data-toggle="tab" class="nav-link">Divisions</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-sections" data-toggle="tab" class="nav-link">Sections</a>
+                            <a href="#executive-secretary-sections" @click="getSections()" data-toggle="tab" class="nav-link">Sections</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-employees" data-toggle="tab" class="nav-link">Employees</a>
+                            <a href="#executive-secretary-employees" @click="getEmployees()" data-toggle="tab" class="nav-link">Employees</a>
                         </li>
                     </ul>
                 </div>
@@ -38,12 +38,12 @@
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Departments
-                            <button type="button" class="btn add-btn btn-sm pull-right" data-toggle="modal"
-                                    data-target="#departmentModal"><i class="fa fa-plus"></i> New Department
+                            <button type="button" class="btn add-btn btn-sm pull-right" @click="editDepartment()"><i
+                                class="fa fa-plus"></i> New Department
                             </button>
                         </h3>
-                        <app-departments-list :scope="scope" :departments.sync="departments"></app-departments-list>
-                        <app-department-form :scope="scope"></app-department-form>
+                        <DepartmentsList :departments="departments" :scope="scope"/>
+                        <DepartmentForm :scope="scope"/>
                     </div>
                 </div>
             </div>
@@ -52,12 +52,12 @@
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Divisions
-                            <button type="button" class="btn add-btn btn-sm pull-right" data-toggle="modal"
-                                    data-target="#divisionModal"><i class="fa fa-plus"></i> New Division
+                            <button type="button" class="btn add-btn btn-sm pull-right" @click="editDivision()">
+                                <i class="fa fa-plus"></i> New Division
                             </button>
                         </h3>
-                        <app-divisions-list :scope="scope" :divisions.sync="divisions"></app-divisions-list>
-                        <app-division-form :scope="scope"></app-division-form>
+                        <DivisionsList :divisions="divisions" :scope="scope"/>
+                        <DivisionForm :scope="scope"/>
                     </div>
                 </div>
             </div>
@@ -66,12 +66,12 @@
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Sections
-                            <button type="button" class="btn add-btn btn-sm pull-right" data-toggle="modal"
-                                    data-target="#sectionModal"><i class="fa fa-plus"></i> New Section
+                            <button type="button" class="btn add-btn btn-sm pull-right" @click="editSection()">
+                                <i class="fa fa-plus"></i> New Section
                             </button>
                         </h3>
-                        <app-sections-list :scope="scope" :sections.sync="sections"></app-sections-list>
-                        <app-section-form :scope="scope"></app-section-form>
+                        <SectionsList :scope="scope" :sections="sections"/>
+                        <SectionForm :scope="scope"/>
                     </div>
                 </div>
             </div>
@@ -80,7 +80,7 @@
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Employees</h3>
-                        <app-employees-list :employees.sync="employees"></app-employees-list>
+                        <EmployeesList :employees="employees"/>
                     </div>
                 </div>
             </div>
@@ -91,17 +91,49 @@
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import DepartmentsList from "../departments/DepartmentsList";
+    import DepartmentForm from "../departments/DepartmentForm";
+    import DivisionForm from "../divisions/DivisionForm";
+    import DivisionsList from "../divisions/DivisionsList";
+    import SectionsList from "../sections/SectionsList";
+    import SectionForm from "../sections/SectionForm";
+    import EmployeesList from "../employees/EmployeesList";
 
     export default {
         props: ['title'],
+        components: {
+            EmployeesList,
+            SectionForm,
+            SectionsList,
+            DepartmentsList,
+            DepartmentForm,
+            DivisionsList,
+            DivisionForm,
+        },
         created() {
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', {scope: this.scope});
             this.getDepartments();
-            this.getDivisions();
-            this.getSections();
-            this.getEmployees();
-            EventBus.$on(['departmentSaved', 'departmentDeleted'], this.getDepartments);
-            EventBus.$on(['divisionSaved', 'divisionDeleted', 'departmentSaved', 'departmentDeleted'], this.getDivisions);
-            EventBus.$on(['sectionSaved', 'sectionDeleted', 'divisionSaved', 'divisionDeleted', 'departmentSaved', 'departmentDeleted'], this.getSections);
+            // this.getDivisions();
+            // this.getSections();
+            // this.getEmployees();
+            EventBus.$on([
+                'DEPARTMENT_SAVED',
+                'DEPARTMENT_DELETED'
+            ], this.getDepartments);
+            EventBus.$on([
+                'DIVISION_SAVED',
+                'DIVISION_DELETED',
+                'DEPARTMENT_SAVED',
+                'DEPARTMENT_DELETED'
+            ], this.getDivisions);
+            EventBus.$on([
+                'SECTION_SAVED',
+                'SECTION_DELETED',
+                'DIVISION_SAVED',
+                'DIVISION_DELETED',
+                'DEPARTMENT_SAVED',
+                'DEPARTMENT_DELETED'
+            ], this.getSections);
         },
         data() {
             return {
@@ -113,10 +145,10 @@
         },
         computed: {
             ...mapGetters({
-                departments: 'GET_DEPARTMENTS',
-                divisions: 'GET_DIVISIONS',
-                sections: 'GET_SECTIONS',
-                employees: 'GET_EMPLOYEES',
+                departments: 'DEPARTMENTS',
+                divisions: 'DIVISIONS',
+                sections: 'SECTIONS',
+                employees: 'EMPLOYEES',
             }),
         },
         methods: {
@@ -164,6 +196,15 @@
                     toastr.error(error);
 
                 }
+            },
+            editDepartment(department = null) {
+                EventBus.$emit('EDIT_DEPARTMENT', department);
+            },
+            editDivision(division = null) {
+                EventBus.$emit('EDIT_DIVISION', division);
+            },
+            editSection(section = null) {
+                EventBus.$emit('EDIT_SECTION', section);
             },
         },
     }

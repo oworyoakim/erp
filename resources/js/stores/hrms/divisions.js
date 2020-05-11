@@ -1,40 +1,52 @@
 import axios from "axios";
 import routes from "../../routes";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     state: {
         divisions: [],
+        activeDivision: null,
     },
     getters: {
-        GET_DIVISIONS: (state) => {
+        DIVISIONS: (state) => {
             return state.divisions;
+        },
+        ACTIVE_DIVISION: (state) => {
+            return state.activeDivision;
         },
     },
     mutations: {
         SET_DIVISIONS: (state, payload) => {
             state.divisions = payload || [];
         },
+        SET_ACTIVE_DIVISION: (state, payload) => {
+            state.activeDivision = payload || null;
+        },
     },
     actions: {
         GET_DIVISIONS: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.department_id) {
-                    params.push('department_id=' + payload.department_id);
-                }
-                if (!!payload.directorate_id) {
-                    params.push('directorate_id=' + payload.directorate_id);
-                }
-                if (!!payload.scope) {
-                    params.push('scope=' + payload.scope);
-                }
-                let queryParam = params.join('&');
-                let response = await axios.get(routes.DIVISIONS_JSON + '?' + queryParam);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.DIVISIONS + '/all-json' + queryParams);
                 commit('SET_DIVISIONS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+
+        GET_ACTIVE_DIVISION: async ({commit}, payload) => {
+            try {
+                let queryParam = prepareQueryParams(payload);
+                let response = await axios.get(routes.DIVISIONS + '/details' + queryParam);
+                commit('SET_ACTIVE_DIVISION', response.data);
+                return Promise.resolve('Ok');
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_DIVISION: async ({commit}, payload) => {
@@ -49,18 +61,20 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DELETE_DIVISION: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.DIVISIONS + '?division_id=' + payload);
+                let response = await axios.delete(routes.DIVISIONS + '?divisionId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     },

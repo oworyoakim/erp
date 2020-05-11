@@ -21,17 +21,6 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Start Date <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <app-date-range-picker
-                        v-model="activity.startDate"
-                        :value="activity.startDate"
-                        :config="dateConfig"
-                        :key="Math.random()"
-                    />
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-sm-4">Due Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <app-date-range-picker
@@ -67,7 +56,7 @@
     export default {
         created() {
             this.dateConfig.minDate = this.workPlan.startDate;
-            this.dateConfig.maxDate = this.workPlan.dueDate;
+            this.dateConfig.maxDate = this.workPlan.endDate;
             EventBus.$on(["EDIT_ACTIVITY"], this.editActivity);
         },
         data() {
@@ -104,7 +93,7 @@
                 return (!!this.activity.id) ? "Edit Activity" : "Add Activity";
             },
             formInvalid() {
-                return this.isSending || !(!!this.activity.interventionId && !!this.activity.title && !!this.activity.startDate && !!this.activity.dueDate && this.$moment(this.activity.startDate).isBefore(this.activity.dueDate));
+                return this.isSending || !(!!this.activity.interventionId && !!this.activity.title && !!this.activity.dueDate && this.$moment(this.activity.dueDate).isBefore(this.workPlan.dueDate));
             },
         },
         watch: {

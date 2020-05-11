@@ -14,15 +14,6 @@ use stdClass;
 
 class HomeController extends Controller
 {
-    public function indexHrms()
-    {
-        return view('hrms.dashboard');
-    }
-
-    public function indexSpms()
-    {
-        return view('spms.dashboard');
-    }
 
     public function test()
     {

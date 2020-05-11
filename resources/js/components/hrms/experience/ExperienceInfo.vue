@@ -1,26 +1,39 @@
 <template>
-    <span v-if="isLoading || !!!employee_id" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else class="card profile-box flex-fill">
-        <div class="card-body table-responsive">
-            <h3 class="card-title">Work Experience <a href="#" class="edit-icon" data-toggle="modal"
-                                                      data-target="#experienceModal"><i class="fa fa-plus"></i></a></h3>
-            <app-experience-info-list :experiences="experiences"></app-experience-info-list>
-            <app-experience-info-form :employee_id="employee_id"></app-experience-info-form>
-        </div>
+    <div class="experience-info">
+        <app-spinner v-if="isLoading"/>
+        <template v-else-if="!!!employeeId">
+            <h4>No employee selected!</h4>
+        </template>
+        <template v-else>
+            <div class="card profile-box flex-fill">
+                <div class="card-body table-responsive">
+                    <h3 class="card-title">Work Experience <a href="#" class="edit-icon" @click="editExperience()">
+                        <i class="fa fa-plus"></i></a></h3>
+                    <ExperienceInfoList
+                        :employee-id="employeeId"
+                        :experiences="experiences"
+                    />
+                    <ExperienceInfoForm :employee-id="employeeId"/>
+                </div>
+            </div>
+        </template>
     </div>
 </template>
 
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import ExperienceInfoList from "./ExperienceInfoList";
+    import ExperienceInfoForm from "./ExperienceInfoForm";
 
     export default {
+        components: {ExperienceInfoForm, ExperienceInfoList},
         props: {
-            employee_id: Number,
+            employeeId: {type: Number, required: true},
         },
         created() {
-            this.getExperienceInfo();
-            EventBus.$on(['experienceInfoSaved', 'experienceInfoDeleted'], this.getExperienceInfo);
+            this.$parent.$on('LOAD_EXPERIENCE_INFO', this.getExperienceInfo);
+            EventBus.$on(['EXPERIENCE_INFO_SAVED', 'EXPERIENCE_INFO_DELETED'], this.getExperienceInfo);
         },
         data() {
             return {
@@ -29,14 +42,14 @@
         },
         computed: {
             ...mapGetters({
-                experiences: 'GET_EXPERIENCES',
+                experiences: 'EXPERIENCES',
             }),
         },
         methods: {
             async getExperienceInfo() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('GET_EXPERIENCES', {employee_id: this.employee_id});
+                    await this.$store.dispatch('GET_EXPERIENCES', {employeeId: this.employeeId});
                     this.isLoading = false;
                 } catch (error) {
                     console.log(error);
@@ -44,6 +57,9 @@
                     this.isLoading = false;
                 }
             },
+            editExperience(experience = null) {
+                EventBus.$emit('EDIT_EXPERIENCE', experience);
+            }
         },
     }
 </script>

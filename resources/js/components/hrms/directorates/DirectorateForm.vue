@@ -1,32 +1,23 @@
 <template>
-        <div ref="directorateModal" id="directorateModal" class="modal custom-modal fade" role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Directorate Form</h5>
-                        <button @click="closePreview()" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form @submit.prevent="saveDirectorate">
-                            <div class="form-group">
-                                <label>Directorate Name <span class="text-danger">*</span></label>
-                                <input v-model="directorate.title" class="form-control" type="text">
-                            </div>
-                            <div class="form-group">
-                                <label>Description <span class="text-danger">*</span></label>
-                                <textarea v-model="directorate.description" class="form-control"></textarea>
-                            </div>
-                            <div class="submit-section">
-                                <button :disabled="isSending || !!!directorate.title" class="btn btn-primary submit-btn">Submit</button>
-                            </div>
-                        </form>
-                    </div>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+        <form @submit.prevent="saveDirectorate">
+            <div class="form-group row">
+                <label class="col-md-4">Directorate Name <span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <input v-model="directorate.title" class="form-control" type="text">
                 </div>
             </div>
-        </div>
-        <!-- /Directorate Modal -->
+            <div class="form-group row">
+                <label class="col-md-4">Description</label>
+                <div class="col-md-8">
+                    <textarea v-model="directorate.description" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-primary btn-block submit-btn">Submit</button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
@@ -34,40 +25,56 @@
     import {EventBus} from "../../../app";
 
     export default {
-        created(){
-            EventBus.$on('editDirectorate',this.editDirectorate);
+        created() {
+            EventBus.$on('EDIT_DIRECTORATE', this.editDirectorate);
         },
         data() {
             return {
                 directorate: new Directorate(),
+                isEditing: false,
                 isSending: false,
             };
         },
+        computed: {
+            title() {
+                if (!!this.directorate.id) {
+                    return "Edit Directorate";
+                }
+                return "New Directorate";
+            },
+            formInvalid() {
+                return this.isSending || !!!this.directorate.title;
+            }
+        },
         methods: {
-            editDirectorate(directorate) {
-                this.directorate = directorate;
-                console.log(directorate);
-                $(this.$refs.directorateModal).modal('show');
+            editDirectorate(directorate = null) {
+                if (!!directorate) {
+                    this.directorate = directorate;
+                } else {
+                    this.directorate = new Directorate();
+                }
+                this.isEditing = true;
             },
             async saveDirectorate() {
                 try {
-                    this.isSending =  true;
-                    let response = await this.$store.dispatch('SAVE_DIRECTORATE',this.directorate);
+                    this.isSending = true;
+                    let response = await this.$store.dispatch('SAVE_DIRECTORATE', this.directorate);
                     toastr.success(response);
-                    this.closePreview();
+                    this.resetForm();
                     this.isSending = false;
-                    EventBus.$emit('directorateSaved');
+                    EventBus.$emit('DIRECTORATE_SAVED');
                 } catch (error) {
-                    console.log(error);
-                    //toastr.error(error);
-                    swal({title: error,icon: 'error'});
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                     this.isSending = false;
                 }
             },
-            closePreview() {
+            resetForm() {
                 this.directorate = new Directorate();
-                $(this.$refs.directorateModal).modal('hide');
-                $('.modal-backdrop').remove();
+                this.isEditing = false;
+                $(".modal-backdrop").remove();
             },
         },
     }

@@ -34,17 +34,6 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Start Date <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <app-date-range-picker
-                        v-model="stage.startDate"
-                        :value="stage.startDate"
-                        :config="dateConfig"
-                        :key="Math.random()"
-                    />
-                </div>
-            </div>
-            <div class="form-group row">
                 <label class="col-sm-4">Due Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <app-date-range-picker
@@ -129,7 +118,7 @@
                 return (!!this.stage.id) ? "Edit Stage" : "Add Stage";
             },
             formInvalid() {
-                return this.isSending || !(!!this.stage.activityId && !!this.stage.title && !!this.stage.startDate && !!this.stage.dueDate && this.$moment(this.stage.startDate).isBefore(this.stage.dueDate));
+                return this.isSending || !(!!this.stage.activityId && !!this.stage.title && !!this.stage.dueDate);
             },
             selectedActivity() {
                 if (!this.workPlan) {
@@ -141,7 +130,7 @@
         watch: {
             selectedActivity(newVal, oldVal) {
                 if (!!this.selectedActivity) {
-                    this.dateConfig.minDate = this.selectedActivity.startDate;
+                    this.dateConfig.minDate = this.workPlan.startDate;
                     this.dateConfig.maxDate = this.selectedActivity.dueDate;
                 }
             }

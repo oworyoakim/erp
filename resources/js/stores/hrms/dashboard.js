@@ -11,7 +11,7 @@ export default {
         },
     },
     getters: {
-        GET_DASHBOARD_STATISTICS: (state) => {
+        DASHBOARD_STATISTICS: (state) => {
             return state.dashboardStatistics;
         },
     },

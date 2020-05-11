@@ -2,69 +2,60 @@ import axios from "axios";
 import routes from "../../routes";
 import educationsModule from './education';
 import experiencesModule from './experiences';
+import bankModule from './bank';
+import relatedPersonsModule from './related-persons';
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     modules: {
         educations: educationsModule,
         experiences: experiencesModule,
+        bank: bankModule,
+        relatedPersons: relatedPersonsModule,
     },
     state: {
         employees: [],
+        activeEmployee: null,
     },
     getters: {
-        GET_EMPLOYEES: (state) => {
+        EMPLOYEES: (state) => {
             return state.employees;
+        },
+        ACTIVE_EMPLOYEE: (state) => {
+            return state.activeEmployee;
         },
     },
     mutations: {
         SET_EMPLOYEES: (state, payload) => {
             state.employees = payload || [];
         },
+        SET_ACTIVE_EMPLOYEE: (state, payload) => {
+            state.activeEmployee = payload || null;
+        },
     },
     actions: {
         GET_EMPLOYEES: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.name) {
-                    params.push('name=' + payload.name);
-                }
-                if (!!payload.employee_status) {
-                    params.push('employee_status=' + payload.employee_status);
-                }
-                if (!!payload.employment_status) {
-                    params.push('employment_status=' + payload.employment_status);
-                }
-                if (!!payload.employment_term) {
-                    params.push('employment_term=' + payload.employment_term);
-                }
-                if (!!payload.employment_type) {
-                    params.push('employment_type=' + payload.employment_type);
-                }
-                if (!!payload.designation_id) {
-                    params.push('designation_id=' + payload.designation_id);
-                }
-                if (!!payload.department_id) {
-                    params.push('department_id=' + payload.department_id);
-                }
-                if (!!payload.directorate_id) {
-                    params.push('directorate_id=' + payload.directorate_id);
-                }
-                if (!!payload.division_id) {
-                    params.push('division_id=' + payload.division_id);
-                }
-                if (!!payload.section_id) {
-                    params.push('section_id=' + payload.section_id);
-                }
-                if (!!payload.scope) {
-                    params.push('scope=' + payload.scope);
-                }
-                let queryParam = params.join('&');
-                let response = await axios.get(routes.EMPLOYEES_JSON + '?' + queryParam);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.EMPLOYEES + "/all-json" + queryParams);
                 commit('SET_EMPLOYEES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+        GET_ACTIVE_EMPLOYEE: async ({commit}, payload) => {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.EMPLOYEES + '/details' + queryParams);
+                commit('SET_ACTIVE_EMPLOYEE', response.data);
+                return Promise.resolve('Ok');
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_EMPLOYEE: async ({commit}, payload) => {
@@ -79,41 +70,57 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DELETE_EMPLOYEE: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.EMPLOYEES + '?employee_id=' + payload);
+                let response = await axios.delete(routes.EMPLOYEES + '?employeeId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+        GET_EMPLOYEE_PROFILE: async ({commit}, payload) => {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.EMPLOYEES + '/profile-data' + queryParams);
+                commit('SET_ACTIVE_EMPLOYEE', response.data);
+                return Promise.resolve('Ok');
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         UPDATE_PROFILE: async ({commit}, payload) => {
             try {
-                let response = await axios.patch(routes.EMPLOYEES_PROFILE + '/' + payload.username, payload);
+                let response = await axios.patch(routes.EMPLOYEES + '/profile/' + payload.username, payload);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         UPLOAD_PROFILE_PICTURE: async ({commit}, payload) => {
             try {
-                let response = await axios.post(routes.EMPLOYEES + '/upload-profile-picture', payload,{
+                let response = await axios.post(routes.EMPLOYEES + '/upload-profile-picture', payload, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
                 axios.defaults.headers.common['Content-Type'] = 'application/json';
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

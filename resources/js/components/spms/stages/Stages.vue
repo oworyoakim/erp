@@ -49,7 +49,11 @@
                     <tbody>
                     <tr v-for="stage in stages" :key="stage.id">
                         <th>{{stage.title}}</th>
-                        <td>{{$moment(stage.startDate).format("DD MMM, YYYY")}}</td>
+                        <td>
+                            <template v-if="!!stage.startDate">
+                                {{$moment(stage.startDate).format("DD MMM, YYYY")}}
+                            </template>
+                        </td>
                         <td>{{$moment(stage.dueDate).format("DD MMM, YYYY")}}</td>
                         <td>
                             <template v-if="!!stage.endDate">
@@ -121,8 +125,8 @@
                 });
             },
         },
-        watch:{
-            interventionId(newValue,oldValue){
+        watch: {
+            interventionId(newValue, oldValue) {
                 this.activityId = '';
             },
         },

@@ -1,37 +1,39 @@
 import axios from "axios";
 import routes from "../../routes";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     state:{
         departments: [],
+        activeDepartment: null,
     },
     getters:{
-        GET_DEPARTMENTS: (state) => {
+        DEPARTMENTS: (state) => {
             return state.departments;
+        },
+        ACTIVE_DEPARTMENT: (state) => {
+            return state.activeDepartment;
         },
     },
     mutations:{
         SET_DEPARTMENTS: (state, payload) => {
             state.departments = payload || [];
         },
+        SET_ACTIVE_DEPARTMENT: (state, payload) => {
+            state.activeDepartment = payload || null;
+        },
     },
     actions:{
         GET_DEPARTMENTS: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.directorate_id) {
-                    params.push('directorate_id=' + payload.directorate_id);
-                }
-                if (!!payload.scope) {
-                    params.push('scope=' + payload.scope);
-                }
-                let queryParams = params.join('&');
-                let response = await axios.get(routes.DEPARTMENTS_JSON + '?' + queryParams);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.DEPARTMENTS + '/all-json' +  queryParams);
                 commit('SET_DEPARTMENTS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_DEPARTMENT: async ({commit}, payload) => {
@@ -46,20 +48,32 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DELETE_DEPARTMENT: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.DEPARTMENTS + '?department_id=' + payload);
+                let response = await axios.delete(routes.DEPARTMENTS + '?departmentId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+        GET_ACTIVE_DEPARTMENT: async ({commit}, payload) => {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.DEPARTMENTS + '/details' + queryParams);
+                commit('SET_ACTIVE_DEPARTMENT', response.data);
+                return Promise.resolve("Ok");
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     },

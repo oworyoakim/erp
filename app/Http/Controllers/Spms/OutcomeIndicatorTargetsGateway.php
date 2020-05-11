@@ -2,17 +2,14 @@
 
 namespace App\Http\Controllers\Spms;
 
-use App\Http\Controllers\Controller;
-use App\Traits\MakesRemoteHttpRequests;
+use App\Http\Controllers\GatewayController;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class OutcomeIndicatorTargetsGateway extends Controller
+class OutcomeIndicatorTargetsGateway extends GatewayController
 {
-    use MakesRemoteHttpRequests;
-
     public function __construct()
     {
         $this->urlEndpoint = env('SPMS_URL') . '/v1/outcome-indicator-targets';

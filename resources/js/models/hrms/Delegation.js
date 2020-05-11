@@ -1,13 +1,13 @@
 export default class Delegation {
     constructor() {
         this.id = null;
-        this.delegatedId = '';
+        this.delegatedId = null;
         this.delegated = null;
-        this.delegatedDesignationId = '';
+        this.delegatedDesignationId = null;
         this.delegatedDesignation = null;
-        this.substantiveId = '';
+        this.substantiveId = null;
         this.substantive = null;
-        this.substantiveDesignationId = '';
+        this.substantiveDesignationId = null;
         this.substantiveDesignation = null;
         this.effectiveFrom = 'now';
         this.reason = '';
