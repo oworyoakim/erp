@@ -26,7 +26,7 @@
             <td>{{employee.employeeNumber}}</td>
             <td>{{employee.email}}</td>
             <td>{{employee.mobile}}</td>
-            <td>{{$moment(employee.dateJoined).format('MMM D YYYY')}}</td>
+            <td>{{$moment(employee.joinDate).format('MMM D YYYY')}}</td>
             <td>{{employee.designation.title}}</td>
             <td>{{employee.employeeStatus}}</td>
             <td class="text-right">

@@ -1,100 +1,88 @@
 <template>
-    <!-- EmployeeDocument Modal -->
-    <div ref="employeeDocumentModal" id="employeeDocumentModal" class="modal custom-modal fade" role="dialog"
-         tabindex="-1"
-         data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Document Form</h5>
-                    <button @click="closePreview()" type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="saveEmployeeDocument" ref="employeeDocumentForm">
-                        <div class="form-group row">
-                            <label class="col-sm-4">Category</label>
-                            <div class="col-sm-8">
-                                <select v-model="employeeDocument.documentCategoryId"
-                                        class="form-control"
-                                        :disabled="!!employeeDocument.id"
-                                        required>
-                                    <option value="">Select category...</option>
-                                    <option v-for="documentCategory in documentCategories"
-                                            :value="documentCategory.value"
-                                            v-text="documentCategory.text"></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Document Type</label>
-                            <div class="col-sm-8">
-                                <select v-model="employeeDocument.documentTypeId"
-                                        class="form-control"
-                                        :disabled="!!employeeDocument.id"
-                                        required>
-                                    <option value="">Select type...</option>
-                                    <option v-for="documentType in documentTypes" :value="documentType.value"
-                                            v-text="documentType.text"></option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Title <span class="text-danger">*</span></label>
-                            <div class="col-sm-8">
-                                <input v-model="employeeDocument.title"
-                                       type="text"
-                                       class="form-control"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Description</label>
-                            <div class="col-sm-8">
-                                <textarea v-model="employeeDocument.description" class="form-control"></textarea>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-sm-4">Document<br/><small>(Allowed formats: jpeg, jpg, png, bmp,
-                                pdf)</small></label>
-                            <div class="col-sm-8">
-                                <input type="file"
-                                       class="form-control"
-                                       accept=".png, .jpg, .jpeg, .bmp, .pdf"
-                                       v-on:change="employeeDocument.path = $event.target.files[0]"
-                                       ref="employeeDocumentFile"
-                                       required>
-                            </div>
-                        </div>
-                        <div class="submit-section">
-                            <button
-                                :disabled="isSending || !(!!employeeDocument.title && !!employeeDocument.documentCategoryId && !!employeeDocument.path)"
-                                class="btn btn-primary submit-btn">Submit
-                            </button>
-                        </div>
-                    </form>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+        <form @submit.prevent="saveEmployeeDocument" ref="employeeDocumentForm">
+            <div class="form-group row">
+                <label class="col-sm-4">Category</label>
+                <div class="col-sm-8">
+                    <select v-model="employeeDocument.documentCategoryId"
+                            class="form-control"
+                            :disabled="!!employeeDocument.id"
+                            required>
+                        <option value="">Select category...</option>
+                        <option v-for="documentCategory in documentCategories"
+                                :value="documentCategory.value"
+                                v-text="documentCategory.text"></option>
+                    </select>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- /EmployeeDocument Modal -->
+            <div class="form-group row">
+                <label class="col-sm-4">Document Type</label>
+                <div class="col-sm-8">
+                    <select v-model="employeeDocument.documentTypeId"
+                            class="form-control"
+                            :disabled="!!employeeDocument.id"
+                            required>
+                        <option value="">Select type...</option>
+                        <option v-for="documentType in documentTypes" :value="documentType.value"
+                                v-text="documentType.text"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Title <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <input v-model="employeeDocument.title"
+                           type="text"
+                           class="form-control"
+                           required>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Description</label>
+                <div class="col-sm-8">
+                    <textarea v-model="employeeDocument.description" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Document<br/>
+                    <small>(Allowed formats: jpeg, jpg, png, bmp, pdf)</small>
+                </label>
+                <div class="col-sm-8">
+                    <input type="file"
+                           class="form-control"
+                           accept=".png, .jpg, .jpeg, .bmp, .pdf"
+                           v-on:change="employeeDocument.path = $event.target.files[0]"
+                           ref="employeeDocumentFile"
+                           required>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-primary btn-block submit-btn">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Submit</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
-    import EmployeeDocument from "../../../models/hrms/EmployeeDocument";
     import {mapGetters} from "vuex";
+    import EmployeeDocument from "../../../models/hrms/EmployeeDocument";
     import {EventBus} from "../../../app";
 
     export default {
         props: {
             employeeId: Number,
-            employeeDocuments: Array,
+            employeeNumber: String,
+            employeeDocuments: {type: Array, default: () => []},
+        },
+        created() {
+            EventBus.$on("UPLOAD_EMPLOYEE_DOCUMENT", this.uploadDocument);
         },
         computed: {
             ...mapGetters({
-                formSelectionOptions: 'getFormSelections',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
             documentCategories() {
                 return this.formSelectionOptions.documentCategories.filter((category) => {
@@ -118,20 +106,34 @@
                         text: documentType.title,
                     }
                 });
-            }
+            },
+            title(){
+                return (!!this.employeeId && !!this.employeeNumber) ? "Upload Employee Document" : "Upload Company Document";
+            },
+            formInvalid(){
+                return this.isSending || !(!!this.employeeDocument.title && !!this.employeeDocument.documentCategoryId && !!this.employeeDocument.path);
+            },
         },
         data() {
             return {
                 isSending: false,
+                isEditing: false,
                 employeeDocument: new EmployeeDocument(),
             }
         },
         methods: {
+            uploadDocument(){
+                this.employeeDocument = new EmployeeDocument();
+                this.$refs.employeeDocumentForm.reset();
+                this.$refs.employeeDocumentFile.value = '';
+                this.isEditing = true;
+            },
             async saveEmployeeDocument() {
                 try {
                     this.employeeDocument.employeeId = this.employeeId || null;
+                    this.employeeDocument.employeeNumber = this.employeeNumber || null;
                     let maxSize = 1024 * 1024;
-                    if(this.employeeDocument.path.size > maxSize){
+                    if (this.employeeDocument.path.size > maxSize) {
                         await swal({
                             title: "Your file is larger than  1MB.",
                             icon: 'error',
@@ -140,7 +142,7 @@
                     }
                     let allowedFileFormats = ['image/jpeg', 'image/jpg', 'image/bmp', 'image/png', 'application/pdf'];
                     console.log(this.employeeDocument.path);
-                    if(!allowedFileFormats.includes(this.employeeDocument.path.type)){
+                    if (!allowedFileFormats.includes(this.employeeDocument.path.type)) {
                         await swal({
                             title: "The allowed file formats are: mimes,jpeg,jpg,bmp,png,pdf.",
                             icon: 'error',
@@ -148,9 +150,9 @@
                         return;
                     }
                     let employeeDocument = this.employeeDocuments.find((doc) => {
-                       return doc.documentTypeId === this.employeeDocument.documentTypeId;
+                        return doc.documentTypeId === this.employeeDocument.documentTypeId;
                     });
-                    if(!!employeeDocument){
+                    if (!!employeeDocument) {
                         let isConfirmed = await swal({
                             title: `You already have a ${employeeDocument.documentType.title} document.`,
                             text: 'Would you want to replace it?',
@@ -162,34 +164,39 @@
                             closeOnClickOutside: false
                         });
                         console.log(isConfirmed);
-                        if(!isConfirmed){
-                            return this.closePreview();
+                        if (!isConfirmed) {
+                            return this.resetForm();
                         }
                     }
                     const formData = new FormData();
-                    Object.keys(this.employeeDocument).forEach(key => formData.append(key, this.employeeDocument[key]));
+                    Object.keys(this.employeeDocument).forEach((key) => {
+                        if(!!this.employeeDocument[key]){
+                            formData.append(key, this.employeeDocument[key]);
+                        }
+                    });
                     //console.log(this.employeeDocument);
                     console.log(formData);
                     this.isSending = true;
                     let response = await this.$store.dispatch('SAVE_EMPLOYEE_DOCUMENT', formData);
                     this.isSending = false;
-                    let message = document.createElement('div');
-                    message.innerHTML = response;
-                    await swal({content: message});
-                    EventBus.$emit('SAVE_EMPLOYEE_DOCUMENT');
-                    this.closePreview();
+                    await swal(response);
+                    EventBus.$emit('EMPLOYEE_DOCUMENT_SAVED');
+                    this.resetForm();
                 } catch (error) {
                     this.isSending = false;
                     this.$refs.employeeDocumentForm.reset();
                     this.$refs.employeeDocumentFile.value = '';
-                    await swal({title: error, icon: 'error'});
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                 }
             },
-            closePreview() {
+            resetForm() {
                 this.employeeDocument = new EmployeeDocument();
-                $(this.$refs.employeeDocumentModal).modal('hide');
                 this.$refs.employeeDocumentForm.reset();
                 this.$refs.employeeDocumentFile.value = '';
+                this.isEditing = false;
                 $('.modal-backdrop').remove();
             },
         }

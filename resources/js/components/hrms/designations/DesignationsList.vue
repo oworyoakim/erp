@@ -15,9 +15,17 @@
         <tr v-for="designation in designations">
             <td>{{designation.id}}</td>
             <td>{{designation.title}}</td>
-            <td>{{designation.max_holders}}</td>
-            <td>{{designation.department ? designation.department.title : ''}}</td>
-            <td>{{designation.directorate ? designation.directorate.title : ''}}</td>
+            <td>{{designation.maxHolders}}</td>
+            <td>
+                <template v-if="!!designation.department">
+                    {{designation.department.title}}
+                </template>
+            </td>
+            <td>
+                <template v-if="!!designation.directorate">
+                    {{designation.directorate.title}}
+                </template>
+            </td>
             <td>{{designation.summary}}</td>
             <td class="text-right">
                 <div class="dropdown dropdown-action">
@@ -26,7 +34,7 @@
                     <div class="dropdown-menu dropdown-menu-right">
                         <a @click="editDesignation(designation)" class="dropdown-item" href="#"><i
                             class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a @click="deleteDesignation(designation.id)" class="dropdown-item" href="#"><i
+                        <a @click="deleteDesignation(designation)" class="dropdown-item" href="#"><i
                             class="fa fa-trash-o m-r-5"></i> Delete</a>
                     </div>
                 </div>
@@ -45,10 +53,10 @@
             scope: String,
         },
         methods: {
-            editDesignation(designation) {
-                EventBus.$emit('editDesignation', designation);
+            editDesignation(designation = null) {
+                EventBus.$emit('EDIT_DESIGNATION', designation);
             },
-            async deleteDesignation(id) {
+            async deleteDesignation(designation) {
                 try {
                     let isConfirm = await swal({
                         title: 'Are you sure?',
@@ -62,9 +70,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_DESIGNATION', id);
+                        let response = await this.$store.dispatch('DELETE_DESIGNATION', designation.id);
                         toastr.success(response);
-                        EventBus.$emit('designationDeleted');
+                        EventBus.$emit('DESIGNATION_DELETED');
                     }
                 } catch (error) {
                     console.log(error);

@@ -103,6 +103,7 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                 Route::get('create', 'HrmsController@createEmployee')->name('hrms.employees.create');
                 Route::get('all-json', 'EmployeesGateway@index');
                 Route::get('profile-data', 'EmployeesGateway@profileData');
+                Route::post('', 'EmployeesGateway@store');
 
                 // employees/education
                 Route::get('education', 'EducationInfoGateway@index');
@@ -158,23 +159,25 @@ Route::group(['middleware' => ['ensure.authenticated']], function () {
                 //Route::delete('', 'LeaveApplicationsController@delete')->name('hrms.leaves.applications.delete');
 
             });
-            // DELEGATIONS
+
+            // delegations
             Route::group(['prefix' => 'delegations'], function () {
                 Route::get('', 'HrmsController@delegations')->name('hrms.delegations');
-                //Route::get('all-json', 'DelegationsController@index')->name('hrms.delegations.all-json');
-                //Route::post('', 'DelegationsController@store')->name('hrms.delegations.create');
-                //Route::put('', 'DelegationsController@update')->name('hrms.delegations.update');
-                //Route::delete('', 'DelegationsController@delete')->name('hrms.delegations.delete');
+                Route::get('all-json', 'DelegationsGateway@index');
+                Route::post('', 'DelegationsGateway@store');
+                Route::put('', 'DelegationsGateway@update');
+                //Route::delete('', 'DelegationsGateway@delete');
             });
 
-            // DOCUMENTS
+            // documents
             Route::group(['prefix' => 'documents'], function () {
                 Route::get('', 'HrmsController@documents')->name('hrms.documents');
-                //Route::get('all-json', 'DocumentsController@index')->name('hrms.documents.all-json');
-                //Route::post('', 'DocumentsController@store')->name('hrms.documents.create');
+                Route::get('all-json', 'DocumentsGateway@index');
+                Route::post('', 'DocumentsGateway@store');
             });
         });
 
+        // SPMS
         Route::prefix('spms')->namespace('Spms')->group(function () {
 
             Route::get('', 'SpmsController@indexSpms')->name('spms.dashboard');

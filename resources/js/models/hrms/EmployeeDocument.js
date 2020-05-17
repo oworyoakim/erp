@@ -2,6 +2,7 @@ export default class EmployeeDocument {
     constructor(){
         this.id = null;
         this.employeeId = '';
+        this.employeeNumber = '';
         this.title = '';
         this.description = '';
         this.type = '';

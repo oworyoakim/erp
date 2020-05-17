@@ -7,12 +7,12 @@ export default {
         designations: [],
     },
     getters: {
-        GET_DESIGNATIONS: (state) => {
+        DESIGNATIONS(state) {
             return state.designations;
         },
     },
     mutations: {
-        SET_DESIGNATIONS: (state, payload) => {
+        SET_DESIGNATIONS(state, payload){
             state.designations = payload || [];
         },
     },

@@ -1,5 +1,6 @@
 import axios from "axios";
 import routes from "../../routes";
+import {resolveError} from "../../utils/helpers";
 export default {
     state: {
         dashboardStatistics: {
@@ -27,8 +28,9 @@ export default {
                 commit('SET_DASHBOARD_STATISTICS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.log(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

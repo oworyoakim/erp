@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="create-employee">
         <!-- Page Header -->
         <div class="page-header">
             <div class="row align-items-center">
@@ -7,13 +7,14 @@
                     <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <a href="/employees" class="btn btn-dark"><i class="fa fa-list"></i> Back</a>
+                    <a href="/hrms/employees" class="btn btn-dark"><i class="fa fa-list"></i> Back</a>
                 </div>
             </div>
         </div>
         <!-- /Page Header -->
-        <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-        <div v-else class="card card-body">
+        <app-spinner v-if="isLoading"></app-spinner>
+        <template v-else>
+            <div class="card card-body">
             <form @submit.prevent="saveEmployee()">
                 <fieldset v-if="step === 1">
                     <h2 class="mb-2 border-bottom">Basic Information</h2>
@@ -39,10 +40,10 @@
                                 <label class="col-form-label col-sm-4">First Name <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <input v-model="employee.first_name" class="form-control"
-                                           v-bind:class="{'is-invalid': !!errors.first_name}" type="text">
-                                    <span v-if="!!errors.first_name" class="invalid-feedback"
-                                          v-text="errors.first_name"></span>
+                                    <input v-model="employee.firstName" class="form-control"
+                                           v-bind:class="{'is-invalid': !!errors.firstName}" type="text">
+                                    <span v-if="!!errors.firstName" class="invalid-feedback"
+                                          v-text="errors.firstName"></span>
                                 </div>
                             </div>
                         </div>
@@ -50,11 +51,11 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-4">Middle Name</label>
                                 <div class="col-sm-8">
-                                    <input v-model="employee.middle_name"
-                                           v-bind:class="{'is-invalid': !!errors.middle_name}"
+                                    <input v-model="employee.middleName"
+                                           v-bind:class="{'is-invalid': !!errors.middleName}"
                                            class="form-control" type="text">
-                                    <span v-if="!!errors.middle_name" class="invalid-feedback"
-                                          v-text="errors.middle_name"></span>
+                                    <span v-if="!!errors.middleName" class="invalid-feedback"
+                                          v-text="errors.middleName"></span>
                                 </div>
                             </div>
                         </div>
@@ -63,11 +64,11 @@
                                 <label class="col-form-label col-sm-4">Last Name <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <input v-model="employee.last_name"
-                                           v-bind:class="{'is-invalid': !!errors.last_name}"
+                                    <input v-model="employee.lastName"
+                                           v-bind:class="{'is-invalid': !!errors.lastName}"
                                            class="form-control" type="text">
-                                    <span v-if="!!errors.last_name" class="invalid-feedback"
-                                          v-text="errors.last_name"></span>
+                                    <span v-if="!!errors.lastName" class="invalid-feedback"
+                                          v-text="errors.lastName"></span>
                                 </div>
                             </div>
                         </div>
@@ -97,6 +98,7 @@
                                     <app-date-range-picker :config="dobConfig"
                                                          v-model="employee.dob"
                                                          :value="employee.dob"
+                                                         key="dob"
                                                          :has-errors="!!errors.dob">
                                     </app-date-range-picker>
                                     <span v-if="!!errors.dob" class="invalid-feedback"
@@ -163,13 +165,13 @@
                                 <label class="col-form-label col-sm-4">Employee ID <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <input v-model="employee.employee_number"
-                                           @keyup="employee.employee_number = employee.employee_number.toUpperCase()"
-                                           v-bind:class="{'is-invalid': !!errors.employee_number}" type="text"
+                                    <input v-model="employee.employeeNumber"
+                                           @keyup="employee.employeeNumber = employee.employeeNumber.toUpperCase()"
+                                           v-bind:class="{'is-invalid': !!errors.employeeNumber}" type="text"
                                            class="form-control text-capitalize" readonly>
-                                    <span v-if="!!errors.employee_number"
+                                    <span v-if="!!errors.employeeNumber"
                                           class="invalid-feedback"
-                                          v-text="errors.employee_number"></span>
+                                          v-text="errors.employeeNumber"></span>
                                 </div>
                             </div>
                         </div>
@@ -178,9 +180,9 @@
                                 <label class="col-form-label col-sm-4">Designation <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <select v-model="employee.designation_id"
+                                    <select v-model="employee.designationId"
                                             :disabled="!!employee.id"
-                                            v-bind:class="{'is-invalid': !!errors.designation_id}"
+                                            v-bind:class="{'is-invalid': !!errors.designationId}"
                                             class="form-control"
                                             required>
                                         <option value="">Select designation...</option>
@@ -188,9 +190,12 @@
                                                 :value="designation.id" :key="designation.id">{{designation.title}}
                                         </option>
                                     </select>
-                                    <span v-if="!!errors.designation_id"
+                                    <span v-if="!!errors.designationId"
                                           class="invalid-feedback"
-                                          v-text="errors.designation_id"></span>
+                                          v-text="errors.designationId"></span>
+                                    <a href="javascript:void(0)" class="" @click="editDesignation()">
+                                        <span class="fs-10 text-info">Add Designation</span>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -198,8 +203,8 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-4">Employment Term<span class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <select v-model="employee.employment_term"
-                                            v-bind:class="{'is-invalid': !!errors.employment_term}"
+                                    <select v-model="employee.employmentTerm"
+                                            v-bind:class="{'is-invalid': !!errors.employmentTerm}"
                                             class="form-control select"
                                             required>
                                         <option value="">Select employment term</option>
@@ -207,8 +212,8 @@
                                             {{term.title}}
                                         </option>
                                     </select>
-                                    <span v-if="!!errors.employment_term" class="invalid-feedback"
-                                          v-text="errors.employment_term"></span>
+                                    <span v-if="!!errors.employmentTerm" class="invalid-feedback"
+                                          v-text="errors.employmentTerm"></span>
                                 </div>
                             </div>
                         </div>
@@ -217,8 +222,8 @@
                                 <label class="col-form-label col-sm-4">Employment Type <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <select v-model="employee.employment_type"
-                                            v-bind:class="{'is-invalid': !!errors.employment_type}"
+                                    <select v-model="employee.employmentType"
+                                            v-bind:class="{'is-invalid': !!errors.employmentType}"
                                             class="form-control select"
                                             required>
                                         <option value="">Select employment type</option>
@@ -226,8 +231,8 @@
                                             {{type.title}}
                                         </option>
                                     </select>
-                                    <span v-if="!!errors.employment_type" class="invalid-feedback"
-                                          v-text="errors.employment_type"></span>
+                                    <span v-if="!!errors.employmentType" class="invalid-feedback"
+                                          v-text="errors.employmentType"></span>
                                 </div>
                             </div>
                         </div>
@@ -236,13 +241,14 @@
                                 <label class="col-form-label col-sm-4">Joining Date <span
                                     class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <app-date-range-picker :config="dojConfig"
-                                                           v-model="employee.date_joined"
-                                                           :value="employee.date_joined"
-                                                           :has-errors="!!errors.date_joined">
+                                    <app-date-range-picker :config="joinDateConfig"
+                                                           v-model="employee.joinDate"
+                                                           :value="employee.joinDate"
+                                                           key="joinDate"
+                                                           :has-errors="!!errors.joinDate">
                                     </app-date-range-picker>
-                                    <span v-if="!!errors.date_joined" class="invalid-feedback"
-                                          v-text="errors.date_joined"></span>
+                                    <span v-if="!!errors.joinDate" class="invalid-feedback"
+                                          v-text="errors.joinDate"></span>
                                 </div>
                             </div>
                         </div>
@@ -265,7 +271,7 @@
                             <div class="form-group row">
                                 <label class="col-form-label col-sm-4">Role <span class="text-danger">*</span></label>
                                 <div class="col-sm-8">
-                                    <select v-model="employee.role_id" v-bind:class="{'is-invalid': !!errors.role_id}"
+                                    <select v-model="employee.roleId" v-bind:class="{'is-invalid': !!errors.roleId}"
                                             class="form-control select">
                                         <option value="">Select....</option>
                                         <option v-for="role in formSelectionOptions.roles" :value="role.id"
@@ -273,8 +279,8 @@
                                             {{role.name}}
                                         </option>
                                     </select>
-                                    <span v-if="!!errors.role_id" class="invalid-feedback"
-                                          v-text="errors.role_id"></span>
+                                    <span v-if="!!errors.roleId" class="invalid-feedback"
+                                          v-text="errors.roleId"></span>
                                 </div>
                             </div>
                         </div>
@@ -317,42 +323,62 @@
                             class="fa fa-arrow-left "></i>
                             Previous
                         </button>
-                        <button :disabled="isSending" class="btn btn-primary submit-btn pull-right">Submit
+                        <button :disabled="isSending" class="btn btn-primary submit-btn pull-right">
+                            <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                            <span v-else>Submit</span>
                         </button>
                     </div>
                 </fieldset>
             </form>
         </div>
+            <DesignationForm/>
+        </template>
     </div>
 </template>
 
 <script>
     import Errors from "../../../utils/Errors";
     import Employee from "../../../models/hrms/Employee";
-    import {baseUrl} from "../../../app";
+    import {baseUrl, EventBus} from "../../../app";
     import {mapGetters} from "vuex";
     import routes from "../../../routes";
+    import DesignationForm from "../designations/DesignationForm";
 
     export default {
-        props: ['title', 'nextId'],
+        components: {DesignationForm},
+        props: {
+            title: String,
+        },
         created() {
-            this.getEmployeeAttributes();
-            this.employee = JSON.parse(localStorage.getItem('employee')) || new Employee();
+            this.$store.dispatch("GET_FORM_SELECTIONS_OPTIONS",{});
+            let employee = localStorage.getItem('employee');
+            this.employee = (!!employee) ? JSON.parse(employee) : new Employee();
+            if(!!!this.employee.joinDate){
+                this.employee.joinDate = '';
+            }
+            if(!!!this.employee.dob){
+                this.employee.dob = '';
+            }
+            EventBus.$on(["DESIGNATION_SAVED"], () => {
+                this.$store.dispatch("GET_FORM_SELECTIONS_OPTIONS",{});
+            });
+            /*
             if (!!this.employee.dob) {
                 this.employee.dob = this.$moment(this.employee.dob).format('DD MMM YYYY');
             }
-            if (!!this.employee.date_joined) {
-                this.employee.date_joined = this.$moment(this.employee.date_joined).format('DD MMM YYYY');
+            if (!!this.employee.joinDate) {
+                this.employee.joinDate = this.$moment(this.employee.joinDate).format('DD MMM YYYY');
             } else {
-                this.employee.date_joined = this.$moment().format('DD MMM YYYY');
+                this.employee.joinDate = this.$moment().format('DD MMM YYYY');
             }
+            */
         },
         mounted() {
 
         },
         computed: {
             ...mapGetters({
-                formSelectionOptions: 'getFormSelections',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
         },
         data() {
@@ -362,9 +388,9 @@
                 password: '',
                 errors: new Errors({
                     title: null,
-                    first_name: null,
-                    last_name: null,
-                    middle_name: null,
+                    firstName: null,
+                    lastName: null,
+                    middleName: null,
                     gender: null,
                     dob: null,
                     nin: null,
@@ -372,14 +398,14 @@
                     tin: null,
                     password: null,
                     username: null,
-                    role_id: null,
-                    directorate_id: null,
-                    department_id: null,
-                    designation_id: null,
-                    employment_term: null,
-                    employment_type: null,
-                    employee_number: null,
-                    date_joined: null,
+                    roleId: null,
+                    directorateId: null,
+                    departmentId: null,
+                    designationId: null,
+                    employmentTerm: null,
+                    employmentType: null,
+                    employeeNumber: null,
+                    joinDate: null,
                 }),
                 dobConfig: {
                     showDropdowns: true,
@@ -388,20 +414,20 @@
                     maxDate: this.$moment().subtract(18, 'years'), // 18 years ago
                     opens: "center",
                     locale: {
-                        format: 'DD MMM YYYY'
+                        format: 'YYYY-MM-DD'
                     }
                 },
-                dojConfig: {
+                joinDateConfig: {
                     showDropdowns: true,
                     singleDatePicker: true,
                     maxDate: this.$moment(), // today
                     opens: "center",
                     locale: {
-                        format: 'DD MMM YYYY'
+                        format: 'YYYY-MM-DD'
                     }
                 },
                 breadcrumbItems: [
-                    {href: '/employees', text: 'Employees', class: ''},
+                    {href: '/hrms/employees', text: 'Employees', class: ''},
                     {href: '#', text: this.title, class: 'active'},
                 ],
                 isLoading: false,
@@ -409,39 +435,29 @@
             };
         },
         methods: {
-            async getEmployeeAttributes() {
-                try {
-                    if (!!!this.employee.id) {
-                        this.employee.designation_id = '';
-                    }
-                    await this.$store.dispatch('getFormSelections', this.employee);
-                } catch (error) {
-                    toastr.error(error);
-                }
-            },
             prev() {
                 this.step--;
             },
             validateBasicInfo() {
-                if (!!!this.employee.first_name) {
+                if (!!!this.employee.firstName) {
                     this.errors.set('first_name', 'First name is required');
-                } else if (String(this.employee.first_name).trim().length < 3) {
+                } else if (String(this.employee.firstName).trim().length < 3) {
                     this.errors.set('first_name', 'First name must have 3 or more characters long');
-                } else if (this.errors.first_name) {
-                    this.errors.clear('first_name');
+                } else if (this.errors.firstName) {
+                    this.errors.clear('firstName');
                 }
-                if (!!!this.employee.last_name) {
-                    this.errors.set('last_name', 'Last name is required');
-                } else if (String(this.employee.last_name).trim().length < 3) {
-                    this.errors.set('last_name', 'Last name must have 3 or more characters long');
-                } else if (this.errors.last_name) {
-                    this.errors.clear('last_name');
+                if (!!!this.employee.lastName) {
+                    this.errors.set('lastName', 'Last name is required');
+                } else if (String(this.employee.lastName).trim().length < 3) {
+                    this.errors.set('lastName', 'Last name must have 3 or more characters long');
+                } else if (this.errors.lastName) {
+                    this.errors.clear('lastName');
                 }
 
-                if (!!this.employee.middle_name && String(this.employee.middle_name).trim().length < 3) {
-                    this.errors.set('middle_name', 'Middle name must have 3 or more characters long');
-                } else if (this.errors.middle_name) {
-                    this.errors.clear('middle_name');
+                if (!!this.employee.middleName && String(this.employee.middleName).trim().length < 3) {
+                    this.errors.set('middleName', 'Middle name must have 3 or more characters long');
+                } else if (this.errors.middleName) {
+                    this.errors.clear('middleName');
                 }
 
                 if (String(this.employee.gender).trim().length === 0) {
@@ -501,15 +517,15 @@
 
                 localStorage.setItem('employee', JSON.stringify(this.employee));
 
-                if (this.errors.has('first_name') || this.errors.has('last_name') || this.errors.has('middle_name') || this.errors.has('nin') || this.errors.has('nssf') || this.errors.has('tin') || this.errors.has('dob') || this.errors.has('gender')) {
+                if (this.errors.has('firstName') || this.errors.has('lastName') || this.errors.has('middleName') || this.errors.has('nin') || this.errors.has('nssf') || this.errors.has('tin') || this.errors.has('dob') || this.errors.has('gender')) {
                     return;
                 }
-                let initials = this.employee.last_name[0] + this.employee.first_name[0];
-                if (!!this.employee.middle_name) {
-                    initials += this.employee.middle_name[0];
+                let initials = this.employee.lastName[0] + this.employee.firstName[0];
+                if (!!this.employee.middleName) {
+                    initials += this.employee.middleName[0];
                 }
                 initials = initials.toUpperCase();
-                this.employee.employee_number = `PF/${initials}/${this.nextId}`;
+                this.employee.employeeNumber = `PF/${initials}/${this.formSelectionOptions.nextEmployeeId}`;
 
                 this.step++;
             },
@@ -526,50 +542,50 @@
                 }
                  */
 
-                if (String(this.employee.designation_id).trim().length === 0) {
-                    this.errors.set('designation_id', 'Please select a designation');
+                if (String(this.employee.designationId).trim().length === 0) {
+                    this.errors.set('designationId', 'Please select a designation');
                 } else {
                     let designation = this.formSelectionOptions.designations.find((desig) => {
-                        return desig.id == this.employee.designation_id;
+                        return desig.id == this.employee.designationId;
                     });
                     if (!!designation && designation.numHolders >= designation.maxHolders) {
-                        this.errors.set('designation_id', "This position is filled up. Contact Head of HR!");
-                    } else if (this.errors.has('designation_id')) {
-                        this.errors.clear('designation_id');
+                        this.errors.set('designationId', "This position is filled up. Contact Head of HR!");
+                    } else if (this.errors.has('designationId')) {
+                        this.errors.clear('designationId');
                     }
                 }
 
-                if (String(this.employee.employment_term).trim().length === 0) {
-                    this.errors.set('employment_term', 'Please select an employment term');
-                } else if (this.errors.has('employment_term')) {
-                    this.errors.clear('employment_term');
+                if (String(this.employee.employmentTerm).trim().length === 0) {
+                    this.errors.set('employmentTerm', 'Please select an employment term');
+                } else if (this.errors.has('employmentTerm')) {
+                    this.errors.clear('employmentTerm');
                 }
 
-                if (String(this.employee.employment_type).trim().length === 0) {
-                    this.errors.set('employment_type', 'Please select an employment type');
-                } else if (this.errors.has('employment_type')) {
-                    this.errors.clear('employment_type');
+                if (String(this.employee.employmentType).trim().length === 0) {
+                    this.errors.set('employmentType', 'Please select an employment type');
+                } else if (this.errors.has('employmentType')) {
+                    this.errors.clear('employmentType');
                 }
 
-                let date_joined = String(this.employee.date_joined).trim();
-                if (date_joined.length === 0 || !this.$moment(date_joined).isValid()) {
-                    this.errors.set('date_joined', 'Please enter a valid joining date');
-                } else if (this.$moment(this.employee.date_joined).isAfter(this.$moment())) {
-                    this.errors.set('date_joined', 'The joining date cannot be higher than today');
-                } else if (this.errors.date_joined) {
-                    this.errors.clear('date_joined');
+                let joinDate = String(this.employee.joinDate).trim();
+                if (joinDate.length === 0 || !this.$moment(joinDate).isValid()) {
+                    this.errors.set('joinDate', 'Please enter a valid joining date');
+                } else if (this.$moment(this.employee.joinDate).isAfter(this.$moment())) {
+                    this.errors.set('joinDate', 'The joining date cannot be higher than today');
+                } else if (this.errors.joinDate) {
+                    this.errors.clear('joinDate');
                 }
                 localStorage.setItem('employee', JSON.stringify(this.employee));
-                if (this.errors.has('employee_number') || this.errors.has('designation_id') || this.errors.has('employment_term') || this.errors.has('employment_type') || this.errors.has('date_joined')) {
+                if (this.errors.has('employeeNumber') || this.errors.has('designationId') || this.errors.has('employmentTerm') || this.errors.has('employmentType') || this.errors.has('joinDate')) {
                     return;
                 }
                 this.step++;
             },
             isInvalidLoginInfo() {
-                if (String(this.employee.role_id).trim().length === 0) {
-                    this.errors.set('role_id', 'Please select a user group');
-                } else if (this.errors.has('role_id')) {
-                    this.errors.clear('role_id');
+                if (String(this.employee.roleId).trim().length === 0) {
+                    this.errors.set('roleId', 'Please select a user group');
+                } else if (this.errors.has('roleId')) {
+                    this.errors.clear('roleId');
                 }
                 if (String(this.employee.username).trim().length === 0) {
                     this.errors.set('username', 'Username is required');
@@ -587,7 +603,7 @@
                     this.errors.clear('password');
                 }
                 localStorage.setItem('employee', JSON.stringify(this.employee));
-                return this.errors.has('username') || this.errors.has('password') || this.errors.has('role_id');
+                return this.errors.has('username') || this.errors.has('password') || this.errors.has('roleId');
             },
 
             async saveEmployee() {
@@ -605,15 +621,22 @@
                         window.location = baseUrl + routes.EMPLOYEES;
                     });
                 } catch (error) {
-                    console.log(error);
-                    toastr.error(error);
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                     this.isSending = false;
                 }
+            },
+            editDesignation(designation = null) {
+                EventBus.$emit("EDIT_DESIGNATION", designation);
             },
         },
     }
 </script>
 
 <style scoped>
-
+    .fs-10{
+        font-size: 10px !important;
+    }
 </style>

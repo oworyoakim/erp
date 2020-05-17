@@ -25,6 +25,7 @@
 - Run `npm install`
 - Run `cp .env.example .env`
 - Run `php artisan key:generate`
+- Run `php artisan storage:link`
 - Set Database configuration parameters in .env file
 - Set HRMS_URL and SPMS_URL environment variable in .env file matching the url and ports that you set while setting up the microservices.
 - Run `php artisan migrate --seed`

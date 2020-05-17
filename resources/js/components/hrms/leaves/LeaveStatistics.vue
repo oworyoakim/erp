@@ -2,14 +2,16 @@
     <!-- Leave Statistics -->
     <div class="row">
         <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6" v-for="stat in stats">
-            <app-dashboard-widget :stat="stat"></app-dashboard-widget>
+            <DashboardWidget :stat="stat"/>
         </div>
     </div>
     <!-- /Leave Statistics -->
 </template>
 
 <script>
+    import DashboardWidget from "../../shared/DashboardWidget";
     export default {
+        components: {DashboardWidget},
         props: {
             leaveTypes: Array
         },

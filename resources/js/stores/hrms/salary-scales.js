@@ -1,5 +1,6 @@
 import axios from "axios";
 import routes from "../../routes";
+import {resolveError} from "../../utils/helpers";
 
 export default {
     state: {
@@ -22,9 +23,9 @@ export default {
                 commit('SET_SALARY_SCALES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_SALARY_SCALE: async ({commit}, payload) => {
@@ -39,9 +40,9 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DELETE_SALARY_SCALE: async ({commit}, payload) => {
@@ -50,9 +51,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

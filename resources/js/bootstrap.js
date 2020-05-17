@@ -48,15 +48,21 @@ try {
         axios.defaults.headers.common['X-CSRF-TOKEN'] = null;
         console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
     }
+
+    // get the service name
+    let service = document.head.querySelector('meta[name="service-name"]');
+    if (service) {
+        Vue.prototype.$service = service.content;
+    }
     // Response Interceptor
 
-    Vue.prototype.$stringLimit = function (str,length= 20) {
-        if(!str){
+    Vue.prototype.$stringLimit = function (str, length = 20) {
+        if (!str) {
             return '';
         }
         str = String(str);
-        if (str.length > length){
-            return str.substring(0,length) + " ...";
+        if (str.length > length) {
+            return str.substring(0, length) + " ...";
         }
         return str;
     };

@@ -30,7 +30,7 @@ class Employee {
         this.nssf = '';
         this.tin = '';
         this.permit = '';
-        this.joinDate = null;
+        this.joinDate = '';
         this.avatar = '';
         this.approved = false;
         this.exitDate = null;

@@ -1,9 +1,8 @@
 <template>
     <div class="row">
         <div class="col-sm-4 col-lg-3">
-            <button class="btn btn-primary btn-block"
-                    @click="checkActiveView"><i
-                class="fa fa-plus"></i> Add Document
+            <button class="btn btn-primary btn-block" @click="uploadDocument()">
+                <i class="fa fa-plus"></i> Add Document
             </button>
             <div class="roles-menu">
                 <ul>
@@ -21,22 +20,22 @@
             <template v-if="activeView === 'organisational'">
                 <div class="card card-body table-responsive">
                     <h3 class="card-title mb-5">Organisational Documents</h3>
-                    <app-employee-documents-list
-                        :employee-documents="organisationalDocuments">
-                    </app-employee-documents-list>
+                    <EmployeeDocumentsList
+                        :employee-documents="organisationalDocuments"
+                        key="organisational-documents"
+                    />
                 </div>
             </template>
             <template v-if="activeView === 'employees'">
                 <div class="card card-body table-responsive">
                     <h3 class="card-title mb-5">Employees Documents</h3>
-                    <app-employee-documents-list
-                        :employee-documents="employeesDocuments">
-                    </app-employee-documents-list>
+                    <EmployeeDocumentsList
+                        :employee-documents="employeesDocuments"
+                        key="employees-documents"
+                    />
                 </div>
             </template>
-            <app-employee-document-form
-                :employee-documents="employeeDocuments">
-            </app-employee-document-form>
+            <EmployeeDocumentForm :employee-documents="employeeDocuments"/>
         </div>
     </div>
 </template>
@@ -44,15 +43,18 @@
 <script>
     import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
+    import EmployeeDocumentsList from "./EmployeeDocumentsList";
+    import EmployeeDocumentForm from "./EmployeeDocumentForm";
 
     export default {
+        components: {EmployeeDocumentForm, EmployeeDocumentsList},
         props: {
             title: String,
         },
         created() {
-            this.$store.dispatch('getFormSelections', {});
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', {});
             this.getDocuments();
-            EventBus.$on(['SAVE_EMPLOYEE_DOCUMENT'], this.getDocuments);
+            EventBus.$on(['EMPLOYEE_DOCUMENT_SAVED'], this.getDocuments);
         },
         data() {
             return {
@@ -61,7 +63,7 @@
         },
         computed: {
             ...mapGetters({
-                employeeDocuments: 'GET_EMPLOYEE_DOCUMENTS',
+                employeeDocuments: 'EMPLOYEE_DOCUMENTS',
             }),
             organisationalDocuments() {
                 return this.employeeDocuments.filter((employeeDocument) => {
@@ -86,15 +88,15 @@
             setActiveView(activeView) {
                 this.activeView = activeView;
             },
-            checkActiveView(event) {
+            uploadDocument() {
                 if (this.activeView === 'employees') {
                     return swal({
                         title: "Add employee related documents from the employee profile page.",
                         icon: 'info'
                     });
                 }
-                $("#employeeDocumentModal").modal('show');
-            }
+                EventBus.$emit("UPLOAD_EMPLOYEE_DOCUMENT");
+            },
         },
     }
 </script>

@@ -10,9 +10,6 @@ export const baseUrl = url.content;
 
 import DateRangePicker from "./components/shared/DateRangePicker";
 import Select2Input from "./components/shared/Select2Input";
-import DashboardWidgets from "./components/shared/DashboardWidgets";
-import DashboardWidget from "./components/shared/DashboardWidget";
-import MorrisBarChart from "./components/charts/MorrisBarChart";
 import Spinner from "./components/shared/Spinner";
 import Roles from "./components/users/Roles";
 import RoleForm from "./components/users/RoleForm";
@@ -36,11 +33,8 @@ Vue.component("app-role-form", RoleForm);
 Vue.component("app-users-widget", UserWidget);
 Vue.component("app-select-box", Select2Input);
 Vue.component("app-breadcrumb", Breadcrumb);
-Vue.component("app-dashboard-widgets", DashboardWidgets);
-Vue.component("app-dashboard-widget", DashboardWidget);
 Vue.component("app-general-settings", GeneralSettings);
 Vue.component("app-approvals-settings", ApprovalsSettings);
-Vue.component("app-morris-bar-chart", MorrisBarChart);
 Vue.component('app-spinner', Spinner);
 Vue.component('app-main-modal', MainModal);
 

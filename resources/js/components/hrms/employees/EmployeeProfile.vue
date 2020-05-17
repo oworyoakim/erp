@@ -55,16 +55,20 @@
                                                 class="small text-muted"
                                             >{{$moment(employee.joinDate).format('MMM D YYYY')}}</span>
                                         </div>
-                                        <div class="title row">
-                                            <span class="col-4">Reports to:</span>
-                                            <div class="col-8 small text-muted supervisor-widget">
-                                                <EmployeeWidget
-                                                    v-if="!!employee.supervisor"
-                                                    :username="employee.supervisor.username"
-                                                    :name="employee.supervisor.fullName"
-                                                    :avatar="employee.supervisor.avatar"
-                                                />
-                                            </div>
+                                        <div class="title">
+                                            <span>Reports to:</span>
+                                            <template v-if="!!employee.supervisor">
+                                                <span class="small text-muted">
+                                                <a :href="`/hrms/employees/profile/${employee.supervisor.username}`"
+                                                   target="__blank">
+                                                    <span>{{employee.supervisor.fullName}}</span>
+                                                </a>
+                                                <span class="small" v-if="!!employee.supervisor.designation">({{employee.supervisor.designation.title}})</span>
+                                            </span>
+                                            </template>
+                                            <template v-else>
+                                                <span class="small text-muted">The Board</span>
+                                            </template>
                                         </div>
                                     </div>
                                 </div>
@@ -161,7 +165,7 @@
                 <div id="employee-info" class="pro-overview tab-pane fade active show">
                     <div class="row">
                         <div class="col-md-6 d-flex">
-<!--                            <PersonalInfo :employee.sync="employee"/>-->
+                            <!--                            <PersonalInfo :employee.sync="employee"/>-->
                         </div>
                         <div class="col-md-6 d-flex">
                             <div class="card card-body">
@@ -179,7 +183,7 @@
                             </div>
                         </div>
                         <div class="col-md-6 d-flex">
-<!--                            <ContactsInfo :contacts="employee.contacts"/>-->
+                            <!--                            <ContactsInfo :contacts="employee.contacts"/>-->
                         </div>
                     </div>
                 </div>
@@ -253,7 +257,11 @@
 
                 <!-- Documents Tab -->
                 <div class="tab-pane fade" id="employee-documents">
-                    <!--                    <app-employee-documents :employee="employee" title="Employee Documents"></app-employee-documents>-->
+                    <div class="row">
+                        <div class="col-md-12">
+                            <EmployeeDocuments :employee="employee" title="Employee Documents"/>
+                        </div>
+                    </div>
                 </div>
                 <!-- /Documents Tab -->
                 <!-- Profile Download Tab -->
@@ -264,7 +272,11 @@
 
                 <!-- Employee Subordinates Tab -->
                 <div class="tab-pane fade" id="employee-subordinates">
-
+                    <div class="row staff-grid-row">
+                        <div v-for="subordinate in employee.subordinates" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                            <EmployeeProfileWidget :employee.sync="subordinate" :key="subordinate.id"/>
+                        </div>
+                    </div>
                 </div>
                 <!-- /Employee Subordinates  Tab -->
 
@@ -288,12 +300,20 @@
     import ContactsInfo from "./ContactsInfo";
     import BankInfo from "../bank/BankInfo";
     import EmployeeWidget from "./EmployeeWidget";
-    import BankForm from "../bank/BankForm";
+    import EmployeeDocuments from "../documents/EmployeeDocuments";
+    import EmployeeProfileWidget from "./EmployeeProfileWidget";
 
     export default {
         components: {
             EmployeeWidget,
-            BankInfo, ContactsInfo, PersonalInfo, RelatedPersonsInfo, ExperienceInfo, EducationInfo
+            EmployeeProfileWidget,
+            BankInfo,
+            ContactsInfo,
+            PersonalInfo,
+            RelatedPersonsInfo,
+            ExperienceInfo,
+            EducationInfo,
+            EmployeeDocuments
         },
         props: {
             username: {type: String, required: true},
@@ -354,18 +374,18 @@
                 }
             },
 
-            async getBankInfo() {
+            getBankInfo() {
                 this.$emit('LOAD_BANK_INFO');
             },
 
             getEducationInfo() {
                 this.$emit('LOAD_EDUCATION_INFO');
             },
-            async getExperienceInfo() {
+            getExperienceInfo() {
                 this.$emit('LOAD_EXPERIENCE_INFO');
             },
 
-            async getRelatedPersonsInfo() {
+            getRelatedPersonsInfo() {
                 this.$emit('LOAD_RELATED_PERSONS_INFO');
             },
             async getLeaveApplicationsInfo() {
@@ -390,15 +410,8 @@
                 }
             },
 
-            async getDocumentsInfo() {
-                try {
-                    this.documentsLoading = true;
-                    //await this.$store.dispatch("GET_DOCUMENTS_INFO", {employeeId: this.employee.id});
-                    this.documentsLoading = false;
-                } catch (error) {
-                    console.error(error);
-                    this.documentsLoading = false;
-                }
+            getDocumentsInfo() {
+                this.$emit('LOAD_EMPLOYEE_DOCUMENTS');
             },
 
             async profilePictureChanged() {
@@ -441,5 +454,9 @@
 <style scoped>
     .basic-info {
         border-right: 2px dashed #ccc;
+    }
+
+    .supervisor-widget {
+        font-size: 12px !important;
     }
 </style>

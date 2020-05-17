@@ -1,5 +1,5 @@
 @extends('hrms.master')
-@section('title','New')
+@section('title','New Employee')
 @section('content')
-    <app-create-employee :title="'@yield('title')'" :next-id="'{{$nextId}}'"/>
+    <app-create-employee title="@yield('title')"></app-create-employee>
 @endsection

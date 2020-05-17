@@ -35,7 +35,7 @@
 <script>
     export default {
         props: {
-            employeeDocuments: Array,
+            employeeDocuments: {type: Array, default: () => []},
         },
         methods: {
             downloadDocument(path) {

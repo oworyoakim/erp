@@ -16,14 +16,10 @@
             <td>{{salaryScale.rank}}</td>
             <td>{{salaryScale.description}}</td>
             <td class="text-right">
-                <div class="dropdown dropdown-action">
-                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
-                       aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a @click="editSalaryScale(salaryScale)" class="dropdown-item" href="javascript:void(0)"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a @click="deleteSalaryScale(salaryScale.id)" class="dropdown-item" href="javascript:void(0)"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
-                    </div>
-                </div>
+                <a @click="editSalaryScale(salaryScale)" title="Edit" class="btn btn-info btn-sm" href="javascript:void(0)"><i
+                    class="fa fa-pencil m-r-5"></i></a>
+                <a @click="deleteSalaryScale(salaryScale)" title="Delete" class="btn btn-danger btn-sm" href="javascript:void(0)"><i
+                    class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>
         </tbody>
@@ -32,15 +28,16 @@
 
 <script>
     import {EventBus} from "../../../app";
+
     export default {
         props: {
-            salaryScales: Array,
+            salaryScales: {type: Array, required: true},
         },
         methods: {
-            editSalaryScale(salaryScale) {
-                EventBus.$emit('editSalaryScale', salaryScale);
+            editSalaryScale(salaryScale = null) {
+                EventBus.$emit("EDIT_SALARY_SCALE", salaryScale);
             },
-            async deleteSalaryScale(id) {
+            async deleteSalaryScale(salaryScale) {
                 try {
                     let isConfirm = await swal({
                         title: 'Are you sure?',
@@ -54,9 +51,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_SALARY_SCALE', id);
-                        toastr.success(response);
-                        EventBus.$emit('salaryScaleDeleted');
+                        //let response = await this.$store.dispatch('DELETE_SALARY_SCALE', salaryScale.id);
+                        //toastr.success(response);
+                        //EventBus.$emit('SALARY_SCALE_DELETED');
                     }
                 } catch (error) {
                     console.log(error);

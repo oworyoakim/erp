@@ -4,7 +4,10 @@
             <img alt="" :src="avatar">
         </a>
         <a :href="`/hrms/employees/profile/${username}`">
-            <span class="employee-name">{{name}} <span v-if="!!position">{{position}}</span></span>
+            <span class="employee-name">
+                <span>{{name}} </span>
+                <span v-if="!!position">{{position}}</span>
+            </span>
         </a>
     </h2>
 </template>

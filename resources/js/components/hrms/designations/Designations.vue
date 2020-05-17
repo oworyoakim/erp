@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="designations">
         <!-- Page Header -->
         <div class="page-header">
             <div class="row align-items-center">
@@ -7,55 +7,46 @@
                     <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <button type="button" class="btn add-btn" data-toggle="modal" data-target="#designationModal"><i
-                        class="fa fa-plus"></i> New Designation
+                    <button type="button" class="btn add-btn" @click="editDesignation()"><i class="fa fa-plus"></i> New
+                        Designation
                     </button>
                 </div>
             </div>
         </div>
         <!-- /Page Header -->
-        <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-        <div v-else>
+        <app-spinner v-if="isLoading"/>
+        <template v-else>
             <div class="row">
                 <div class="col-md-12 table-responsive">
-                    <app-designations-list :designations="designations"></app-designations-list>
+                    <DesignationsList :designations="designations"/>
                 </div>
             </div>
-            <app-designation-form
-                :directorates="directorates"
-                :departments="departments"
-                :sections="sections"
-                :designations="designations"
-                :salary-scales="salaryScales">
-            </app-designation-form>
-        </div>
+            <DesignationForm/>
+        </template>
     </div>
 </template>
 
 <script>
-    import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
+    import {EventBus} from "../../../app";
+    import DesignationForm from "./DesignationForm";
+    import DesignationsList from "./DesignationsList";
 
     export default {
         props: ['title'],
+        components: {DesignationsList, DesignationForm},
         created() {
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS',{});
             this.getDesignations();
-            this.getSections();
-            this.getDepartments();
-            this.getDirectorates();
-            this.getSalaryScales();
-            EventBus.$on('getSection', this.getSections);
-            EventBus.$on('GET_DEPARTMENTS', this.getDepartments);
-            EventBus.$on('designationSaved', this.getDesignations);
-            EventBus.$on('designationDeleted', this.getDesignations);
+            EventBus.$on(['DESIGNATION_SAVED', 'DESIGNATION_DELETED'], this.getDesignations);
         },
         data() {
             return {
                 filters: {
-                    section_id: null,
-                    salary_scale_id: null,
-                    department_id: null,
-                    directorate_id: null,
+                    sectionId: null,
+                    salaryScaleId: null,
+                    departmentId: null,
+                    directorateId: null,
                 },
                 breadcrumbItems: [
                     {href: '#', text: this.title, class: 'active'},
@@ -65,11 +56,7 @@
         },
         computed: {
             ...mapGetters({
-                designations: 'GET_DESIGNATIONS',
-                directorates: 'GET_DIRECTORATES',
-                departments: 'GET_DEPARTMENTS',
-                sections: 'GET_SECTIONS',
-                salaryScales: 'getSalaryScales',
+                designations: 'DESIGNATIONS',
             }),
         },
         methods: {
@@ -83,33 +70,8 @@
                     toastr.error(error);
                 }
             },
-            async getDirectorates() {
-                try {
-                    await this.$store.dispatch('GET_DIRECTORATES');
-                } catch (error) {
-                    toastr.error(error);
-                }
-            },
-            async getDepartments(directorate_id = null) {
-                try {
-                    await this.$store.dispatch('GET_DEPARTMENTS', {directorate_id: directorate_id});
-                } catch (error) {
-                    toastr.error(error);
-                }
-            },
-            async getSections(department_id = null) {
-                try {
-                    await this.$store.dispatch('GET_SECTIONS', {department_id: department_id});
-                } catch (error) {
-                    toastr.error(error);
-                }
-            },
-            async getSalaryScales() {
-                try {
-                    await this.$store.dispatch('getSalaryScales');
-                } catch (error) {
-                    toastr.error(error);
-                }
+            editDesignation(designation = null) {
+                EventBus.$emit("EDIT_DESIGNATION", designation);
             },
         }
     }

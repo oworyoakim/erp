@@ -16,6 +16,7 @@ import delegationsModule from './delegations';
 import salaryScalesModule from './salary-scales';
 import rolesModule from "../roles";
 import usersModule from "../users";
+import {resolveError} from "../../utils/helpers";
 
 Vue.use(Vuex);
 
@@ -58,6 +59,7 @@ export default new Vuex.Store({
             employmentStatuses: [],
             documentCategories: [],
             documentTypes: [],
+            nextEmployeeId: '0001',
         },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
@@ -124,9 +126,9 @@ export default new Vuex.Store({
                 commit('SET_FORM_SELECTIONS_OPTIONS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         getGeneralSettings: async ({commit}) => {
@@ -135,9 +137,9 @@ export default new Vuex.Store({
                 commit('setGeneralSettings', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.log(error.response);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
 
@@ -146,9 +148,9 @@ export default new Vuex.Store({
                 let response = await axios.post(routes.APPROVAL_SETTINGS, payload);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

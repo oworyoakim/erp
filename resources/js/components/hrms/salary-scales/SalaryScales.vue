@@ -1,28 +1,47 @@
 <template>
-    <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else>
-        <div class="row">
-            <div class="col-md-12">
-                <app-salary-scales-list :salary-scales="salaryScales"></app-salary-scales-list>
-                <app-salary-scale-form></app-salary-scale-form>
+    <div class="salary-scales">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
+                </div>
+                <div class="col-auto float-right ml-auto">
+                    <button type="button" class="btn add-btn" @click="editSalaryScale()"><i class="fa fa-plus"></i> New Salary Scale</button>
+                </div>
             </div>
         </div>
+        <!-- /Page Header -->
+        <app-spinner v-if="isLoading"/>
+        <template v-else>
+            <div class="row">
+                <div class="col-md-12">
+                    <SalaryScalesList :salary-scales="salaryScales"/>
+                    <SalaryScaleForm/>
+                </div>
+            </div>
+        </template>
     </div>
 </template>
 
 <script>
-    import SalaryScale from "../../../models/hrms/SalaryScale";
-    import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
+    import {EventBus} from "../../../app";
+    import SalaryScalesList from "./SalaryScalesList";
+    import SalaryScaleForm from "./SalaryScaleForm";
 
     export default {
+        props: ['title'],
+        components: {SalaryScalesList, SalaryScaleForm},
         created() {
             this.getSalaryScales();
-            EventBus.$on('salaryScaleDeleted', this.getSalaryScales);
-            EventBus.$on('salaryScaleSaved', this.getSalaryScales);
+            EventBus.$on(['SALARY_SCALE_SAVED', 'SALARY_SCALE_DELETED'], this.getSalaryScales);
         },
         data() {
             return {
+                breadcrumbItems: [
+                    {href: '#', text: this.title, class: 'active'},
+                ],
                 isLoading: false,
             };
         },
@@ -32,12 +51,17 @@
             }),
         },
         methods: {
+            editSalaryScale(salaryScale = null){
+                EventBus.$emit("EDIT_SALARY_SCALE",salaryScale);
+            },
             async getSalaryScales() {
                 try {
                     this.isLoading = true;
                     await this.$store.dispatch('GET_SALARY_SCALES');
                     this.isLoading = false;
-                    setTimeout(()=>{$('.salary-scales-datatable').DataTable();},100);
+                    setTimeout(() => {
+                        $('.salary-scales-datatable').DataTable();
+                    }, 100);
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);

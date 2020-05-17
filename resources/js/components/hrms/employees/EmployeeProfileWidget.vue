@@ -13,9 +13,9 @@
                     class="fa fa-trash-o m-r-5"></i> Delete</a>
             </div>
         </div>
-        <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a :href="'/hrms/employees/profile/'+employee.username">{{employee.fullName}}</a>
+        <h4 class="user-name m-t-10 mb-0 text-ellipsis"><a :href="'/hrms/employees/profile/'+employee.username" target="_blank">{{employee.fullName}}</a>
         </h4>
-        <div class="small text-muted">{{employee.designation.title}}</div>
+        <div v-if="!!employee.designation" class="small text-muted">{{employee.designation.title}}</div>
     </div>
 </template>
 

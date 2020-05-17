@@ -17,10 +17,8 @@
         <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
         <div class="row" v-else>
             <div class="col-md-12 table-responsive">
-                <app-delegations-list
-                    :delegations="delegations"
-                />
-                <app-delegation-form/>
+                <DelegationsList :delegations="delegations"/>
+                <DelegationForm/>
             </div>
         </div>
     </div>
@@ -29,8 +27,11 @@
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import DelegationsList from "./DelegationsList";
+    import DelegationForm from "./DelegationForm";
 
     export default {
+        components: {DelegationForm, DelegationsList},
         props: {
             title: String,
             employee_id: Number,

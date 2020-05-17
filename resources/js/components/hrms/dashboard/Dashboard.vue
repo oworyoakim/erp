@@ -1,30 +1,37 @@
 <template>
-    <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else>
-        <app-dashboard-widgets :total-employees="statisticsInfo.totalEmployees"
-                               :total-leaves-ongoing="statisticsInfo.totalLeavesOngoing"
-                               :total-leaves-upcoming="statisticsInfo.totalLeavesUpcoming"
-                               :total-leave-applications="statisticsInfo.totalLeaveApplications">
-        </app-dashboard-widgets>
-        <div class="row">
-            <div class="col-md-12">
-                <app-morris-bar-chart
-                    :title="'Total Employees'"
-                    :config="morrisBarChartConfig"
-                    v-on:reload-data="getDashboardStatistics">
-                </app-morris-bar-chart>
+    <div class="hrms-dashboard">
+        <app-spinner v-if="isLoading"/>
+        <template v-else>
+            <DashboardWidgets
+                :total-employees="statisticsInfo.totalEmployees"
+                :total-leaves-ongoing="statisticsInfo.totalLeavesOngoing"
+                :total-leaves-upcoming="statisticsInfo.totalLeavesUpcoming"
+                :total-leave-applications="statisticsInfo.totalLeaveApplications"
+            />
+            <div class="row">
+                <div class="col-md-12">
+                    <MorrisBarChart
+                        :title="'Total Employees'"
+                        :config="morrisBarChartConfig"
+                        v-on:reload-data="getDashboardStatistics"
+                    />
+                </div>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
 <script>
     import {mapGetters} from "vuex";
+    import DashboardWidgets from "../../shared/DashboardWidgets";
+    import MorrisBarChart from "../../charts/MorrisBarChart";
 
     export default {
+        components: {MorrisBarChart, DashboardWidgets},
         props: ["title"],
         created(){
             this.getDashboardStatistics();
+            console.log(this.$service);
         },
         data() {
             return {

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Hrms;
 
 use App\Http\Controllers\GatewayController;
-use App\Traits\MakesRemoteHttpRequests;
-use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use App\Models\Role;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -92,6 +92,16 @@ class HrmsController extends GatewayController
         return view('hrms.salary-scales.index');
     }
 
+    public function delegations()
+    {
+        return view('hrms.delegations.index');
+    }
+
+    public function documents()
+    {
+        return view('hrms.documents.index');
+    }
+
     public function employees()
     {
         return view('hrms.employees.index');
@@ -118,6 +128,8 @@ class HrmsController extends GatewayController
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/form-selections-options", $params);
+            $responseData['roles'] = Role::query()->get(['id', 'name']);
+            $responseData['usernames'] = User::query()->pluck('username')->all();
 
             return response()->json($responseData);
         } catch (Exception $ex)

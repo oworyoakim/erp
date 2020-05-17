@@ -1,80 +1,88 @@
 <template>
-        <!-- Salary Scale Modal -->
-        <div ref="salaryScaleModal" id="salaryScaleModal" class="modal custom-modal fade" role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Salary Scale Form</h5>
-                        <button @click="closePreview()" type="button" class="close" data-dismiss="modal"
-                                aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form @submit.prevent="saveSalaryScale()" action="javascript:void(0);">
-                            <div class="form-group">
-                                <label>Scale <span class="text-danger">*</span></label>
-                                <input v-model="salaryScale.scale" class="form-control" type="text">
-                            </div>
-                            <div class="form-group">
-                                <label>Rank <span class="text-danger">*</span></label>
-                                <input v-model="salaryScale.rank" class="form-control" type="number" min="0">
-                            </div>
-
-                            <div class="form-group">
-                                <label>Description <span class="text-danger">*</span></label>
-                                <textarea v-model="salaryScale.description" class="form-control"></textarea>
-                            </div>
-                            <div class="submit-section">
-                                <button :disabled="isSending || !!!salaryScale.scale || !!!salaryScale.rank" class="btn btn-primary submit-btn">Submit</button>
-                            </div>
-                        </form>
-                    </div>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+        <form @submit.prevent="saveSalaryScale()" action="javascript:void(0);">
+            <div class="form-group row">
+                <label class="col-md-4">Scale <span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <input v-model="salaryScale.scale" class="form-control" type="text">
                 </div>
             </div>
-        </div>
-        <!-- /Salary Scale Modal -->
+            <div class="form-group row">
+                <label class="col-md-4">Rank <span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <input v-model="salaryScale.rank" class="form-control" type="number" min="0">
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4">Description</label>
+                <div class="col-md-8">
+                    <textarea v-model="salaryScale.description" class="form-control"></textarea>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-primary btn-block submit-btn">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Submit</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
     import SalaryScale from "../../../models/hrms/SalaryScale";
     import {EventBus} from "../../../app";
+    import {deepClone} from "../../../utils/helpers";
 
     export default {
-        created(){
-            EventBus.$on('editSalaryScale', this.editSalaryScale);
+        created() {
+            EventBus.$on('EDIT_SALARY_SCALE', this.editSalaryScale);
         },
         data() {
             return {
                 salaryScale: new SalaryScale(),
                 isSending: false,
+                isEditing: false,
             };
         },
+        computed: {
+            title() {
+                return (!!this.salaryScale.id) ? "Edit Salary Scale" : "New Salary Scale";
+            },
+            formInvalid() {
+                return this.isSending || !(!!this.salaryScale.scale || !!this.salaryScale.rank);
+            }
+        },
         methods: {
-            editSalaryScale(salaryScale) {
-                this.salaryScale = salaryScale;
-                console.log(salaryScale);
-                $(this.$refs.salaryScaleModal).modal('show');
+            editSalaryScale(salaryScale = null) {
+                if (salaryScale) {
+                    this.salaryScale = deepClone(salaryScale);
+                } else {
+                    this.salaryScale = new SalaryScale();
+                }
+                this.isEditing = true;
             },
             async saveSalaryScale() {
                 try {
                     this.isSending = true;
-                    let response = await this.$store.dispatch('SAVE_SALARY_SCALE',this.salaryScale);
+                    let response = await this.$store.dispatch('SAVE_SALARY_SCALE', this.salaryScale);
                     toastr.success(response);
                     this.isSending = false;
-                    EventBus.$emit('salaryScaleSaved');
-                    this.closePreview();
+                    EventBus.$emit('SALARY_SCALE_SAVED');
+                    this.resetForm();
                 } catch (error) {
-                    console.log(error);
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                     this.isSending = false;
-                    //toastr.error(error);
-                    swal({title: error,icon: 'error'});
                 }
 
             },
-            closePreview() {
+            resetForm() {
                 this.salaryScale = new SalaryScale();
-                $(this.$refs.salaryScaleModal).modal('hide');
+                this.isEditing = false;
                 $('.modal-backdrop').remove();
             },
         }
