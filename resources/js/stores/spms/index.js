@@ -5,8 +5,8 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 import routes from "../../routes";
-import usersModule from '../users';
-import rolesModule from '../roles';
+import usersModule from '../acl/users';
+import rolesModule from '../acl/roles';
 import plansModule from './plans';
 import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";

@@ -1,9 +1,10 @@
 const routes = {
-    // GENERAL
-    USERS: '/users',
-    ROLES: '/roles',
-    GENERAL_SETTINGS: '/settings/general',
-    GENERAL_SETTINGS_JSON: '/settings/general/all-json',
+    // ACL
+    USERS: '/acl/users',
+    ROLES: '/acl/roles',
+    GENERAL_SETTINGS: '/acl/settings/general',
+    GENERAL_SETTINGS_JSON: '/acl/settings/general/all-json',
+    ACL_FROM_SELECTIONS_OPTIONS: '/acl/form-selections-options',
     // hrms
     DASHBOARD: '/hrms/dashboard',
     DASHBOARD_STATISTICS_HRMS: '/hrms/dashboard-statistics',
@@ -19,7 +20,6 @@ const routes = {
     LEAVE_TYPES_JSON: '/hrms/leaves/types/all-json',
     LEAVE_POLICIES: '/hrms/leaves/types/policies',
     LEAVE_APPLICATIONS: '/hrms/leave-applications',
-    LEAVE_APPLICATIONS_JSON: '/hrms/leave-applications/all-json',
     LEAVE_APPLICATION_STATUSES: '/hrms/leave-applications/statuses',
     LEAVE_APPLICATION_STATUSES_JSON: '/hrms/leave-applications/statuses/all-json',
     EMPLOYEES: '/hrms/employees',

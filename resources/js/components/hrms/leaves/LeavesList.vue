@@ -2,6 +2,7 @@
     <table class="table table-condensed table-striped" ref="leavesDataTable">
                     <thead>
                     <tr>
+                        <th>#</th>
                         <th>Leave Type</th>
                         <th>From</th>
                         <th>To</th>
@@ -11,10 +12,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr v-for="leave in leaves">
-                        <td>{{leave.leave_type.title}}</td>
-                        <td>{{leave.start_date}}</td>
-                        <td>{{leave.end_date}}</td>
+                    <tr v-for="(leave,index) in leaves">
+                        <td>{{index + 1}}</td>
+                        <td>{{leave.leaveType.title}}</td>
+                        <td>{{leave.startDate}}</td>
+                        <td>{{leave.endDate}}</td>
                         <td>{{leave.duration}}</td>
                         <td>
 

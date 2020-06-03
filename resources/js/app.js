@@ -11,30 +11,13 @@ export const baseUrl = url.content;
 import DateRangePicker from "./components/shared/DateRangePicker";
 import Select2Input from "./components/shared/Select2Input";
 import Spinner from "./components/shared/Spinner";
-import Roles from "./components/users/Roles";
-import RoleForm from "./components/users/RoleForm";
 import Breadcrumb from "./components/shared/Breadcrumb";
-import GeneralSettings from "./components/settings/GeneralSettings";
-import LeaveSettings from "./components/settings/LeaveSettings";
-import ApprovalsSettings from "./components/settings/ApprovalsSettings";
-import ProfileItemHeader from "./components/shared/ProfileItemHeader";
-import UserWidget from "./components/shared/UserWidget";
-import Users from "./components/users/Users";
-import UserForm from "./components/users/UserForm";
 import MainModal from "./components/shared/MainModal";
 
-Vue.component("app-profile-item-header", ProfileItemHeader);
+
 Vue.component("app-date-range-picker", DateRangePicker);
-Vue.component("app-leave-settings", LeaveSettings);
-Vue.component("app-users", Users);
-Vue.component("app-user-form", UserForm);
-Vue.component("app-roles", Roles);
-Vue.component("app-role-form", RoleForm);
-Vue.component("app-users-widget", UserWidget);
 Vue.component("app-select-box", Select2Input);
 Vue.component("app-breadcrumb", Breadcrumb);
-Vue.component("app-general-settings", GeneralSettings);
-Vue.component("app-approvals-settings", ApprovalsSettings);
 Vue.component('app-spinner', Spinner);
 Vue.component('app-main-modal', MainModal);
 

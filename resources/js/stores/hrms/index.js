@@ -14,16 +14,12 @@ import leavesModule from './leaves';
 import documentsModule from './documents';
 import delegationsModule from './delegations';
 import salaryScalesModule from './salary-scales';
-import rolesModule from "../roles";
-import usersModule from "../users";
 import {resolveError} from "../../utils/helpers";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
-        roles: rolesModule,
-        users: usersModule,
         dashboard: dashboardModule,
         departments: departmentsModule,
         directorates: directoratesModule,
@@ -59,6 +55,7 @@ export default new Vuex.Store({
             employmentStatuses: [],
             documentCategories: [],
             documentTypes: [],
+            leaveTypes: [],
             nextEmployeeId: '0001',
         },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],

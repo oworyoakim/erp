@@ -24,7 +24,7 @@
 <script>
     import {mapGetters} from "vuex";
     import DashboardWidgets from "../../shared/DashboardWidgets";
-    import MorrisBarChart from "../../charts/MorrisBarChart";
+    import MorrisBarChart from "../../shared/charts/MorrisBarChart";
 
     export default {
         components: {MorrisBarChart, DashboardWidgets},

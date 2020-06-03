@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Hrms;
 
 use App\Http\Controllers\GatewayController;
 use App\Traits\ValidatesHttpRequests;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -69,9 +70,8 @@ class EmployeesGateway extends GatewayController
                 'avatar' => '/images/avatar.png',
             ];
             DB::beginTransaction();
-            // create an unactivated application user
-            // must be activated when the employee is approved
-            $user = Sentinel::register($credentials);
+            // create the employee
+            $user = Sentinel::registerAndActivate($credentials);
             if (!$user)
             {
                 throw new Exception('Failed to create employee!');
@@ -125,6 +125,36 @@ class EmployeesGateway extends GatewayController
             $responseData = $this->get("{$this->urlEndpoint}/profile", $params);
 
             return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function activate(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+
+            $responseData = $this->patch("{$this->urlEndpoint}/activate", $data);
+
+            $user = Sentinel::findById($responseData['userId']);
+            if (!$user)
+            {
+                throw new Exception("Employee activation failed. Contact admin for help!");
+            }
+
+            $activation = Activation::exists($user);
+            if ($activation)
+            {
+                $activation->complete($activation->code);
+            } else
+            {
+                $activation = Activation::create($user);
+                $activation->complete($activation->code);
+            }
+            return response()->json("Employee activated!");
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);

@@ -11,7 +11,7 @@
             <li class="submenu @if(Request::is(['hrms/executive-secretary*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) active @endif">
                 <a href="#"><i class="la la-tasks"></i> <span> Coorporate Structure</span> <span
                         class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is('executive-secretary*') || Request::is('directorates*') || Request::is('departments*') || Request::is('divisions*') || Request::is('sections*')) block  @else none @endif;">
+                <ul style="display: @if(Request::is(['hrms/executive-secretary*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) block  @else none @endif;">
                     <li class="@if(Request::is('hrms/executive-secretary*')) active @endif"><a
                             href="{{route('hrms.executive-secretary')}}"><span>Executive Secretary</span></a></li>
                     <li class="@if(Request::is('hrms/directorates*')) active @endif"><a
@@ -29,7 +29,7 @@
             <li class="submenu @if(Request::is('hrms/designations*')) active @endif">
                 <a href="#"><i class="la la-tasks"></i> <span> Designations</span> <span
                         class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is('designations*')) block  @else none @endif;">
+                <ul style="display: @if(Request::is('hrms/designations*')) block  @else none @endif;">
                     <li><a href="{{route('hrms.designations.list')}}">Manage Designations</a></li>
                     <li><a href="{{route('hrms.salary-scales.list')}}">Manage Salary Scales</a></li>
                 </ul>
@@ -45,7 +45,7 @@
             <li class="submenu @if(Request::is('hrms/leaves*')) active @endif">
                 <a href="#"><i class="la la-leaf"></i> <span> Leaves</span> <span
                         class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is('leaves*')) block  @else none @endif;">
+                <ul style="display: @if(Request::is('hrms/leaves*')) block  @else none @endif;">
                     <li><a href="{{route('hrms.leaves.list')}}">All Leaves</a></li>
                     <li><a href="{{route('hrms.leaves.applications')}}">Leave Applications</a></li>
                 </ul>
@@ -58,7 +58,17 @@
                 </a>
             </li>
 
-            @include('common_menu')
+            {{--            Settings      --}}
+            @if(Sentinel::hasAnyAccess(['settings']))
+                <li class="submenu @if(Request::is('hrms/settings*')) active @endif">
+                    <a href="#"><i class="la la-gears"></i> <span> Settings</span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: @if(Request::is('hrms/settings*')) block  @else none @endif;">
+                        <li><a href="{{route('settings.leave')}}">Leave Settings</a></li>
+                        <li><a href="{{route('settings.approvals')}}">Approval Settings</a></li>
+                    </ul>
+                </li>
+            @endif
         </ul>
     </div>
 </div>

@@ -121,6 +121,16 @@ class HrmsController extends GatewayController
         return view('hrms.employees.create');
     }
 
+    public function leaves()
+    {
+        return view('hrms.leaves.index');
+    }
+
+    public function leaveApplications()
+    {
+        return view('hrms.leaves.applications');
+    }
+
     public function getFormSelectionsOptions(Request $request)
     {
         try
@@ -128,7 +138,7 @@ class HrmsController extends GatewayController
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/form-selections-options", $params);
-            $responseData['roles'] = Role::query()->get(['id', 'name']);
+            $responseData['roles'] = Role::query()->whereIn('type',['employee','both'])->get(['id', 'name']);
             $responseData['usernames'] = User::query()->pluck('username')->all();
 
             return response()->json($responseData);

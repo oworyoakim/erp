@@ -7,10 +7,10 @@ export default {
         leaveTypes: [],
     },
     getters: {
-        GET_LEAVES: (state) => {
+        LEAVES: (state) => {
             return state.leaves;
         },
-        GET_LEAVE_TYPES: (state) => {
+        LEAVE_TYPES: (state) => {
             return state.leaveTypes;
         },
     },

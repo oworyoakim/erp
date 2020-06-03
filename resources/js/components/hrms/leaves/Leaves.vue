@@ -1,10 +1,10 @@
 <template>
     <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
     <div v-else>
-        <app-leave-statistics :leaveTypes="leaveTypes"></app-leave-statistics>
+        <LeaveStatistics :leaveTypes="leaveTypes"/>
         <div class="row">
             <div class="col-md-12 table-responsive">
-                <app-leaves-list :leaves="leaves"></app-leaves-list>
+                <LeavesList :leaves="leaves"/>
             </div>
         </div>
     </div>
@@ -12,25 +12,30 @@
 
 <script>
     import {mapGetters} from "vuex";
+    import LeaveStatistics from "./LeaveStatistics";
+    import LeavesList from "./LeavesList";
 
     export default {
+        components: {LeavesList, LeaveStatistics},
         computed: {
             ...mapGetters({
-                leaveTypes: 'GET_LEAVE_TYPES',
-                leaves: 'GET_LEAVES',
+                leaves: 'LEAVES',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
+            leaveTypes(){
+                return this.formSelectionOptions.leaveTypes;
+            }
         },
         created() {
-            this.getLeaves().then(()=>{
-                this.getLeaveTypes();
-            });
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS',{});
+            this.getLeaves();
         },
         data() {
             return {
                 isLoading: true,
                 filters: {
-                    employee_id: '',
-                    leave_type_id: '',
+                    employeeId: '',
+                    leaveTypeId: '',
                 },
             };
         },
@@ -46,14 +51,6 @@
                     this.isLoading = false;
                 }
             },
-            async getLeaveTypes() {
-                try {
-                    await this.$store.dispatch('GET_LEAVE_TYPES');
-                } catch (error) {
-                    console.log(error);
-                    toastr.error(error);
-                }
-            }
         }
     }
 </script>

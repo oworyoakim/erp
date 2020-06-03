@@ -18,6 +18,7 @@ class Role extends EloquentRole
         $role->id = $this->id;
         $role->name = $this->name;
         $role->slug = $this->slug;
+        $role->type = $this->type;
         $role->description = $this->description;
         $role->permissions = array_keys($this->getPermissions());
         return $role;

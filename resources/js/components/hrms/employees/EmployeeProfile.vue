@@ -231,27 +231,16 @@
 
                 <!-- Leaves Tab -->
                 <div class="tab-pane fade" id="employee-leaves">
-                    <span v-if="leavesLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-                    <template v-else>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <!--                                <app-leaves-info :employee="employee"></app-leaves-info>-->
-                            </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <EmployeeLeaveApplications :employee-id="employee.id" />
                         </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card profile-box flex-fill">
-                                    <div class="card-body">
-                                        <h3 class="card-title">Leave Applications</h3>
-                                        <!--                                        <app-leave-applications-list-->
-                                        <!--                                            :leave-applications="leaveApplications"></app-leave-applications-list>-->
-                                        <!--                                        <app-leave-application-form-->
-                                        <!--                                            :employee_id="employee.id"></app-leave-application-form>-->
-                                    </div>
-                                </div>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <EmployeeLeaves :employee-id="employee.id" />
                         </div>
-                    </template>
+                    </div>
                 </div>
                 <!-- /Leaves Tab -->
 
@@ -302,9 +291,13 @@
     import EmployeeWidget from "./EmployeeWidget";
     import EmployeeDocuments from "../documents/EmployeeDocuments";
     import EmployeeProfileWidget from "./EmployeeProfileWidget";
+    import EmployeeLeaves from "../leaves/EmployeeLeaves";
+    import EmployeeLeaveApplications from "../leave-applications/EmployeeLeaveApplications";
 
     export default {
         components: {
+            EmployeeLeaves,
+            EmployeeLeaveApplications,
             EmployeeWidget,
             EmployeeProfileWidget,
             BankInfo,
@@ -321,7 +314,6 @@
         },
         created() {
             this.$store.dispatch("GET_FORM_SELECTIONS_OPTIONS", {});
-            this.$store.dispatch("GET_LEAVE_TYPES");
             this.getEmployeeProfileData()
                 .then(() => {
                     //this.getLeaveApplications();
@@ -400,14 +392,8 @@
             },
 
             async getLeavesInfo() {
-                try {
-                    this.leavesLoading = true;
-                    //await this.$store.dispatch("GET_RELATED_PERSONS_INFO", {employeeId: this.employee.id});
-                    this.leavesLoading = false;
-                } catch (error) {
-                    console.error(error);
-                    this.leavesLoading = false;
-                }
+                this.$emit('LOAD_EMPLOYEE_LEAVES');
+                this.$emit('LOAD_EMPLOYEE_LEAVE_APPLICATIONS');
             },
 
             getDocumentsInfo() {

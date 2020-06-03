@@ -1,4 +1,4 @@
-import LeaveSetting from "../LeaveSetting";
+import LeaveSetting from "./LeaveSetting";
 
 class LeaveType {
     contructor() {

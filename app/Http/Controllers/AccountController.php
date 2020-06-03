@@ -2,16 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\Setting;
+use App\Models\User;
+use App\Traits\MakesRemoteHttpRequests;
+use App\Traits\SendsEmailNotifications;
+use App\Traits\ValidatesHttpRequests;
+use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Illuminate\Http\Request;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use stdClass;
+use Swift_TransportException;
 
 class AccountController extends Controller
 {
+    use MakesRemoteHttpRequests, ValidatesHttpRequests, SendsEmailNotifications;
+
+    public function __construct()
+    {
+        $this->urlEndpoint = env("HRMS_URL");
+    }
+
     public function login(Request $request)
     {
         if (Sentinel::check())
@@ -39,10 +57,30 @@ class AccountController extends Controller
                 }
                 return redirect()->route("service");
             }
-            $this->validate($request, [
+            $this->validateData($request->all(), [
                 'login_name' => 'required',
                 'password' => 'required',
             ]);
+
+            $user = User::query()->where('email', $request->get('login_name'))->first();
+            if (!$user)
+            {
+                throw new Exception('Invalid Credentials!');
+            }
+
+            $role = $user->roles()->whereIn('type', ['employee', 'both'])->first();
+            if ($role)
+            {
+                $url = "{$this->urlEndpoint}/v1/can-login";
+                $params = ['userId' => $user->id];
+                $response = $this->get($url, $params);
+                //dd($response);
+                if (!$response['canLogin'])
+                {
+                    throw new Exception('Sorry, your account is not active!');
+                }
+            }
+
 
             $credentials = [
                 'email' => $request->get('login_name'),
@@ -51,7 +89,7 @@ class AccountController extends Controller
             if ($user = Sentinel::authenticate($credentials))
             {
                 session()->flash('success', 'Logged in!');
-                return redirect()->intended(route('dashboard'));
+                return redirect()->route('service');
             }
             throw new Exception('Invalid Credentials!');
         } catch (Exception $ex)
@@ -107,6 +145,28 @@ class AccountController extends Controller
         }
     }
 
+    public function resetPassword(Request $request)
+    {
+        try
+        {
+            $email = $request->get('email');
+            $user = User::query()->where('email', $email)->first();
+            if ($user)
+            {
+                $reminderCode = $user->getPasswordResetReminderCode();
+                $this->sendPasswordResetReminderEmail($user->email, $user->fullName(), $reminderCode);
+            }
+        } catch (Swift_TransportException $ex)
+        {
+            Log::error("Swift_TransportException: {$ex->getMessage()}");
+        } catch (Exception $ex)
+        {
+            Log::error("Exception: {$ex->getMessage()}");
+        }
+        session()->flash('success', 'Request to reset password was sent to the email provided. Please check the email inbox for instructions.');
+        return redirect()->back();
+    }
+
     public function logout(Request $request)
     {
         $user = Sentinel::getUser();
@@ -145,4 +205,5 @@ class AccountController extends Controller
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
+
 }

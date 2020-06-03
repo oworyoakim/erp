@@ -3,26 +3,15 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-    <meta name="description" content="Smarthr - Bootstrap Admin Template">
-    <meta name="keywords"
-          content="business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-    <meta name="author" content="Dreamguys - Bootstrap Admin Template">
+    <meta name="description" content="Enterprise Resource Planner">
+    <meta name="keywords" content="Access Control, ERP, HRMS, SPMS">
+    <meta name="author" content="Owor Yoakim">
     <meta name="robots" content="noindex, nofollow">
     <title>Login - Service</title>
-
     <!-- Favicon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('smarthr/maroon/img/favicon.png')}}">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="{{asset('smarthr/maroon/css/bootstrap.min.css')}}">
-
-    <!-- Fontawesome CSS -->
-    <link rel="stylesheet" href="{{asset('smarthr/maroon/css/font-awesome.min.css')}}">
-
+    <link rel="shortcut icon" type="image/x-icon" href="/smarthr/maroon/img/favicon.png">
     <!-- Main CSS -->
-    <link rel="stylesheet" href="{{asset('smarthr/maroon/css/style.css')}}">
-    <!--    Toastr -->
-    <link rel="stylesheet" href="{{asset('plugins/toastr/toastr.css')}}">
+    <link rel="stylesheet" href="/css/acl.css">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!--[if lt IE 9]>
     <script src="{{asset('smarthr/maroon/js/html5shiv.min.js')}}"></script>
@@ -30,7 +19,6 @@
     <![endif]-->
 </head>
 <body class="account-page">
-
 <!-- Main Wrapper -->
 <div class="main-wrapper">
     <div class="account-content">
@@ -45,6 +33,7 @@
                                 <option value="">Select....</option>
                                 <option value="hrms">HRMS</option>
                                 <option value="spms">SPMS</option>
+                                <option value="acl">ACL</option>
                             </select>
                         </div>
                         <div class="form-group text-center">
@@ -52,24 +41,23 @@
                         </div>
                     {!! Form::close() !!}
                     <!-- /Service Form -->
+                    <!--  Logout Form  -->
+                    <div class="m-t-15">
+                        {!! Form::open(['url'=>route('logout'),'method'=>'post']) !!}
+                            <div class="form-group text-center">
+                                <button class="btn btn-link" type="submit">Logout</button>
+                            </div>
+                        {!! Form::close() !!}
+                    </div>
+                    <!--  /Logout Form  -->
                 </div>
             </div>
         </div>
     </div>
 </div>
 <!-- /Main Wrapper -->
-
-<!-- jQuery -->
-<script src="{{asset('smarthr/maroon/js/jquery-3.2.1.min.js')}}"></script>
-
-<!-- Bootstrap Core JS -->
-<script src="{{asset('smarthr/maroon/js/popper.min.js')}}"></script>
-<script src="{{asset('smarthr/maroon/js/bootstrap.min.js')}}"></script>
-
-<!-- Custom JS -->
-<script src="{{asset('smarthr/maroon/js/app.js')}}"></script>
-<!--    Toastr -->
-<script src="{{asset('plugins/toastr/toastr.min.js')}}"></script>
+<!-- Main JS -->
+<script src="/js/acl.js"></script>
 <script>
     @if(session()->has('success'))
     toastr.success('{{session('success')}}');

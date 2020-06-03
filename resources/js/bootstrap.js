@@ -78,6 +78,8 @@ try {
     window.Raphael = require('raphael');
     // Custom JS
     require('../../public/smarthr/maroon/js/app');
+    // Summernote JS
+    //require('../../public/smarthr/maroon/plugins/summernote/dist/summernote-bs4');
 } catch (error) {
     console.error(error);
 }

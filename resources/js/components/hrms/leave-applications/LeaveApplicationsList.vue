@@ -3,9 +3,10 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Employee</th>
+            <th v-if="!employeeId">Employee</th>
             <th>Leave Type</th>
-            <th>Start Date</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Duration</th>
             <th>Status</th>
             <th>Next Actor</th>
@@ -13,9 +14,9 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="leaveApplication in leaveApplications">
-            <td>{{leaveApplication.id}}</td>
-            <td>
+        <tr v-for="(leaveApplication,index) in leaveApplications">
+            <td>{{index + 1}}</td>
+            <td v-if="!employeeId">
                 <template v-if="!!leaveApplication.employee">
                     {{leaveApplication.employee.name}}
                 </template>
@@ -25,7 +26,8 @@
                     {{leaveApplication.leaveType.title}}
                 </template>
             </td>
-            <td>{{$moment(leaveApplication.startDate,'YYYY-MM-DD').format('DD MMM YYYY')}}</td>
+            <td>{{$moment(leaveApplication.startDate).format('DD MMM YYYY')}}</td>
+            <td>{{$moment(leaveApplication.endDate).format('DD MMM YYYY')}}</td>
             <td>{{leaveApplication.duration}} days</td>
             <td>
                 <div class="dropdown action-label">
@@ -78,7 +80,7 @@
                         <a v-if="leaveApplication.canBeRejected" @click="reject(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-times m-r-5"></i> Reject</a>
-                        <a v-if="leaveApplication.canBeDeleted" @click="deleteLeaveApplication(leaveApplication.id)"
+                        <a v-if="leaveApplication.canBeDeleted" @click="deleteLeaveApplication(leaveApplication)"
                            class="dropdown-item" href="#"
                            data-toggle="modal"
                            data-target="#delete_leaveapplication"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
@@ -95,7 +97,8 @@
 
     export default {
         props: {
-            leaveApplications: Array,
+            leaveApplications: {type: Array, default: () => []},
+            employeeId: Number,
         },
         mounted() {
             this.$nextTick(() => {
@@ -103,16 +106,16 @@
             });
         },
         methods: {
-            editLeaveApplication(leaveApplication) {
-                EventBus.$emit('editLeaveApplication', leaveApplication);
+            editLeaveApplication(leaveApplication = null) {
+                EventBus.$emit('EDIT_LEAVE_APPLICATION', leaveApplication);
             },
             async verify(id) {
                 try {
                     let response = await this.$store.dispatch('VERIFY_LEAVE_APPLICATION', {
-                        leave_application_id: id
+                        leaveApplicationId: id
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
@@ -140,11 +143,11 @@
                     }
                     let comment = $('#comment').val();
                     let response = await this.$store.dispatch('RETURN_LEAVE_APPLICATION', {
-                        leave_application_id: id,
+                        leaveApplicationId: id,
                         comment: comment
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
@@ -153,10 +156,10 @@
             async approve(id) {
                 try {
                     let response = await this.$store.dispatch('APPROVE_LEAVE_APPLICATION', {
-                        leave_application_id: id
+                        leaveApplicationId: id
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
@@ -184,11 +187,11 @@
                     }
                     let comment = $('#comment').val();
                     let response = await this.$store.dispatch('DECLINE_LEAVE_APPLICATION', {
-                        leave_application_id: id,
+                        leaveApplicationId: id,
                         comment: comment
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
@@ -216,11 +219,11 @@
                     }
                     let comment = $('#comment').val();
                     let response = await this.$store.dispatch('REJECT_LEAVE_APPLICATION', {
-                        leave_application_id: id,
+                        leaveApplicationId: id,
                         comment: comment
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
@@ -229,16 +232,16 @@
             async grant(id) {
                 try {
                     let response = await this.$store.dispatch('GRANT_LEAVE_APPLICATION', {
-                        leave_application_id: id
+                        leaveApplicationId: id
                     });
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);
                 }
             },
-            async deleteLeaveApplication(id) {
+            async deleteLeaveApplication(leaveApplication) {
                 try {
                     let isConfirm = await swal({
                         title: 'Are you sure?',
@@ -252,9 +255,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_LEAVE_APPLICATION', id);
+                        let response = await this.$store.dispatch('DELETE_LEAVE_APPLICATION', leaveApplication.id);
                         toastr.success(response);
-                        EventBus.$emit('leaveApplicationDeleted');
+                        EventBus.$emit('LEAVE_APPLICATION_DELETED');
                     }
                 } catch (error) {
                     console.log(error);
