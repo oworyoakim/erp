@@ -30,8 +30,9 @@
 - Set SPMS_APP_BASE_URL (without `http://`), SPMS_PORT, SPMS_DB_HOST, SPMS_DB_DATABASE, SPMS_DB_USERNAME, SPMS_DB_PASSWORD, and SPMS_CACHE_KEY environment variable in .env file matching the database, URL and ports that the SPMS microservice will use.
 - Set HRMS_APP_BASE_URL (without `http://`), HRMS_PORT, HRMS_DB_HOST, HRMS_DB_DATABASE, HRMS_DB_USERNAME, HRMS_DB_PASSWORD, and HRMS_CACHE_KEY environment variable in .env file matching the database, URL and ports that the HRMS microservice will use.
 - Run `php artisan migrate --seed`
-- Run `npm run watch` (Optional)
+- Run `npm run watch`
 - Run `php artisan serve`
+- Run `docker-compose up -d`
 - Visit your browser at `http://127.0.0.1:8000`
 - Login credentials: 
     - Email: `admin@erp.kim`
