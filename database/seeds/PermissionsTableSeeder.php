@@ -63,6 +63,18 @@ class PermissionsTableSeeder extends Seeder
             ]);
             Permission::query()->create([
                 'parent_id' => $perm->id,
+                'name' => 'Activate Users',
+                'slug' => 'users.activate',
+                'description' => 'Activate Users',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Deactivate Users',
+                'slug' => 'users.deactivate',
+                'description' => 'Deactivate Users',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
                 'name' => 'Manage Roles',
                 'slug' => 'users.roles',
                 'description' => 'Manage Roles',

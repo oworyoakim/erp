@@ -24,15 +24,15 @@ class RolesController extends Controller
             {
                 throw  new UnauthorizedAccessException('Permission Denied!');
             }
-            return view('roles.index', compact('service'));
+            return view('acl.roles.index', compact('service'));
         } catch (UnauthorizedAccessException $ex)
         {
             $error = $ex->getMessage();
-            return view('errors.permission_denied', compact('service', 'error'));
+            return view('errors.401', compact('service', 'error'));
         } catch (Exception $ex)
         {
             $error = $ex->getMessage();
-            return view('errors.general', compact('service', 'error'));
+            return view('errors.500', compact('service', 'error'));
         }
     }
 
@@ -115,6 +115,7 @@ class RolesController extends Controller
             $role = new Role;
             $role->name = $name;
             $role->slug = $slug;
+            $role->type = $request->get('type');
             $role->description = $request->get('description');
             $role->save();
 
@@ -154,6 +155,7 @@ class RolesController extends Controller
 
             $role->name = $name;
             $role->slug = $slug;
+            $role->type = $request->get('type');
             $role->description = $request->get('description');
             $role->save();
 

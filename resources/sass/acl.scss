@@ -1,0 +1,28 @@
+// Fonts
+//@import url('https://fonts.googleapis.com/css?family=Bangers');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+//@import '~bootstrap/scss/bootstrap';
+@import "../../public/smarthr/maroon/css/bootstrap.css";
+// Font Awesome
+@import "../../public/smarthr/maroon/css/font-awesome.min.css";
+// Lineawesome CSS
+@import "../../public/smarthr/maroon/css/line-awesome.min.css";
+//  Datatable CSS
+@import "../../public/smarthr/maroon/css/dataTables.bootstrap4.min.css";
+// Select2
+@import "~select2/dist/css/select2.min.css";
+// Toastr
+@import "~toastr/toastr";
+// Daterange Picker
+@import "../../public/plugins/bootstrap-daterangepicker/daterangepicker.css";
+// Bootstrap Datepicker
+@import "../../public/plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css";
+// Summernote CSS
+//@import "../../public/smarthr/maroon/plugins/summernote/dist/summernote-bs4.css";
+// Template CSS
+@import "../../public/smarthr/maroon/css/style.css";
+

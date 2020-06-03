@@ -1,44 +1,54 @@
 <template>
-    <span v-if="isLoading" class="fa fa-spinner fa-spin fa-5x"></span>
-    <div v-else>
-        <div class="row">
-            <div class="col-md-12 table-responsive">
-                <app-leave-applications-list :leave-applications="leaveApplications"></app-leave-applications-list>
+    <div class="leave-applications">
+
+    <app-spinner v-if="isLoading" />
+        <template v-else>
+            <div class="row">
+                <div class="col-md-12 table-responsive">
+                    <LeaveApplicationsList
+                        :leave-applications="leaveApplications"
+                    />
+                </div>
             </div>
-        </div>
-        <app-leave-application-form></app-leave-application-form>
+        </template>
     </div>
 </template>
 
 <script>
+    import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
-    import {mapActions, mapGetters} from "vuex";
+    import LeaveApplicationsList from "./LeaveApplicationsList";
 
     export default {
+        components: {LeaveApplicationsList},
+        props: {title: String},
         created() {
             this.getLeaveApplications();
-            this.getLeaveApplicationStatuses();
-            this.getLeaveTypes();
-            EventBus.$on(['leaveApplicationSaved','leaveApplicationDeleted'], this.getLeaveApplications);
+            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS',{});
+            EventBus.$on([
+                'LEAVE_APPLICATION_SAVED',
+                'LEAVE_APPLICATION_DELETED',
+            ], this.getLeaveApplications);
         },
         data() {
             return {
                 isLoading: true,
                 filters: {
-                    employee_id: '',
-                    leave_type_id: '',
+                    employeeId: '',
+                    leaveTypeId: '',
                 },
             };
         },
         computed:{
             ...mapGetters({
-                leaveApplications: 'GET_LEAVE_APPLICATIONS',
-                leaveApplicationStatuses: 'getLeaveApplicationStatuses',
-                leaveTypes: 'GET_LEAVE_TYPES',
+                leaveApplications: 'LEAVE_APPLICATIONS',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
+            leaveTypes(){
+                return this.formSelectionOptions.leaveTypes;
+            }
         },
         methods: {
-            ...mapActions(['GET_LEAVE_TYPES','getLeaveApplicationStatuses']),
             async getLeaveApplications() {
                 try {
                     this.isLoading = true;

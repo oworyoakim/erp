@@ -4,7 +4,10 @@ namespace App\Models;
 
 use App\Traits\Addressable;
 use App\Traits\Contactable;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
+use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Cartalyst\Sentinel\Users\EloquentUser;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 use stdClass;
@@ -65,7 +68,33 @@ class User extends EloquentUser
         {
             $user->lastLogin = null;
         }
+        $user->active = Activation::completed($this);
         return $user;
+    }
+
+    public function activate()
+    {
+        $activation = Activation::create($this);
+
+        return Activation::complete($this, $activation->code);
+    }
+
+    public function deactivate()
+    {
+        // first delete all active sessions for this user
+        $this->persistences()->delete();
+        // deactivate the user
+        return $this->activations()->delete();
+    }
+
+    public function getPasswordResetReminderCode()
+    {
+        $reminder = $this->reminders()->first();
+        if (!$reminder)
+        {
+            $reminder = Reminder::create($this);
+        }
+        return $reminder->code;
     }
 
 }

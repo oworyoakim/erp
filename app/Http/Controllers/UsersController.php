@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use App\Models\User;
+use App\Traits\ValidatesHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Validator;
 
 class UsersController extends Controller
 {
+    use ValidatesHttpRequests;
+
     public function index(Request $request)
     {
         $service = $request->session()->get('service');
@@ -24,15 +26,15 @@ class UsersController extends Controller
             {
                 throw  new UnauthorizedAccessException('Permission Denied!');
             }
-            return view('users.index', compact('service'));
+            return view('acl.users.index', compact('service'));
         } catch (UnauthorizedAccessException $ex)
         {
             $error = $ex->getMessage();
-            return view('errors.permission_denied', compact('service', 'error'));
+            return view('errors.401', compact('service', 'error'));
         } catch (Exception $ex)
         {
             $error = $ex->getMessage();
-            return view('errors.general', compact('service', 'error'));
+            return view('errors.500', compact('service', 'error'));
         }
     }
 
@@ -104,6 +106,7 @@ class UsersController extends Controller
                 'password' => $request->get('password'),
                 'avatar' => '/images/avatar.png',
             ];
+            // Since users are
             $user = Sentinel::registerAndActivate($credentials);
             $role->users()->attach($user);
             settings()->commitTransaction();
@@ -196,6 +199,76 @@ class UsersController extends Controller
         {
             settings()->rollbackTransaction();
             Log::error("UPDATE_USER: {$ex->getMessage()}");
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function activate(Request $request)
+    {
+        try
+        {
+            if (!Sentinel::hasAnyAccess(['users.activate']))
+            {
+                throw  new Exception('Permission Denied!');
+            }
+            $rules = [
+                'email' => 'required|email',
+                'username' => 'required',
+            ];
+
+            $id = $request->get('id');
+            $user = Sentinel::findById($id);
+            if (!$user)
+            {
+                throw new Exception("User not found!");
+            }
+            $this->validateData($request->all(), $rules);
+
+            settings()->beginTransaction();
+
+            $user->activate();
+
+            settings()->commitTransaction();
+            return response()->json('User activated!');
+        } catch (Exception $ex)
+        {
+            settings()->rollbackTransaction();
+            Log::error("ACTIVATE_USER: {$ex->getMessage()}");
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function deactivate(Request $request)
+    {
+        try
+        {
+            if (!Sentinel::hasAnyAccess(['users.deactivate']))
+            {
+                throw  new Exception('Permission Denied!');
+            }
+            $rules = [
+                'email' => 'required|email',
+                'username' => 'required',
+            ];
+
+            $id = $request->get('id');
+            $user = Sentinel::findById($id);
+            if (!$user)
+            {
+                throw new Exception("User not found!");
+            }
+            $this->validateData($request->all(), $rules);
+
+            settings()->beginTransaction();
+
+            $user->deactivate();
+
+            settings()->commitTransaction();
+            return response()->json('User deactivated!');
+        } catch (Exception $ex)
+        {
+            settings()->rollbackTransaction();
+            Log::error("DEACTIVATE_USER: {$ex->getMessage()}");
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }

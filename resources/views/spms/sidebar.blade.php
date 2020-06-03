@@ -19,8 +19,6 @@
                 </ul>
             </li>
             {{--            @endif--}}
-
-            @include('common_menu')
         </ul>
     </div>
 </div>

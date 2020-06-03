@@ -16,3 +16,6 @@ mix.js('resources/js/hrms.js', 'public/js')
 
 mix.js('resources/js/spms.js', 'public/js')
     .sass('resources/sass/spms.scss', 'public/css');
+
+mix.js('resources/js/acl.js', 'public/js')
+    .sass('resources/sass/acl.scss', 'public/css');

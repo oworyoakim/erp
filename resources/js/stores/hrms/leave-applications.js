@@ -1,12 +1,13 @@
 import axios from "axios";
 import routes from "../../routes";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     state: {
         leaveApplications: [],
     },
     getters: {
-        GET_LEAVE_APPLICATIONS: (state) => {
+        LEAVE_APPLICATIONS: (state) => {
             return state.leaveApplications;
         },
     },
@@ -18,20 +19,14 @@ export default {
     actions: {
         GET_LEAVE_APPLICATIONS: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.employee_id) {
-                    params.push('employee_id=' + payload.employee_id);
-                }
-                if (!!payload.leave_type_id) {
-                    params.push('leave_type_id=' + payload.leave_type_id);
-                }
-                let queryParams = params.join('&');
-                let response = await axios.get(routes.LEAVE_APPLICATIONS_JSON + '?' + queryParams);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.LEAVE_APPLICATIONS + '/all-json' + queryParams);
                 commit('SET_LEAVE_APPLICATIONS', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         SAVE_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -46,18 +41,20 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DELETE_LEAVE_APPLICATION: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.LEAVE_APPLICATIONS + '?leave_application_id=' + payload);
+                let response = await axios.delete(routes.LEAVE_APPLICATIONS + '?leaveApplicationId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         APPROVE_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -66,8 +63,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         DECLINE_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -76,8 +74,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         REJECT_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -86,8 +85,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         GRANT_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -96,8 +96,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         VERIFY_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -106,8 +107,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
         RETURN_LEAVE_APPLICATION: async ({commit}, payload) => {
@@ -116,8 +118,9 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Settings;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Models\Designation;
+use App\Exceptions\UnauthorizedAccessException;
 use App\Models\Setting;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
@@ -22,23 +21,18 @@ class GeneralSettingsController extends Controller
         {
             if (!Sentinel::hasAnyAccess(['settings']))
             {
-                throw  new Exception('Permission Denied!');
+                throw  new UnauthorizedAccessException('Permission Denied!');
             }
-            $designations = [];
-            foreach (Designation::all() as $item)
-            {
-                $designations[$item->id] = $item->title;
-            };
-            $data = [
-                'designations' => $designations,
-            ];
-            // dd($designations);
-            return view('settings.global', $data);
+            return view('acl.settings.global');
+        }catch (UnauthorizedAccessException $ex)
+        {
+            $error = $ex->getMessage();
+            return view('errors.401',['error' => $error]);
         } catch (Exception $ex)
         {
             Log::error("Settings: {$ex->getMessage()}");
-            session()->flash('error', $ex->getMessage());
-            return redirect()->route('dashboard');
+            $error = $ex->getMessage();
+            return view('errors.500',['error' => $error]);
         }
     }
 
@@ -73,17 +67,18 @@ class GeneralSettingsController extends Controller
         {
             if (!Sentinel::hasAnyAccess(['settings']))
             {
-                throw  new Exception('Permission Denied!');
+                throw  new UnauthorizedAccessException('Permission Denied!');
             }
-//            dd($request->all());
+            //dd($request->all());
             settings()->set('company_name', $request->get('company_name'));
             settings()->set('company_address', $request->get('company_address'));
             settings()->set('company_website', $request->get('company_website'));
             settings()->set('company_email', $request->get('company_email'));
             settings()->set('company_phone', $request->get('company_phone'));
-            settings()->set('default_leave_application_verifier', $request->get('default_leave_application_verifier'));
-            settings()->set('default_leave_application_granter', $request->get('default_leave_application_granter'));
+            settings()->set('reset_password_email_subject', $request->get('reset_password_email_subject'));
+            settings()->set('reset_password_email_template', $request->get('reset_password_email_template'));
             // upload logo
+            /*
             if ($request->hasFile('company_logo'))
             {
                 $logo = $request->file('company_logo');
@@ -108,8 +103,9 @@ class GeneralSettingsController extends Controller
                     settings()->set('company_logo', "/{$filePath}");
                 }
             }
+            */
             session()->flash('success', "Settings Saved!");
-            return redirect()->route('settings.general');
+            return redirect()->back();
         } catch (Exception $ex)
         {
             session()->flash('error', $ex->getMessage());

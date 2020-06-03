@@ -44,9 +44,10 @@ import DivisionDetails from "./components/hrms/divisions/DivisionDetails";
 import ExecutiveSecretary from "./components/hrms/executive-secretary/ExecutiveSecretary";
 import LeavePolicies from "./components/hrms/leave-types/LeavePolicies";
 import LeavePolicyForm from "./components/hrms/leave-types/LeavePolicyForm";
-
+import LeaveSettings from "./components/hrms/settings/LeaveSettings";
+import ApprovalsSettings from "./components/hrms/settings/ApprovalsSettings";
 import Delegations from "./components/hrms/delegations/Delegations";
-
+import ProfileItemHeader from "./components/hrms/employees/ProfileItemHeader";
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -92,6 +93,9 @@ Vue.component("app-leave-policies", LeavePolicies);
 Vue.component("app-leave-policy-form", LeavePolicyForm);
 Vue.component("app-documents-manager", Documents);
 Vue.component("app-delegations", Delegations);
+Vue.component("app-profile-item-header", ProfileItemHeader);
+Vue.component("app-leave-settings", LeaveSettings);
+Vue.component("app-approvals-settings", ApprovalsSettings);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -99,6 +103,7 @@ Vue.component("app-delegations", Delegations);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import hrmsStore from './stores/hrms';
+
 
 const app = new Vue({
     el: "#main-app",

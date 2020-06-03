@@ -1,85 +1,75 @@
 <template>
-    <!-- LeaveApplication Modal -->
-    <div ref="leaveApplicationModal" id="leaveApplicationModal" class="modal custom-modal fade"
-         role="dialog" tabindex="-1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Leave Application</h5>
-                    <button @click="closePreview()" type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form @submit.prevent="saveLeaveApplication">
-                        <div class="form-group row">
-                            <label class="col-md-4">Leave Type<span class="text-danger">*</span></label>
-                            <div class="col-md-8">
-                                <select v-model="leaveApplication.leave_type_id" class="form-control">
-                                    <option value="">Select...</option>
-                                    <option v-for="leaveType in leaveTypes" :value="leaveType.id">
-                                        {{leaveType.title}}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4">Start Date<span class="text-danger">*</span></label>
-                            <div class="col-md-8">
-                                <app-date-range-picker :config="startDateConfig"
-                                                v-model="leaveApplication.start_date"
-                                                :value="leaveApplication.start_date">
-                                </app-date-range-picker>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4">Duration (in days)<span class="text-danger">*</span></label>
-                            <div class="col-md-8">
-                                <input v-model="leaveApplication.duration" class="form-control" type="number"
-                                       min="1">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <label class="col-md-4">Comment<span class="text-danger">*</span></label>
-                            <div class="col-md-8">
-                                <textarea v-model="leaveApplication.comment" class="form-control" rows="3"></textarea>
-                            </div>
-                        </div>
-                        <div class="submit-section">
-                            <button
-                                :disabled="isSending || !(!!leaveApplication.leave_type_id && !!leaveApplication.start_date && !!leaveApplication.duration && !!leaveApplication.comment)"
-                                class="btn btn-primary submit-btn pull-right">Apply
-                            </button>
-                        </div>
-                    </form>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()" key="experience-form">
+        <form @submit.prevent="saveLeaveApplication">
+            <div class="form-group row">
+                <label class="col-md-4">Leave Type<span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <select v-model="leaveApplication.leaveTypeId" class="form-control">
+                        <option value="">Select...</option>
+                        <option v-for="leaveType in leaveTypes" :value="leaveType.id">
+                            {{leaveType.title}}
+                        </option>
+                    </select>
                 </div>
             </div>
-        </div>
-    </div>
-    <!-- / LeaveApplication Modal -->
+            <div class="form-group row">
+                <label class="col-md-4">Start Date<span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <app-date-range-picker :config="startDateConfig"
+                                           v-model="leaveApplication.startDate"
+                                           :value="leaveApplication.startDate">
+                    </app-date-range-picker>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-4">Duration (in days)<span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <input v-model="leaveApplication.duration" class="form-control" type="number"
+                           min="1">
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-4">Comment<span class="text-danger">*</span></label>
+                <div class="col-md-8">
+                    <textarea v-model="leaveApplication.comment" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-primary submit-btn pull-right">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Apply</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
 </template>
 
 <script>
-    import LeaveApplication from "../../../models/hrms/LeaveApplication";
-    import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
+    import {EventBus} from "../../../app";
+    import LeaveApplication from "../../../models/hrms/LeaveApplication";
 
     export default {
-        props:{
-            employee_id: Number,
-        },
-        computed:{
+        props: {employeeId: {type: Number, required: true}},
+        computed: {
             ...mapGetters({
-                leaveApplicationStatuses: 'getLeaveApplicationStatuses',
-                leaveTypes: 'GET_LEAVE_TYPES',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
+            leaveTypes() {
+                return this.formSelectionOptions.leaveTypes;
+            },
+            title(){
+                return (!!this.leaveApplication.id) ? "Edit Leave Application" : "New Leave Application";
+            },
+            formInvalid(){
+                return this.isSending || !(!!this.leaveApplication.leaveTypeId && !!this.leaveApplication.startDate && !!this.leaveApplication.duration && !!this.leaveApplication.comment);
+            },
         },
-        created(){
-            EventBus.$on('editLeaveApplication',this.editLeaveApplication);
+        created() {
+            EventBus.$on('EDIT_LEAVE_APPLICATION', this.editLeaveApplication);
         },
-        mounted(){
-            this.leaveApplication.employee_id = this.employee_id || null;
+        mounted() {
+            this.leaveApplication.employeeId = this.employeeId || null;
         },
         data() {
             return {
@@ -87,40 +77,46 @@
                 startDateConfig: {
                     showDropdowns: true,
                     singleDatePicker: true,
-                    minDate: this.$moment().add(1,'days'), // today
+                    minDate: this.$moment().add(1, 'days'), // today
                     opens: "center",
                     locale: {
-                        format: 'DD MMM YYYY'
+                        format: 'YYYY-MM-DD'
                     }
                 },
-                isSending: false
+                isSending: false,
+                isEditing: false
             };
         },
         methods: {
-            editLeaveApplication(leaveApplication) {
-                this.leaveApplication = leaveApplication;
-                console.log(this.leaveApplication);
-                $(this.$refs.leaveApplicationModal).modal('show');
+            editLeaveApplication(leaveApplication = null) {
+                if (!!leaveApplication) {
+                    this.leaveApplication = leaveApplication;
+                } else {
+                    this.leaveApplication = new LeaveApplication();
+                }
+                this.isEditing = true;
             },
             async saveLeaveApplication() {
                 try {
                     this.isSending = true;
-                    this.leaveApplication.employee_id = this.employee_id || null;
-                    let response = await this.$store.dispatch('SAVE_LEAVE_APPLICATION',this.leaveApplication);
+                    this.leaveApplication.employeeId = this.employeeId || null;
+                    let response = await this.$store.dispatch('SAVE_LEAVE_APPLICATION', this.leaveApplication);
                     toastr.success(response);
-                    EventBus.$emit('leaveApplicationSaved');
-                    this.closePreview();
+                    EventBus.$emit('LEAVE_APPLICATION_SAVED');
+                    this.resetForm();
                     this.isSending = false;
                 } catch (error) {
-                    console.log(error);
-                    toastr.error(error);
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                     this.isSending = false;
                 }
             },
-            closePreview() {
+            resetForm() {
                 this.leaveApplication = new LeaveApplication();
-                $(this.$refs.leaveApplicationModal).modal('hide');
-                $('.modal-backdrop').remove();
+                this.isEditing = false;
+                $(".modal-backdrop").remove();
             },
         },
     }
