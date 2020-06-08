@@ -13,7 +13,7 @@ class InterventionsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/interventions';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/interventions';
     }
 
     public function index(Request $request)

@@ -17,7 +17,7 @@ class DocumentsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/documents';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/documents';
     }
 
     public function index(Request $request)

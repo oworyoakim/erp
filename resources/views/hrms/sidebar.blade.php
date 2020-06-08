@@ -64,8 +64,8 @@
                     <a href="#"><i class="la la-gears"></i> <span> Settings</span> <span
                             class="menu-arrow"></span></a>
                     <ul style="display: @if(Request::is('hrms/settings*')) block  @else none @endif;">
-                        <li><a href="{{route('settings.leave')}}">Leave Settings</a></li>
-                        <li><a href="{{route('settings.approvals')}}">Approval Settings</a></li>
+                        <li><a href="{{route('hrms.settings.leave')}}">Leave Settings</a></li>
+                        <li><a href="{{route('hrms.settings.approvals')}}">Approval Settings</a></li>
                     </ul>
                 </li>
             @endif

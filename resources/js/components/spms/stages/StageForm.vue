@@ -168,6 +168,7 @@
                 this.interventionId = '';
                 this.activityId = '';
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

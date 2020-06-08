@@ -80,7 +80,7 @@
 
     export default {
         props: {
-            leavePolicies: Array,
+            leavePolicies: {type: Array, required: true},
         },
         created() {
 
@@ -91,8 +91,8 @@
             });
         },
         methods: {
-            editLeavePolicy(leavePolicy) {
-                EventBus.$emit('editLeavePolicy', leavePolicy);
+            editLeavePolicy(leavePolicy = null) {
+                EventBus.$emit('EDIT_LEAVE_POLICY', leavePolicy);
             },
             async deleteLeavePolicy(id) {
                 try {
@@ -108,9 +108,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DELETE_LEAVE_POLICY', {leave_policy_id: id});
+                        let response = await this.$store.dispatch('DELETE_LEAVE_POLICY', {leavePolicyId: id});
                         toastr.success(response);
-                        EventBus.$emit('leavePolicyDeleted');
+                        EventBus.$emit('LEAVE_POLICY_DELETED');
                     }
                 } catch (error) {
                     console.log(error);
@@ -131,9 +131,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('ACTIVATE_LEAVE_POLICY', {leave_policy_id: id});
+                        let response = await this.$store.dispatch('ACTIVATE_LEAVE_POLICY', {leavePolicyId: id});
                         toastr.success(response);
-                        EventBus.$emit('leavePolicyActivated');
+                        EventBus.$emit('LEAVE_POLICY_SAVED');
                     }
                 } catch (error) {
                     console.log(error);
@@ -154,9 +154,9 @@
                     });
                     console.log(isConfirm);
                     if (isConfirm) {
-                        let response = await this.$store.dispatch('DEACTIVATE_LEAVE_POLICY', {leave_policy_id: id});
+                        let response = await this.$store.dispatch('DEACTIVATE_LEAVE_POLICY', {leavePolicyId: id});
                         toastr.success(response);
-                        EventBus.$emit('leavePolicyDeactivated');
+                        EventBus.$emit('LEAVE_POLICY_SAVED');
                     }
                 } catch (error) {
                     console.log(error);

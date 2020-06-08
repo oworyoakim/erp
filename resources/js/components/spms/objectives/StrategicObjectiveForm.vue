@@ -96,6 +96,7 @@
             resetForm() {
                 this.objective = new Objective();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

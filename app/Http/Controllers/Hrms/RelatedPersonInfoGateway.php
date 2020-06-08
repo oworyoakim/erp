@@ -15,7 +15,7 @@ class RelatedPersonInfoGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/employees/related-persons';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/employees/related-persons';
     }
 
     public function index(Request $request)

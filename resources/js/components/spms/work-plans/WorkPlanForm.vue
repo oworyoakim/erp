@@ -116,6 +116,7 @@
             resetForm() {
                 this.workPlan = new WorkPlan();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

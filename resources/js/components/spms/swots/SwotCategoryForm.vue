@@ -91,6 +91,7 @@
             resetForm() {
                 this.swotCategory = new SwotCategory();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

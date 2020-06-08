@@ -15,7 +15,7 @@ class BankInfoGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/employees/bank';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/employees/bank';
     }
 
     public function index(Request $request)

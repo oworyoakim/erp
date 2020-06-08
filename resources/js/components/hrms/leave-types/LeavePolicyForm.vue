@@ -1,143 +1,130 @@
 <template>
     <!-- Leave Policy Modal -->
-    <div ref="leavePolicyModal" id="leavePolicyModal" class="modal custom-modal fade" role="dialog" tabindex="-1"
-         data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title"><span v-if="!!leavePolicy.id">Edit </span><span v-else>New </span>Leave Policy Form</h5>
-                    <button @click="closePreview()" type="button" class="close" data-dismiss="modal"
-                            aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()" key="hrms-leave-policy-form">
+        <form @submit.prevent="saveLeavePolicy">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <label class="col-sm-4">Policy Name<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input v-model="leavePolicy.title"
+                                   class="form-control"
+                                   type="text"
+                                   :disabled="!!leavePolicy.id"
+                            >
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-sm-4">Duration (in days)<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input v-model="leavePolicy.duration"
+                                   class="form-control" type="number" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-form-label col-sm-4">Gender</label>
+                        <div class="col-sm-8">
+                            <select v-model="leavePolicy.gender" class="form-control">
+                                <option value="both">Both</option>
+                                <option v-for="gender in formSelectionOptions.genders" :value="gender.slug">
+                                    {{gender.title}}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4">Earned leave?</label>
+                        <div class="col-md-8">
+                            <div class="checkbox-inline">
+                                <input v-model="leavePolicy.earnedLeave" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4">With weekend?</label>
+                        <div class="col-md-8">
+                            <div class="checkbox-inline">
+                                <input v-model="leavePolicy.withWeekend" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4">Carry forward?</label>
+                        <div class="col-md-8">
+                            <div class="checkbox-inline">
+                                <input v-model="leavePolicy.carryForward" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row" v-if="!!leavePolicy.carryForward">
+                        <label class="col-md-4">Maximum Carry forward Days</label>
+                        <div class="col-md-8">
+                            <input v-model="leavePolicy.maxCarryForwardDuration"
+                                   type="number" :max="leavePolicy.duration"
+                                   class="form-control" min="1">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-4">Is Active?</label>
+                        <div class="col-md-8">
+                            <div class="checkbox-inline">
+                                <input v-model="leavePolicy.active" type="checkbox">
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <form @submit.prevent="saveLeavePolicy">
+                <div class="col-md-6">
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label>Description </label>
+                            <textarea v-model="leavePolicy.description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group leave-duallist">
+                        <label>Assign Salary Scales <span class="text-danger">*</span></label>
                         <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <label class="col-sm-4">Policy Name<span class="text-danger">*</span></label>
-                                    <div class="col-sm-8">
-                                        <input v-model="leavePolicy.title"
-                                               class="form-control"
-                                               type="text"
-                                               :disabled="!!leavePolicy.id"
-                                        >
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-4">Duration (in days)<span class="text-danger">*</span></label>
-                                    <div class="col-sm-8">
-                                        <input v-model="leavePolicy.duration"
-                                               class="form-control" type="number" min="1">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-form-label col-sm-4">Gender</label>
-                                    <div class="col-sm-8">
-                                        <select v-model="leavePolicy.gender" class="form-control">
-                                            <option value="both">Both</option>
-                                            <option v-for="gender in formSelectionOptions.genders" :value="gender.slug">
-                                                {{gender.title}}
-                                            </option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-4">Earned leave?</label>
-                                    <div class="col-md-8">
-                                        <div class="checkbox-inline">
-                                            <input v-model="leavePolicy.earnedLeave" type="checkbox">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-4">With weekend?</label>
-                                    <div class="col-md-8">
-                                        <div class="checkbox-inline">
-                                            <input v-model="leavePolicy.withWeekend" type="checkbox">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-4">Carry forward?</label>
-                                    <div class="col-md-8">
-                                        <div class="checkbox-inline">
-                                            <input v-model="leavePolicy.carryForward" type="checkbox">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group row" v-if="!!leavePolicy.carryForward">
-                                    <label class="col-md-4">Maximum Carry forward Days</label>
-                                    <div class="col-md-8">
-                                        <input v-model="leavePolicy.maxCarryForwardDuration"
-                                               type="number" :max="leavePolicy.duration"
-                                               class="form-control" min="1">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-md-4">Is Active?</label>
-                                    <div class="col-md-8">
-                                        <div class="checkbox-inline">
-                                            <input v-model="leavePolicy.active" type="checkbox">
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="col-lg-5 col-md-5">
+                                <select ref="scaleIds"
+                                        class="form-control"
+                                        :disabled="!!leavePolicy.id"
+                                        multiple
+                                >
+                                    <option v-for="salaryScale in salaryScales" :key="salaryScale.id"
+                                            :value="salaryScale.id"
+                                            v-text="salaryScale.scale"></option>
+                                </select>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group row">
-                                    <div class="col-md-12">
-                                        <label>Description </label>
-                                        <textarea v-model="leavePolicy.description" class="form-control"></textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group leave-duallist">
-                                    <label>Assign Salary Scales <span class="text-danger">*</span></label>
-                                    <div class="row">
-                                        <div class="col-lg-5 col-md-5">
-                                            <select ref="scaleIds"
-                                                    class="form-control"
-                                                    :disabled="!!leavePolicy.id"
-                                                    multiple
-                                            >
-                                                <option v-for="salaryScale in salaryScales" :key="salaryScale.id"
-                                                        :value="salaryScale.id"
-                                                        v-text="salaryScale.scale"></option>
-                                            </select>
-                                        </div>
-                                        <div class="multiselect-controls col-lg-2 col-md-2">
-                                            <button type="button" :disabled="!!leavePolicy.id" @click="addAll()"
-                                                    class="btn btn-block btn-white btn-sm"><i
-                                                class="fa fa-forward"></i>
-                                            </button>
-                                            <button type="button" :disabled="!!leavePolicy.id" @click="addSelected()"
-                                                    class="btn btn-block btn-white btn-sm"><i
-                                                class="fa fa-chevron-right"></i></button>
-                                            <button type="button" :disabled="!!leavePolicy.id" @click="removeSelected()"
-                                                    class="btn btn-block btn-white btn-sm"><i
-                                                class="fa fa-chevron-left"></i></button>
-                                            <button type="button" :disabled="!!leavePolicy.id" @click="removeAll()"
-                                                    class="btn btn-block btn-white btn-sm"><i
-                                                class="fa fa-backward"></i></button>
-                                        </div>
-                                        <div class="col-lg-5 col-md-5">
-                                            <select :disabled="!!leavePolicy.id" ref="selectedScaleIds" class="form-control" multiple></select>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="multiselect-controls col-lg-2 col-md-2">
+                                <button type="button" :disabled="!!leavePolicy.id" @click="addAll()"
+                                        class="btn btn-block btn-white btn-sm"><i
+                                    class="fa fa-forward"></i>
+                                </button>
+                                <button type="button" :disabled="!!leavePolicy.id" @click="addSelected()"
+                                        class="btn btn-block btn-white btn-sm"><i
+                                    class="fa fa-chevron-right"></i></button>
+                                <button type="button" :disabled="!!leavePolicy.id" @click="removeSelected()"
+                                        class="btn btn-block btn-white btn-sm"><i
+                                    class="fa fa-chevron-left"></i></button>
+                                <button type="button" :disabled="!!leavePolicy.id" @click="removeAll()"
+                                        class="btn btn-block btn-white btn-sm"><i
+                                    class="fa fa-backward"></i></button>
+                            </div>
+                            <div class="col-lg-5 col-md-5">
+                                <select :disabled="!!leavePolicy.id" ref="selectedScaleIds" class="form-control"
+                                        multiple></select>
                             </div>
                         </div>
-                        <div class="submit-section">
-                            <button
-                                :disabled="isSending || !!!leavePolicy.title || !!!leavePolicy.duration  || leavePolicy.selectedSalaryScaleIds.length === 0"
-                                class="btn btn-primary submit-btn pull-right">Save
-                            </button>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+            <div class="submit-section">
+                <button :disabled="formInvalid" class="btn btn-primary submit-btn btn-block">
+                    <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                    <span v-else>Save</span>
+                </button>
+            </div>
+        </form>
+    </app-main-modal>
     <!-- /Leave Policy Modal -->
 </template>
 
@@ -145,37 +132,49 @@
     import LeavePolicy from "../../../models/hrms/LeavePolicy";
     import {mapActions, mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import {deepClone} from "../../../utils/helpers";
+    import LeaveType from "../../../models/hrms/LeaveType";
 
     export default {
-        props: ['leaveTypeId'],
+        props: {
+            leaveTypeId: {type: Number, required: true}
+        },
         created() {
-            //this.$store.dispatch('getFormSelections', {});
             this.cloneSalaryScales();
-            setTimeout(() => {
-                this.leavePolicy.leaveTypeId = this.leaveTypeId;
-            }, 200);
-            EventBus.$on('editLeavePolicy', this.editLeavePolicy);
+            EventBus.$on('EDIT_LEAVE_POLICY', this.editLeavePolicy);
         },
         data() {
             return {
                 leavePolicy: new LeavePolicy(),
                 salaryScales: [],
                 selectedSalaryScaleIds: [],
+                isEditing: false,
                 isSending: false,
             }
         },
         computed: {
             ...mapGetters({
-                scales: 'getSalaryScales',
-                formSelectionOptions: 'getFormSelections',
+                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
+            scales(){
+              return this.formSelectionOptions.salaryScales;
+            },
+            title() {
+                return !!this.leavePolicy.id ? "Edit Leave Policy" : "New Leave Policy";
+            },
+            formInvalid() {
+                return this.isSending || !(!!this.leavePolicy.title && !!this.leavePolicy.duration  && this.leavePolicy.selectedSalaryScaleIds.length > 0);
+            },
         },
         methods: {
-            editLeavePolicy(leavePolicy) {
-                this.leavePolicy = JSON.parse(JSON.stringify(leavePolicy));
-                this.leavePolicy.selectedSalaryScaleIds = leavePolicy.salaryScaleIds || [];
-                //this.addSelected();
-                $(this.$refs.leavePolicyModal).modal('show');
+            editLeavePolicy(leavePolicy = null) {
+                if (!!leavePolicy) {
+                    this.leavePolicy = deepClone(leavePolicy);
+                    this.leavePolicy.selectedSalaryScaleIds = this.leavePolicy.salaryScaleIds || [];
+                } else {
+                    this.leaveType = new LeaveType();
+                }
+                this.isEditing = true;
             },
             cloneSalaryScales() {
                 this.salaryScales = this.scales.map((scale) => {
@@ -215,6 +214,9 @@
 
             async saveLeavePolicy() {
                 try {
+                    if(!!!this.leavePolicy.leaveTypeId){
+                        this.leavePolicy.leaveTypeId = this.leaveTypeId;
+                    }
                     console.log(this.leavePolicy);
                     if (!!!this.leavePolicy.gender) {
                         let confirmed = await swal({
@@ -237,7 +239,7 @@
                     let wrapper = document.createElement('div');
                     wrapper.innerHTML = response;
                     await swal({content: wrapper});
-                    this.closePreview();
+                    this.resetForm();
                     this.isSending = false;
                 } catch (error) {
                     console.log(error);
@@ -245,13 +247,13 @@
                     this.isSending = false;
                 }
             },
-            closePreview() {
+            resetForm() {
                 this.leavePolicy = new LeavePolicy();
                 this.leavePolicy.leaveTypeId = this.leaveTypeId;
                 this.cloneSalaryScales();
                 this.leavePolicy.selectedSalaryScaleIds = [];
                 this.removeSelected();
-                $(this.$refs.leavePolicyModal).modal('hide');
+                this.isEditing = false;
                 $('.modal-backdrop').remove();
             },
         }

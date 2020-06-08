@@ -173,6 +173,7 @@
             resetForm() {
                 this.indicator = new OutputIndicatorTarget();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

@@ -13,7 +13,7 @@ class OutputIndicatorTargetsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/output-indicator-targets';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/output-indicator-targets';
     }
 
     public function store(Request $request)

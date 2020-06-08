@@ -164,7 +164,9 @@ return [
     'reminders' => [
         'model' => 'Cartalyst\Sentinel\Reminders\EloquentReminder',
 
-        'expires' => 14400,
+        //'expires' => 14400,
+
+        'expires' => 900, // 15 minutes
 
         'lottery' => [2, 100],
     ],

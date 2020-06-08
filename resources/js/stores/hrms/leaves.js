@@ -1,5 +1,6 @@
 import axios from "axios";
 import routes from "../../routes";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     state: {
@@ -25,49 +26,42 @@ export default {
     actions: {
         GET_LEAVES: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.employee_id) {
-                    params.push('employee_id=' + payload.employee_id);
-                }
-                if (!!payload.leave_type_id) {
-                    params.push('leave_type_id=' + payload.leave_type_id);
-                }
-                let queryParams = params.join('&');
-                let response = await axios.get(routes.LEAVES_JSON + '?' + queryParams);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.LEAVES_JSON +  queryParams);
                 commit('SET_LEAVES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         RECALL_LEAVE: async ({commit}, payload) => {
             try {
-                let response = await axios.patch(routes.LEAVES + '/recall', {leave_id:  payload});
+                let response = await axios.patch(routes.LEAVES + '/recall', {leaveId:  payload});
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         DELETE_LEAVE: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.LEAVES + '?leave_id=' + payload);
+                let response = await axios.delete(routes.LEAVES + '?leaveId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         GET_LEAVE_TYPES: async ({commit}) => {
             try {
-                let response = await axios.get(routes.LEAVE_TYPES_JSON);
+                let response = await axios.get(routes.LEAVE_TYPES);
                 commit('SET_LEAVE_TYPES', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_LEAVE_TYPE: async ({commit}, payload) => {
@@ -82,18 +76,18 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         DELETE_LEAVE_TYPE: async ({commit}, payload) => {
             try {
-                let response = await axios.delete(routes.LEAVE_TYPES + '?leave_type_id=' + payload);
+                let response = await axios.delete(routes.LEAVE_TYPES + '?leaveTypeId=' + payload);
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         ACTIVATE_LEAVE_TYPE: async ({commit}, payload) => {
@@ -102,8 +96,8 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         DEACTIVATE_LEAVE_TYPE: async ({commit}, payload) => {
@@ -112,20 +106,20 @@ export default {
                 console.log(response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.log(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         GET_LEAVE_POLICIES: async ({commit}, payload) => {
             try {
-                if (!!!payload.leave_type_id) {
+                if (!!!payload.leaveTypeId) {
                     return Promise.reject('Leave type required!');
                 }
-                let response = await axios.get(routes.LEAVE_POLICIES + '?leave_type_id=' + payload.leave_type_id);
+                let response = await axios.get(routes.LEAVE_POLICIES + '?leaveTypeId=' + payload.leaveTypeId);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_LEAVE_POLICY: async ({commit}, payload) => {
@@ -138,44 +132,54 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         DELETE_LEAVE_POLICY: async ({commit}, payload) => {
             try {
-                if (!!!payload.leave_policy_id) {
+                if (!!!payload.leavePolicyId) {
                     return Promise.reject('Leave policy required!');
                 }
-                let response = await axios.delete(routes.LEAVE_POLICIES + '?leave_policy_id=' + payload.leave_policy_id);
+                let response = await axios.delete(routes.LEAVE_POLICIES + '?leavePolicyId=' + payload.leavePolicyId);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         ACTIVATE_LEAVE_POLICY: async ({commit}, payload) => {
             try {
-                if (!!!payload.leave_policy_id) {
+                if (!!!payload.leavePolicyId) {
                     return Promise.reject('Leave policy required!');
                 }
-                let response = await axios.patch(routes.LEAVE_POLICIES + '/activate?leave_policy_id=' + payload.leave_policy_id);
+                let response = await axios.patch(routes.LEAVE_POLICIES + '/activate?leavePolicyId=' + payload.leavePolicyId);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         DEACTIVATE_LEAVE_POLICY: async ({commit}, payload) => {
             try {
-                if (!!!payload.leave_policy_id) {
+                if (!!!payload.leavePolicyId) {
                     return Promise.reject('Leave policy required!');
                 }
-                let response = await axios.patch(routes.LEAVE_POLICIES + '/deactivate?leave_policy_id=' + payload.leave_policy_id);
+                let response = await axios.patch(routes.LEAVE_POLICIES + '/deactivate?leavePolicyId=' + payload.leavePolicyId);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response.data);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+        async SAVE_LEAVE_APPLICATION_SETTINGS({commit}, payload) {
+            try {
+                let response = await axios.post(routes.APPROVAL_SETTINGS + '/leave-applications-settings', payload);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
             }
         },
     }

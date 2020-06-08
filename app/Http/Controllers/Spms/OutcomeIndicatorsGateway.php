@@ -13,7 +13,7 @@ class OutcomeIndicatorsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/outcome-indicators';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/outcome-indicators';
     }
 
     public function store(Request $request)

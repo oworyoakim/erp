@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 networks:
   unebnet:
 
@@ -12,7 +12,7 @@ services:
       APP_NAME: UNEB-SPMS
       APP_ENV: ${APP_ENV}
       APP_BASE_URL: ${SPMS_APP_BASE_URL}
-      APP_URL: ${SPMS_APP_URL}
+      APP_URL: 'http://${SPMS_APP_BASE_URL}:${SPMS_PORT}'
       APP_DEBUG: ${APP_DEBUG}
       TIME_ZONE: ${TIME_ZONE}
       CACHE_KEY: ${SPMS_CACHE_KEY}
@@ -38,14 +38,14 @@ services:
     networks:
       - unebnet
   uneb_hrms:
-    image: oworyoakim/uneb_hrms:latest
+    image: oworyoakim/uneb_hrms:v1
     container_name: ${HRMS_CACHE_KEY}
     restart: always
     environment:
       APP_NAME: UNEB-HRMS
       APP_ENV: ${APP_ENV}
       APP_BASE_URL: ${HRMS_APP_BASE_URL}
-      APP_URL: ${HRMS_APP_URL}
+      APP_URL: 'http://${HRMS_APP_BASE_URL}:${HRMS_PORT}'
       APP_DEBUG: ${APP_DEBUG}
       TIME_ZONE: ${TIME_ZONE}
       CACHE_KEY: ${HRMS_CACHE_KEY}
@@ -68,6 +68,44 @@ services:
       #- /var/www/html/erp/storage/:/var/www/html/storage/
     ports:
       - "${HRMS_PORT}:80"
+    networks:
+      - unebnet
+  uneb_erp:
+    image: oworyoakim/uneb_erp:latest
+    container_name: ${CACHE_KEY}
+    restart: always
+    depends_on:
+      - uneb_hrms
+      - uneb_spms
+    environment:
+      APP_NAME: ${APP_NAME}
+      APP_ENV: ${APP_ENV}
+      APP_BASE_URL: ${APP_BASE_URL}
+      APP_URL: ${APP_URL}
+      APP_DEBUG: ${APP_DEBUG}
+      TIME_ZONE: ${TIME_ZONE}
+      CACHE_KEY: ${CACHE_KEY}
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: '${DB_PASSWORD}'
+      HRMS_APP_URL: 'http://${HRMS_APP_BASE_URL}:${HRMS_PORT}'
+      SPMS_APP_URL: 'http://${SPMS_APP_BASE_URL}:${SPMS_PORT}'
+      CACHE_DRIVER: file
+      QUEUE_CONNECTION: database
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 2048m
+          cpus: "1.5"
+        reservations:
+          memory: 1536m
+          cpus: "1.0"
+      #volumes:
+      #- /var/www/html/erp/storage/:/var/www/html/storage/
+    ports:
+      - "${APP_PORT}:80"
     networks:
       - unebnet
 

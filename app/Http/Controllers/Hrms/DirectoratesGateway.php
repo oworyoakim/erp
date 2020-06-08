@@ -12,7 +12,7 @@ class DirectoratesGateway extends GatewayController
 {
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/directorates';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/directorates';
     }
 
     public function index(Request $request)

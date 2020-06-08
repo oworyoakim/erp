@@ -14,7 +14,7 @@ class HrmsController extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1';
     }
 
     public function indexHrms()
@@ -129,6 +129,16 @@ class HrmsController extends GatewayController
     public function leaveApplications()
     {
         return view('hrms.leaves.applications');
+    }
+
+    public function leaveSettings()
+    {
+        return view('hrms.settings.leave');
+    }
+
+    public function approvalsSettings()
+    {
+        return view('hrms.settings.approvals');
     }
 
     public function getFormSelectionsOptions(Request $request)

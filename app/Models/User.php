@@ -87,11 +87,18 @@ class User extends EloquentUser
         return $this->activations()->delete();
     }
 
-    public function getPasswordResetReminderCode()
+    public function getPasswordResetReminderCode($refresh = false)
     {
-        $reminder = $this->reminders()->first();
+        $reminder = $this->reminders()
+                         ->where('completed', false)
+                         ->whereNull('completed_at')
+                         ->first();
         if (!$reminder)
         {
+            if (!$refresh)
+            {
+                return null;
+            }
             $reminder = Reminder::create($this);
         }
         return $reminder->code;

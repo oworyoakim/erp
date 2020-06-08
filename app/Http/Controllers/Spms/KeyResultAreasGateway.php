@@ -13,7 +13,7 @@ class KeyResultAreasGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/key-result-areas';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/key-result-areas';
     }
 
     public function index(Request $request)

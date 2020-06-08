@@ -13,7 +13,7 @@ class OutputsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/outputs';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/outputs';
     }
 
     public function store(Request $request)
