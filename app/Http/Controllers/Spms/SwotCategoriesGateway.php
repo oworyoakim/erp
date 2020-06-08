@@ -13,7 +13,7 @@ class SwotCategoriesGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/swot-categories';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/swot-categories';
     }
 
     public function index(Request $request)

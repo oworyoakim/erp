@@ -18,6 +18,8 @@ Route::get('/', function () {
 Route::get('/login', 'AccountController@login')->name('login');
 Route::post('/login', 'AccountController@processLogin')->name('login');
 Route::post('/reset-password', 'AccountController@resetPassword')->name('reset-password');
+Route::get('/reset-password/{email}/{code}', 'AccountController@resetPasswordForm')->name('reset-password-form');
+Route::put('/reset-password', 'AccountController@processResetPasswordForm')->name('do-reset-password');
 Route::get('/test', 'HomeController@test')->name('test');
 
 Route::middleware('ensure.authenticated')->group(function () {
@@ -133,23 +135,40 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::put('related-persons', 'RelatedPersonInfoGateway@update');
             });
 
+            // settings
+            Route::prefix('settings')->group(function (){
+                // leave settings
+                Route::get('leave', 'HrmsController@leaveSettings')->name('hrms.settings.leave');
+                // approvals settings
+                Route::get('approvals', 'HrmsController@approvalsSettings')->name('hrms.settings.approvals');
+                Route::post('approvals/leave-applications-settings', 'SettingsGateway@updateLeaveApplicationsSettings');
+            });
+
             // leaves
-            Route::group(['prefix' => 'leaves'], function () {
+            Route::prefix('leaves')->group( function () {
                 // leaves
                 Route::get('', 'HrmsController@leaves')->name('hrms.leaves.list');
                 Route::get('all-json', 'LeavesGateway@index');
 
                 // leaves/types
-                Route::group(['prefix' => 'types'], function () {
-                    Route::get('', 'HrmsController@leaveTypes')->name('hrms.leaves.types');
-                    // leave type policies
-                    //Route::get('policies', 'LeavePoliciesController@getLeavePolicies')->name('hrms.leaves.types.policies');
-                    //Route::post('policies', 'LeavePoliciesController@storeLeavePolicy')->name('hrms.leaves.types.policies');
-                    //Route::put('policies', 'LeavePoliciesController@updateLeavePolicy')->name('hrms.leaves.types.policies');
-                    //Route::delete('policies', 'LeavePoliciesController@deleteLeavePolicy')->name('hrms.leaves.types.policies');
-                    //Route::patch('policies/activate', 'LeavePoliciesController@activateLeavePolicy')->name('hrms.leaves.types.policies.activate');
-                    //Route::patch('policies/deactivate', 'LeavePoliciesController@deactivateLeavePolicy')->name('hrms.leaves.types.policies.deactivate');
+                Route::prefix('types')->group( function () {
+                    Route::get('', 'LeaveTypesGateway@index');
+                    Route::post('', 'LeaveTypesGateway@store');
+                    Route::put('', 'LeaveTypesGateway@update');
+                    Route::patch('activate', 'LeaveTypesGateway@activate');
+                    Route::patch('deactivate', 'LeaveTypesGateway@deactivate');
                 });
+
+                // leaves/policies
+                Route::prefix('policies')->group( function () {
+                    Route::get('', 'LeavePoliciesGateway@index');
+                    Route::post('', 'LeavePoliciesGateway@store');
+                    Route::put('', 'LeavePoliciesGateway@update');
+                    Route::delete('', 'LeavePoliciesGateway@delete');
+                    Route::patch('activate', 'LeavePoliciesGateway@activate');
+                    Route::patch('deactivate', 'LeavePoliciesGateway@deactivate');
+                });
+
             });
 
             // leave-applications
@@ -183,6 +202,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('all-json', 'DocumentsGateway@index');
                 Route::post('', 'DocumentsGateway@store');
             });
+
         });
 
         // SPMS
@@ -322,12 +342,6 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('general', 'GeneralSettingsController@index')->name('settings.general');
                 Route::get('general/all-json', 'GeneralSettingsController@getSettings')->name('settings.general.all-json');
                 Route::put('general', 'GeneralSettingsController@update')->name('settings.general');
-                // leave settings
-                Route::get('leave', 'LeaveSettingsController@index')->name('settings.leave');
-                Route::post('leave', 'LeaveSettingsController@update')->name('settings.leave');
-                // approvals settings
-                Route::get('approvals', 'ApprovalsSettingsController@index')->name('settings.approvals');
-                Route::post('approvals', 'ApprovalsSettingsController@update')->name('settings.approvals');
             });
         });
 

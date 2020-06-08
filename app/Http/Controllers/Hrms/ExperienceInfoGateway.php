@@ -15,7 +15,7 @@ class ExperienceInfoGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/employees/experience';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/employees/experience';
     }
 
     public function index(Request $request)

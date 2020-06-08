@@ -12,7 +12,7 @@
             </div>
         </div>
         <!-- /Page Header -->
-        <span v-if="isLoading" class="fa fa-spinner fa-spin fa-3x"></span>
+        <app-spinner v-if="isLoading"></app-spinner>
         <template v-else>
             <div class="card tab-box">
                 <div class="row user-tabs">
@@ -67,7 +67,7 @@
                                 </td>
                                 <td>
                                     <button @click="editLeaveApplicationSetting(designation)" type="button"
-                                            class="btn btn-info btn-xs"><i class="fa fa-edit"></i> Edit
+                                            class="btn btn-info btn-sm"><i class="fa fa-edit"></i> Edit
                                     </button>
                                 </td>
                             </tr>
@@ -75,62 +75,55 @@
                         </table>
                     </div>
                     <!-- Leave Application Setting Modal -->
-                    <div ref="leaveApplicationSettingModal" id="leaveApplicationSettingModal"
-                         class="modal custom-modal fade" role="dialog" tabindex="-1"
-                         data-backdrop="static" data-keyboard="false">
-                        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                            <div class="modal-content" v-if="!!activeDesignation">
-                                <div class="modal-header">
-                                    <h5 class="modal-title text-center">Leave Applications By <br/>
-                                        <hr/>
-                                        <span style="font-size: larger !important;">{{activeDesignation.title}}</span>
-                                    </h5>
-                                    <button @click="closePreview()" type="button" class="close" data-dismiss="modal"
-                                            aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
+                    <app-main-modal title="Leave Applications Settings For"
+                                    :is-open="isEditing"
+                                    @modal-closed="resetForm()"
+                                    key="hrms-leave-approvals-form">
+                        <template v-if="!!activeDesignation" >
+                            <h4 class="text-center mb-5">{{activeDesignation.title}}</h4>
+                            <form @submit.prevent="saveLeaveApplicationSetting" ref="leaveApplicationSettingForm">
+                                <div class="form-group row">
+                                    <label class="col-sm-3">Verified By<span
+                                        class="text-danger">*</span></label>
+                                    <div class="col-sm-9">
+                                        <app-select-box :select-options="designationOptions"
+                                                        v-model="leaveApplicationSetting.verifiedBy"
+                                                        :value="leaveApplicationSetting.verifiedBy"
+                                                        placeholder="Select..."
+                                                        key="leave-application-verifier"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3">Approved By<span
+                                        class="text-danger">*</span></label>
+                                    <div class="col-sm-9">
+                                        <app-select-box :select-options="designationOptions"
+                                                        v-model="leaveApplicationSetting.approvedBy"
+                                                        :value="leaveApplicationSetting.approvedBy"
+                                                        key="leave-application-approver"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-3">Granted By<span class="text-danger">*</span></label>
+                                    <div class="col-sm-9">
+                                        <app-select-box :select-options="designationOptions"
+                                                        v-model="leaveApplicationSetting.grantedBy"
+                                                        :value="leaveApplicationSetting.grantedBy"
+                                                        key="leave-application-granter"
+                                        />
+                                    </div>
+                                </div>
+                                <div class="submit-section">
+                                    <button :disabled="formInvalid" class="btn btn-primary submit-btn btn-block">
+                                        <span v-if="isSending" class="fa fa-spinner fa-spin"></span>
+                                        <span v-else>Save</span>
                                     </button>
                                 </div>
-                                <div class="modal-body">
-                                    <form @submit.prevent="saveLeaveApplicationSetting"
-                                          ref="leaveApplicationSettingForm">
-                                        <div class="form-group row">
-                                            <label class="col-sm-3">Verified By<span
-                                                class="text-danger">*</span></label>
-                                            <div class="col-sm-9">
-                                                <app-select-box :select-options="designationOptions"
-                                                                v-model="leaveApplicationSetting.verified_by"
-                                                                :value="leaveApplicationSetting.verified_by"
-                                                                :placeholder="'Select...'"></app-select-box>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-3">Approved By<span
-                                                class="text-danger">*</span></label>
-                                            <div class="col-sm-9">
-                                                <app-select-box :select-options="designationOptions"
-                                                                v-model="leaveApplicationSetting.approved_by"
-                                                                :value="leaveApplicationSetting.approved_by"/>
-                                            </div>
-                                        </div>
-                                        <div class="form-group row">
-                                            <label class="col-sm-3">Granted By<span class="text-danger">*</span></label>
-                                            <div class="col-sm-9">
-                                                <app-select-box :select-options="designationOptions"
-                                                                v-model="leaveApplicationSetting.granted_by"
-                                                                :value="leaveApplicationSetting.granted_by"/>
-                                            </div>
-                                        </div>
-                                        <div class="submit-section">
-                                            <button
-                                                :disabled="isSending || !(!!leaveApplicationSetting.designation_id && !!leaveApplicationSetting.verified_by && !!leaveApplicationSetting.approved_by && !!leaveApplicationSetting.granted_by)"
-                                                class="btn btn-primary submit-btn">Save
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                            </form>
+                        </template>
+                    </app-main-modal>
                 </div>
                 <div id="salaryAdvances" class="pro-overview tab-pane fade">
                     <h3>Coming Soon</h3>
@@ -165,12 +158,13 @@
                     {href: '#', text: this.title, class: 'active'},
                 ],
                 isLoading: false,
+                isEditing: false,
                 isSending: false,
             };
         },
         computed: {
             ...mapGetters({
-                designations: 'GET_DESIGNATIONS',
+                designations: 'DESIGNATIONS',
             }),
             designationOptions() {
                 return this.designations.map((designation) => {
@@ -180,6 +174,9 @@
                     };
                 });
             },
+            formInvalid() {
+                return this.isSending || !(!!this.leaveApplicationSetting.designationId && !!this.leaveApplicationSetting.verifiedBy && !!this.leaveApplicationSetting.approvedBy && !!this.leaveApplicationSetting.grantedBy);
+            }
         },
         methods: {
             async getDesignations() {
@@ -194,38 +191,40 @@
             },
             editLeaveApplicationSetting(designation) {
                 this.activeDesignation = designation;
-                this.leaveApplicationSetting.designation_id = designation.id;
+                this.leaveApplicationSetting.designationId = designation.id;
                 if (!!designation.leaveApplicationVerifier) {
-                    this.leaveApplicationSetting.verified_by = designation.leaveApplicationVerifier.id;
+                    this.leaveApplicationSetting.verifiedBy = designation.leaveApplicationVerifier.id;
                 }
                 if (!!designation.leaveApplicationApprover) {
-                    this.leaveApplicationSetting.approved_by = designation.leaveApplicationApprover.id;
+                    this.leaveApplicationSetting.approvedBy = designation.leaveApplicationApprover.id;
                 } else {
-                    this.leaveApplicationSetting.approved_by = designation.supervisor_id;
+                    this.leaveApplicationSetting.approvedBy = designation.supervisorId;
                 }
                 if (!!designation.leaveApplicationGranter) {
-                    this.leaveApplicationSetting.granted_by = designation.leaveApplicationGranter.id;
+                    this.leaveApplicationSetting.grantedBy = designation.leaveApplicationGranter.id;
                 }
-                $(this.$refs.leaveApplicationSettingModal).modal('show');
+                console.log(this.activeDesignation);
+                this.isEditing = true;
             },
             async saveLeaveApplicationSetting() {
                 try {
                     this.isSending = true;
-                    let response = await this.$store.dispatch('saveApplicationSetting', this.leaveApplicationSetting);
+                    let response = await this.$store.dispatch('SAVE_LEAVE_APPLICATION_SETTINGS', this.leaveApplicationSetting);
                     await this.$store.dispatch('GET_DESIGNATIONS', {});
                     this.isSending = false;
                     await swal({title: response, icon: 'success'});
-                    this.closePreview();
+                    this.resetForm();
                 } catch (error) {
+                    let message = document.createElement('div');
+                    message.innerHTML = error;
+                    await swal({content: message, icon: 'error'});
                     this.isSending = false;
-                    console.log(error);
-                    await swal({title: error, icon: 'error'});
                 }
             },
-            closePreview() {
+            resetForm() {
                 this.activeDesignation = null;
                 this.leaveApplicationSetting = new LeaveApplicationSetting();
-                $(this.$refs.leaveApplicationSettingModal).modal('hide');
+                this.isEditing = false;
                 $('.modal-backdrop').remove();
             },
         },

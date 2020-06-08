@@ -8,12 +8,14 @@ use App\Models\User;
 use App\Traits\MakesRemoteHttpRequests;
 use App\Traits\SendsEmailNotifications;
 use App\Traits\ValidatesHttpRequests;
+use Cartalyst\Sentinel\Laravel\Facades\Activation;
 use Cartalyst\Sentinel\Laravel\Facades\Reminder;
 use Illuminate\Http\Request;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
@@ -27,7 +29,7 @@ class AccountController extends Controller
 
     public function __construct()
     {
-        $this->urlEndpoint = env("HRMS_URL");
+        $this->urlEndpoint = env("HRMS_APP_URL");
     }
 
     public function login(Request $request)
@@ -153,7 +155,7 @@ class AccountController extends Controller
             $user = User::query()->where('email', $email)->first();
             if ($user)
             {
-                $reminderCode = $user->getPasswordResetReminderCode();
+                $reminderCode = $user->getPasswordResetReminderCode(true);
                 $this->sendPasswordResetReminderEmail($user->email, $user->fullName(), $reminderCode);
             }
         } catch (Swift_TransportException $ex)
@@ -203,6 +205,75 @@ class AccountController extends Controller
         {
             Log::error($ex->getMessage());
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function resetPasswordForm($email, $code)
+    {
+        try
+        {
+            $message = "This password reset link has expired!";
+            if (empty($email) || empty($code))
+            {
+                throw new Exception($message);
+            }
+            $user = User::query()->where('email', $email)->first();
+            if (!$user)
+            {
+                throw new Exception($message);
+            }
+            $reminderCode = $user->getPasswordResetReminderCode();
+            if ($reminderCode != $code)
+            {
+                throw new Exception($message);
+            }
+            return view('account.reset-password', ['code' => $code, 'email' => $email]);
+        } catch (Exception $ex)
+        {
+            Log::error("PASSWORD_RESET: {$ex->getMessage()}");
+            session()->flash('error', $ex->getMessage());
+            return redirect()->route('login');
+        }
+    }
+
+    public function processResetPasswordForm(Request $request)
+    {
+        try
+        {
+            $message = "This password reset link has expired!";
+            $rules = [
+                'email' => 'required|email',
+                'code' => 'required',
+                'password' => 'required|confirmed:password_confirmation',
+            ];
+            $this->validateData($request->all(), $rules);
+            $email = $request->get('email');
+            $code = $request->get('code');
+            if (empty($email) || empty($code))
+            {
+                throw new Exception($message);
+            }
+            $user = User::query()->where('email', $email)->first();
+            if (!$user)
+            {
+                throw new Exception($message);
+            }
+            $reminderCode = $user->getPasswordResetReminderCode();
+            if ($reminderCode != $code)
+            {
+                throw new Exception($message);
+            }
+            DB::beginTransaction();
+            Reminder::complete($user, $code, $request->get('password'));
+            DB::commit();
+            session()->flash('success', "You have successfully reset your password!");
+            return redirect()->route('login');
+        } catch (Exception $ex)
+        {
+            DB::rollBack();
+            Log::error("PASSWORD_RESET: {$ex->getMessage()}");
+            session()->flash('error', $ex->getMessage());
+            return redirect()->route('login');
         }
     }
 

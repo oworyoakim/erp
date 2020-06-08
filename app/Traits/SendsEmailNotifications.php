@@ -6,13 +6,14 @@ namespace App\Traits;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\HtmlString;
 use Swift_TransportException;
 
 trait SendsEmailNotifications
 {
     /**
      * @param string $email
-     * @param string$fullName
+     * @param string $fullName
      * @param string $reminderCode
      * @throws Swift_TransportException
      */
@@ -41,11 +42,9 @@ trait SendsEmailNotifications
             );
             $htmlMessage = View::make('emails.reset-password', $data)->render();
         }
-
-        Mail::raw($htmlMessage, function ($message) use ($email, $companyName, $companyEmail, $subject) {
+        Mail::send(['html' => new HtmlString($htmlMessage)], [], function (&$message) use ($email, $companyName, $companyEmail, $subject) {
             $message->from($companyEmail, $companyName);
             $message->to($email);
-            $headers = $message->getHeaders();
             $message->setContentType('text/html');
             $message->setSubject($subject);
         });

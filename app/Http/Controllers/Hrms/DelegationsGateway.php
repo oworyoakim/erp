@@ -15,7 +15,7 @@ class DelegationsGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/delegations';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/delegations';
     }
 
     public function index(Request $request)

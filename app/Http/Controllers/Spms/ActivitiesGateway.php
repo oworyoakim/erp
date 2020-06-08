@@ -13,7 +13,7 @@ class ActivitiesGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/activities';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/activities';
     }
 
     public function index(Request $request)

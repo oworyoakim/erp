@@ -9,23 +9,23 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class LeavesGateway extends GatewayController
+class SettingsGateway extends GatewayController
 {
     use ValidatesHttpRequests;
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/leaves';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/settings';
     }
 
-    public function index(Request $request)
+    public function updateLeaveApplicationsSettings(Request $request)
     {
         try
         {
-            $params = $request->all();
-
-            $responseData = $this->get($this->urlEndpoint, $params);
-
+            $data = $request->all();
+            $loggedInUser = Sentinel::getUser();
+            $data['userId'] = $loggedInUser->getUserId();
+            $responseData = $this->post("{$this->urlEndpoint}/leave-applications-approvals", $data);
             return response()->json($responseData);
         } catch (Exception $ex)
         {

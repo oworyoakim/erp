@@ -13,7 +13,7 @@ class TasksGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/tasks';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/tasks';
     }
 
     public function index(Request $request)

@@ -96,6 +96,7 @@
             resetForm() {
                 this.keyResultArea = new KeyResultArea();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

@@ -26,6 +26,28 @@ class RolesTableSeeder extends Seeder
 
         Role::query()->updateOrCreate(['slug' => 'admin'], [
             'name' => 'Admin',
+            'type' => 'both',
+            'permissions' => [
+                "profile.others" => true,
+                "profile.own" => true,
+                "profile.edit_own" => true,
+                "users" => true,
+                "users.view" => true,
+                "users.create" => true,
+                "users.update" => true,
+                "users.delete" => true,
+                "users.show" => true,
+                "users.roles" => true,
+                "settings" => true,
+                "dashboard" => true,
+                "leaves" => true,
+                "leaves.create" => true,
+            ],
+        ]);
+
+        Role::query()->updateOrCreate(['slug' => 'developer'], [
+            'name' => 'Developer',
+            'type' => 'both',
             'permissions' => [
                 "profile.others" => true,
                 "profile.own" => true,

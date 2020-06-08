@@ -56,6 +56,7 @@ export default new Vuex.Store({
             documentCategories: [],
             documentTypes: [],
             leaveTypes: [],
+            salaryScales: [],
             nextEmployeeId: '0001',
         },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
@@ -133,17 +134,6 @@ export default new Vuex.Store({
                 let response = await axios.get(routes.GENERAL_SETTINGS_JSON);
                 commit('setGeneralSettings', response.data);
                 return Promise.resolve('Ok');
-            } catch (error) {
-                let message = resolveError(error);
-                console.error(message);
-                return Promise.reject(message);
-            }
-        },
-
-        saveApplicationSetting: async ({commit}, payload) => {
-            try {
-                let response = await axios.post(routes.APPROVAL_SETTINGS, payload);
-                return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);
                 console.error(message);

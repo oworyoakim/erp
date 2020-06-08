@@ -13,7 +13,7 @@ class StrategicObjectivesGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_URL') . '/v1/objectives';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/objectives';
     }
 
     public function index(Request $request)

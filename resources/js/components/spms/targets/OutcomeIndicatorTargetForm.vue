@@ -148,6 +148,7 @@
             resetForm() {
                 this.indicator = new OutcomeIndicatorTarget();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

@@ -15,7 +15,7 @@ class EducationInfoGateway extends GatewayController
 
     public function __construct()
     {
-        $this->urlEndpoint = env('HRMS_URL') . '/v1/employees/education';
+        $this->urlEndpoint = env('HRMS_APP_URL') . '/v1/employees/education';
     }
 
     public function index(Request $request)

@@ -81,6 +81,7 @@
             resetForm() {
                 this.outcome = new Outcome();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

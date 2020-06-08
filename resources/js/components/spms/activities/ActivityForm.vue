@@ -133,6 +133,7 @@
             resetForm() {
                 this.activity = new Activity();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

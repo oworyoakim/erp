@@ -126,6 +126,7 @@
             resetForm() {
                 this.swot = new Swot();
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }

@@ -160,6 +160,7 @@
                 this.isEditing = false;
                 this.dateRange = this.$moment(this.startOfNextFinancialYear).format('YYYY-MM-DD') + ' - ' + this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days').format('YYYY-MM-DD');
                 this.setPlanDates(this.dateRange);
+                $('.modal-backdrop').remove();
             }
         }
     }

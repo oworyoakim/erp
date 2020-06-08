@@ -193,6 +193,7 @@
                 this.task = new Task();
                 this.interventionId = '';
                 this.isEditing = false;
+                $('.modal-backdrop').remove();
             }
         }
     }
