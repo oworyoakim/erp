@@ -87,4 +87,44 @@ class StrategicObjectivesGateway extends GatewayController
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
+
+    public function getOutputAchievements(Request $request)
+    {
+        try
+        {
+            $params = $request->only(['objectiveId','reportPeriodId']);
+            if (empty($params['objectiveId']))
+            {
+                throw new Exception("Strategic objective id required!");
+            }
+            if (empty($params['reportPeriodId']))
+            {
+                throw new Exception("Report period required!");
+            }
+
+            $responseData = $this->get("{$this->urlEndpoint}/achievements", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function storeOutputAchievements(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            $user = Sentinel::getUser();
+            $data['userId'] = $user->getUserId();
+
+            $responseData = $this->post("{$this->urlEndpoint}/achievements", $data);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
 }

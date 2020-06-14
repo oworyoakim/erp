@@ -60,9 +60,9 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4">Target Value <span class="text-danger">*</span></label>
+                <label class="col-sm-4">Target Value<span v-if="!!indicatorUnitText"> ({{indicatorUnitText}})</span> <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <input v-model="target.target" class="form-control" type="number" min="1" required>
+                    <input v-model="target.target" class="form-control" type="number" min="0" :max="maxTargetValue" required>
                 </div>
             </div>
 
@@ -134,6 +134,25 @@
                         value: period.id,
                     }
                 });
+            },
+            indicatorUnit(){
+                if(!this.target.outputIndicatorId){
+                    return null;
+                }
+                let outputIndicator = this.objective.indicators.find((indicator) => indicator.id === this.target.outputIndicatorId);
+                if(!!outputIndicator){
+                    return outputIndicator.unit;
+                }
+                return null;
+            },
+            indicatorUnitText(){
+                if(!this.indicatorUnit){
+                    return null;
+                }
+               return (this.indicatorUnit === 'percent') ? "%age" : "count";
+            },
+            maxTargetValue(){
+                return (this.indicatorUnit && this.indicatorUnit === 'percent') ? 100 : null;
             },
             title() {
                 return (!!this.target.id) ? "Edit Output Indicator Target" : "Add Output Indicator Target";

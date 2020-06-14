@@ -110,11 +110,12 @@ const app = new Vue({
 });
 
 spmsStore.dispatch("getUser").then(() => {
-    if (!window.intervalId) {
-        window.intervalId = setInterval(async () => {
-            await spmsStore.dispatch("getUser");
-        }, 60000);
-    }
+    // if (!window.GET_USER_INTERVAL) {
+    //     window.GET_USER_INTERVAL = setInterval(async () => {
+    //         await spmsStore.dispatch("getUser");
+    //     }, 60000);
+    // }
 }).catch(error => {
     console.error(error);
+    //clearInterval(window.GET_USER_INTERVAL);
 });

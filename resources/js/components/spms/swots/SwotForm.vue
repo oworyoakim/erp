@@ -6,7 +6,7 @@
                 <div class="col-sm-9">
                     <select v-model="swot.categoryId" class="form-control" :disabled="!!swot.id" required>
                         <option value="">Select...</option>
-                        <option v-for="category in swotCategories" :key="category.id" :value="category.id">
+                        <option v-for="category in swotCategories" :key="`swot-category-${category.id}`" :value="category.id">
                             {{category.name}}
                         </option>
                     </select>
@@ -18,7 +18,7 @@
                 <div class="col-sm-9">
                     <select v-model="swot.type" class="form-control" :disabled="!!swot.id" required>
                         <option value="">Select...</option>
-                        <option v-for="type in swotTypes" :key="type.value" :value="type.value">
+                        <option v-for="type in swotTypes" :key="`swot-type-${type.value}`" :value="type.value">
                             {{type.text}}
                         </option>
                     </select>

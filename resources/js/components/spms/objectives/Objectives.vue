@@ -67,7 +67,7 @@
             async getObjectives() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('GET_OBJECTIVES', this.planId);
+                    await this.$store.dispatch('GET_OBJECTIVES', {planId: this.planId});
                     this.isLoading = false;
                 } catch (error) {
                     this.isLoading = false;

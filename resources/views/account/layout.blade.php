@@ -6,6 +6,9 @@
     <meta name="description" content="Enterprise Resource Planner">
     <meta name="keywords" content="Access Control, ERP, HRMS, SPMS">
     <meta name="author" content="Owor Yoakim">
+    <meta name="csrf-token" content="{{csrf_token()}}">
+    <meta name="base-url" content="{{ url('/') }}">
+    <meta name="service-name" content="{{request()->session()->get('service')}}">
     <meta name="robots" content="noindex, nofollow">
     <title>ERP - @yield('title')</title>
     <!-- Favicon -->
@@ -19,7 +22,11 @@
     <![endif]-->
 </head>
 <body class="account-page">
-@yield('content')
+    <!-- Main Wrapper -->
+    <div class="main-wrapper" id="main-app">
+        @yield('content')
+    </div>
+    <!-- /Main Wrapper -->
 <!-- Main JS -->
 <script src="/js/acl.js"></script>
 <script>

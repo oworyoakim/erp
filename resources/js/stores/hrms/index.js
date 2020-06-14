@@ -102,13 +102,8 @@ export default new Vuex.Store({
                 commit('setUser', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.log(error.response);
-                if (error.response && error.response.status === 401) {
-                    //toastr.error('Session Expired!');
-                    toastr.error(error.response.data);
-                    location.reload();
-                }
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         GET_FORM_SELECTIONS_OPTIONS: async ({commit}, payload) => {

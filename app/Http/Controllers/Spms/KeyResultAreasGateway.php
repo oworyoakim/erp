@@ -89,4 +89,44 @@ class KeyResultAreasGateway extends GatewayController
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
+
+    public function getOutcomeAchievements(Request $request)
+    {
+        try
+        {
+            $params = $request->only(['keyResultAreaId','reportPeriodId']);
+            if (empty($params['keyResultAreaId']))
+            {
+                throw new Exception("Key result area id required!");
+            }
+            if (empty($params['reportPeriodId']))
+            {
+                throw new Exception("Report period required!");
+            }
+
+            $responseData = $this->get("{$this->urlEndpoint}/achievements", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function storeOutcomeAchievements(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            $user = Sentinel::getUser();
+            $data['userId'] = $user->getUserId();
+
+            $responseData = $this->post("{$this->urlEndpoint}/achievements", $data);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
 }

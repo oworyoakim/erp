@@ -67,7 +67,7 @@
             async getKeyResultAreas() {
                 try {
                     this.isLoading = true;
-                    await this.$store.dispatch('GET_KEY_RESULT_AREAS', this.planId);
+                    await this.$store.dispatch('GET_KEY_RESULT_AREAS', {planId: this.planId});
                     this.isLoading = false;
                 } catch (error) {
                     this.isLoading = false;

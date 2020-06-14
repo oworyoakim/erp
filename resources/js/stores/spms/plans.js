@@ -7,11 +7,23 @@ export default {
         activePlan: null,
     },
     getters: {
-        PLANS: (state) => {
+        PLANS(state) {
             return state.plans;
         },
-        ACTIVE_PLAN: (state) => {
-            return state.activePlan;
+        ACTIVE_PLAN (state, getters) {
+            return state.activePlan || getters.DEFAULT_PLAN;
+        },
+        DEFAULT_PLAN(state) {
+            if (state.plans.length === 0) {
+                return null;
+            }
+            // try to pick the plan that is in execution
+            let plan = state.plans.find((plan) => plan.status === 'execution');
+            if (!plan) {
+                // pick the first plan from the list
+                plan = state.plans[0];
+            }
+            return plan;
         },
     },
     mutations: {
