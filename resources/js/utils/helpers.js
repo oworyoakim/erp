@@ -18,6 +18,12 @@ export function prepareQueryParams(payload) {
 
 export function resolveError(error) {
     if(!!error.response){
+        if (error.response && error.response.status === 401) {
+            console.error(error.response.data);
+            if(location.pathname !== '/login'){
+                location.reload();
+            }
+        }
         return error.response.data;
     }
     return error.message;

@@ -1,5 +1,6 @@
 import axios from 'axios';
 import routes from "../../routes";
+import {prepareQueryParams} from "../../utils/helpers";
 
 export default {
     state: {
@@ -63,15 +64,8 @@ export default {
 
         GET_INTERVENTIONS: async ({commit}, payload) => {
             try {
-                let params = [];
-                if (!!payload.planId) {
-                    params.push("planId=" + payload.planId);
-                }
-                if (!!payload.objectiveId) {
-                    params.push("objectiveId=" + payload.objectiveId);
-                }
-                let query = params.join("&");
-                let response = await axios.get(routes.INTERVENTIONS + "?" + query);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.INTERVENTIONS + queryParams);
                 commit('SET_INTERVENTIONS', response.data);
                 return Promise.resolve("Ok");
             } catch (error) {
@@ -131,5 +125,8 @@ export default {
                 return Promise.reject(error.response.data);
             }
         },
+        SET_WORK_PLANS({commit},payload){
+            commit('SET_WORK_PLANS', payload);
+        }
     },
 }

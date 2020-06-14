@@ -177,7 +177,7 @@
                     <div class="col-lg-3 col-md-6 col-sm-6 text-right">
                         <!-- Add Target Button -->
                         <button @click="editOutputIndicatorTarget()" class="btn btn-primary add-btn mt-2" type="button"><i
-                            class="fa fa-plus"></i> Add Output Indicator
+                            class="fa fa-plus"></i> Add Targets
                         </button>
                         <!-- /Add Target Button -->
                     </div>
@@ -185,10 +185,10 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <!-- targets -->
-                        <app-output-indicator-targets :targets="targets"/>
+                        <OutputIndicatorTargets :targets="targets"/>
                         <!-- /targets -->
                         <!-- target form -->
-                        <app-output-indicator-target-form/>
+                        <OutputIndicatorTargetForm/>
                         <!-- /target form -->
                     </div>
                 </div>
@@ -201,11 +201,17 @@
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import OutputIndicatorTargets from "../targets/OutputIndicatorTargets";
+    import OutputIndicatorTargetForm from "../targets/OutputIndicatorTargetForm";
 
     export default {
         props: {
             objectiveId: String,
             startOfNextFinancialYear: String,
+        },
+        components:{
+            OutputIndicatorTargets,
+            OutputIndicatorTargetForm
         },
         created() {
             this.getObjectiveDetails();

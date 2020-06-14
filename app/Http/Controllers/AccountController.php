@@ -52,12 +52,7 @@ class AccountController extends Controller
         {
             if (Sentinel::check())
             {
-                $service = $request->attributes->get('service');
-                if ($service)
-                {
-                    return redirect()->intended(route("{$service}.dashboard"));
-                }
-                return redirect()->route("service");
+                throw new Exception("Already logged in. Reload page to continue!");
             }
             $this->validateData($request->all(), [
                 'login_name' => 'required',
@@ -90,14 +85,12 @@ class AccountController extends Controller
             ];
             if ($user = Sentinel::authenticate($credentials))
             {
-                session()->flash('success', 'Logged in!');
-                return redirect()->route('service');
+                return response()->json('Login Successful!');
             }
             throw new Exception('Invalid Credentials!');
         } catch (Exception $ex)
         {
-            session()->flash('error', $ex->getMessage());
-            return redirect()->route('login')->withInput();
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
 
@@ -165,8 +158,7 @@ class AccountController extends Controller
         {
             Log::error("Exception: {$ex->getMessage()}");
         }
-        session()->flash('success', 'Request to reset password was sent to the email provided. Please check the email inbox for instructions.');
-        return redirect()->back();
+        return response()->json('Request to reset password was sent to the email provided. Please check the email inbox for instructions.');
     }
 
     public function logout(Request $request)

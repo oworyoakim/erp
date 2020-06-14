@@ -13,6 +13,7 @@ require("./app");
  *
  * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
  */
+import Login from "./components/acl/Login";
 import Users from "./components/acl/users/Users";
 import UserForm from "./components/acl/users/UserForm";
 import Roles from "./components/acl/roles/Roles";
@@ -21,6 +22,7 @@ import UserWidget from "./components/acl/users/UserWidget";
 import GeneralSettings from "./components/acl/settings/GeneralSettings";
 
 
+Vue.component("app-login", Login);
 Vue.component("app-users", Users);
 Vue.component("app-user-form", UserForm);
 Vue.component("app-roles", Roles);
@@ -37,18 +39,26 @@ Vue.component("app-general-settings", GeneralSettings);
 import aclStore from "./stores/acl";
 
 
-
 const app = new Vue({
     el: "#main-app",
     store: aclStore
 });
 
-aclStore.dispatch("getUser").then(() => {
-    if (!window.intervalId) {
-        window.intervalId = setInterval(async () => {
-            await aclStore.dispatch("getUser");
-        }, 60000);
-    }
-}).catch(error => {
-    console.error(error);
-});
+let openPaths = [
+    '/login',
+    '/test',
+    '/reset-password',
+    '/service',
+];
+
+if (!openPaths.includes(location.pathname)) {
+    aclStore.dispatch("getUser").then(() => {
+        // if (!window.GET_USER_INTERVAL) {
+        //     window.GET_USER_INTERVAL = setInterval(async () => {
+        //         await aclStore.dispatch("getUser");
+        //     }, 60000);
+        // }
+    }).catch(error => {
+        console.error(error);
+    });
+}

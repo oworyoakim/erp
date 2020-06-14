@@ -12,6 +12,7 @@ import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
 import workPlansModule from "./work-plans";
+import {resolveError} from "../../utils/helpers";
 
 export default new Vuex.Store({
     modules: {
@@ -69,13 +70,8 @@ export default new Vuex.Store({
                 commit('setUser', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.log(error.response);
-                if (error.response && error.response.status === 401) {
-                    //toastr.error('Session Expired!');
-                    toastr.error(error.response.data);
-                    location.reload();
-                }
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         getFormSelections: async ({commit}, payload) => {

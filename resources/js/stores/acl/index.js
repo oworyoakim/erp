@@ -13,25 +13,28 @@ export default new Vuex.Store({
         roles: rolesModule,
         users: usersModule,
     },
-    state:{
+    state: {
         user: null,
+        loginPageForm: 'login',
+        success: null,
+        error: null,
         generalSettings: [],
         selectionsOptions: {
             roles: [],
             usernames: [],
         },
     },
-    getters:{
+    getters: {
         getUser(state) {
             return state.user;
         },
         getGeneralSettings(state) {
             return state.generalSettings;
         },
-        getRole(state)  {
+        getRole(state) {
             return state.user ? state.user.role : null;
         },
-        FORM_SELECTIONS_OPTIONS(state){
+        FORM_SELECTIONS_OPTIONS(state) {
             return state.selectionsOptions;
         }
     },
@@ -39,30 +42,25 @@ export default new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
-        setGeneralSettings(state, payload){
+        setGeneralSettings(state, payload) {
             state.generalSettings = payload;
         },
-        SET_FORM_SELECTIONS_OPTIONS(state, payload){
+        SET_FORM_SELECTIONS_OPTIONS(state, payload) {
             state.selectionsOptions = payload;
         },
     },
     actions: {
-        async getUser ({commit}){
+        async getUser({commit}) {
             try {
                 let response = await axios.get('/user-data');
                 commit('setUser', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.log(error.response);
-                if (error.response && error.response.status === 401) {
-                    //toastr.error('Session Expired!');
-                    toastr.error(error.response.data);
-                    location.reload();
-                }
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
-        async getGeneralSettings ({commit}) {
+        async getGeneralSettings({commit}) {
             try {
                 let response = await axios.get(routes.GENERAL_SETTINGS_JSON);
                 commit('setGeneralSettings', response.data);
@@ -73,7 +71,7 @@ export default new Vuex.Store({
                 return Promise.reject(message);
             }
         },
-        async GET_FORM_SELECTIONS_OPTIONS ({commit}) {
+        async GET_FORM_SELECTIONS_OPTIONS({commit}) {
             try {
                 let response = await axios.get(routes.ACL_FROM_SELECTIONS_OPTIONS);
                 commit('SET_FORM_SELECTIONS_OPTIONS', response.data);
@@ -84,5 +82,23 @@ export default new Vuex.Store({
                 return Promise.reject(message);
             }
         },
-    }
+        async LOGIN({commit}, payload) {
+            try {
+                let response = await axios.post('/login', payload);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+        async RESET_PASSWORD({commit}, payload) {
+            try {
+                let response = await axios.post('/reset-password', payload);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+    },
 });

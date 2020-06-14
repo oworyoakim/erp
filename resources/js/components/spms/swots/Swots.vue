@@ -9,7 +9,7 @@
             </div>
             <div id="strengths" class="card-collapse collapse">
                 <div class="card-body">
-                    <div class="mb-2" v-for="category in strengths" :key="'strengths-'+category.id">
+                    <div class="mb-2" v-for="category in strengths">
                         <h4>{{category.name}}</h4>
                         <ul>
                             <li v-for="swot in category.swots" :key="swot.id">
@@ -28,7 +28,7 @@
             </div>
             <div id="weaknesses" class="card-collapse collapse">
                 <div class="card-body">
-                    <div class="mb-2" v-for="category in weaknesses" :key="'weaknesses-'+category.id">
+                    <div class="mb-2" v-for="category in weaknesses">
                         <h4>{{category.name}}</h4>
                         <ul>
                             <li v-for="swot in category.swots" :key="swot.id">
@@ -47,7 +47,7 @@
             </div>
             <div id="opportunities" class="card-collapse collapse">
                 <div class="card-body">
-                    <div class="mb-2" v-for="category in opportunities" :key="'opportunities-'+category.id">
+                    <div class="mb-2" v-for="category in opportunities">
                         <h4>{{category.name}}</h4>
                         <ul>
                             <li v-for="swot in category.swots" :key="swot.id">
@@ -66,7 +66,7 @@
             </div>
             <div id="threats" class="card-collapse collapse">
                 <div class="card-body">
-                    <div class="mb-2" v-for="category in threats" :key="'threats-'+category.id">
+                    <div class="mb-2" v-for="category in threats">
                         <h4>{{category.name}}</h4>
                         <ul>
                             <li v-for="swot in category.swots" :key="swot.id">

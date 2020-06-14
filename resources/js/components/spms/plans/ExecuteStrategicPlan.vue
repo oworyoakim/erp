@@ -1,51 +1,65 @@
 <template>
     <div class="strategic-plan-execution">
         <div class="row">
-            <div class="col-sm-4 col-md-4 col-lg-4 col-xl-3">
-                <div class="row">
-                    <div class="col-sm-12">
-                        <h5>Select a strategic plan to continue</h5>
-                        <select class="form-control" @change="setActivePlan($event.target.value)">
-                            <option value="">Select...</option>
-                            <option v-for="plan in plans"
-                                    :value="plan.id"
-                                    :selected="activePlan && activePlan.id === plan.id"
-                                    :key="plan.id"
-                            >
-                                {{plan.name}}
-                            </option>
-                        </select>
-                    </div>
-                </div>
-                <div class="row" v-if="!!activePlan">
-                    <div class="col-sm-12">
-                        <app-spinner v-if="isLoading"/>
-                        <template v-else>
-                            <template v-if="workPlans.length > 0">
-                                <h5 class="mt-4">Work Plans</h5>
-                                <div class="roles-menu">
-                                    <ul>
-                                        <li
-                                            class
-                                            v-for="workPlan in workPlans"
-                                            :key="workPlan.id"
-                                            v-bind:class="{active: !!activeWorkPlan && workPlan.id === activeWorkPlan.id}"
-                                        >
-                                            <a href="javascript:void(0)" @click="setActiveWorkPlan(workPlan)">{{workPlan.title}}</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </template>
-                            <button class="btn btn-primary btn-block mt-4" @click="editWorkPlan()">
-                                <i class="fa fa-plus"></i> New Work Plan
-                            </button>
-                        </template>
-                    </div>
-                </div>
+            <div class="col-sm-12 table-responsive">
+                <h5>Select a strategic plan to continue</h5>
+                <select class="form-control" @change="setActivePlan($event.target.value)">
+                    <option value="">Select...</option>
+                    <option v-for="plan in plans"
+                            :value="plan.id"
+                            :selected="activePlan && activePlan.id === plan.id"
+                            :key="plan.id">
+                        {{plan.name}}
+                    </option>
+                </select>
             </div>
-            <div class="col-sm-8 col-md-8 col-lg-8 col-xl-9 table-responsive">
-                <div class="work-plan">
-                    <template v-if="!!activePlan">
+        </div>
+        <div class="row">
+            <div class="col-sm-12" v-if="!!activePlan">
+                <ul class="nav nav-tabs nav-tabs-bottom">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#tab_work-plans">Work Plans</a>
+                    </li>
+                    <li class="nav-item">
+                        <a @click="loadOutputAchievementsData()" class="nav-link" data-toggle="tab"
+                           href="#tab_output-based-performance-capture">Output-based
+                            Performance Capture</a>
+                    </li>
+                    <li class="nav-item">
+                        <a @click="loadOutcomeAchievementsData()" class="nav-link" data-toggle="tab"
+                           href="#tab_outcome-based-performance-capture">Outcome-based
+                            Performance Capture</a>
+                    </li>
+                </ul>
+                <!-- Tab Content -->
+                <div class="tab-content">
+                    <!-- Work-plans Tab -->
+                    <div class="tab-pane show active" id="tab_work-plans">
+                        <div class="row mb-4">
+                            <div class="col-lg-9 col-md-9 col-sm-8">
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text">Select work plan: </span>
+                                    </div>
+                                    <select class="custom-select" v-model="workPlanId">
+                                        <option value="">Select...</option>
+                                        <option v-for="workPlan in workPlans"
+                                                :value="workPlan.id"
+                                                :selected="activeWorkPlan && activeWorkPlan.id === workPlan.id"
+                                                :key="workPlan.id">
+                                            {{workPlan.title}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-4 text-right">
+                                <!-- Add  Work Plan Button -->
+                                <button type="button" class="btn btn-primary add-btn mt-1" @click="editWorkPlan()">
+                                    <i class="fa fa-plus"></i> New Work Plan
+                                </button>
+                                <!-- /Add  Work Plan Button -->
+                            </div>
+                        </div>
                         <template v-if="activeWorkPlan">
                             <div class="m-b-30">
                                 <ul class="list-group notification-list">
@@ -126,21 +140,28 @@
                                 </div>
                             </div>
                         </template>
-                        <template v-else>
-                            <div v-if="workPlans.length > 0" class="alert alert-info text-center">
-                                Click a work plan to execute
-                            </div>
-                            <div v-else class="alert alert-info text-center">
+                        <template v-else-if="isLoading">
+                            <app-spinner></app-spinner>
+                        </template>
+                        <template v-else-if="workPlans.length === 0">
+                            <div class="alert alert-info text-center">
                                 Add a work plan to continue
                             </div>
                         </template>
-                        <app-work-plan-form/>
-                    </template>
-                    <template v-else>
-                        <div class="alert alert-info text-center">
-                            No strategic plan selected
-                        </div>
-                    </template>
+                        <WorkPlanForm/>
+                    </div>
+                    <!-- /Work-plans Tab -->
+                    <!-- Output based performance capture Tab -->
+                    <div class="tab-pane" id="tab_output-based-performance-capture">
+                        <OutputAchievementsForm/>
+                    </div>
+                    <!-- /Output based performance capture Tab -->
+
+                    <!-- Outcome based performance capture Tab -->
+                    <div class="tab-pane" id="tab_outcome-based-performance-capture">
+                        <OutcomeAchievementsForm/>
+                    </div>
+                    <!-- /Outcome based performance capture Tab -->
                 </div>
             </div>
         </div>
@@ -150,10 +171,23 @@
 <script>
     import {mapGetters} from "vuex";
     import {EventBus} from "../../../app";
+    import SelectBox from "../../shared/SelectBox";
+    import {deepClone} from "../../../utils/helpers";
+    import WorkPlanForm from "../work-plans/WorkPlanForm";
+    import OutputAchievementsForm from "../achievements/OutputAchievementsForm";
+    import OutcomeAchievementsForm from "../achievements/OutcomeAchievementsForm";
 
     export default {
+        components: {
+            WorkPlanForm,
+            SelectBox,
+            OutputAchievementsForm,
+            OutcomeAchievementsForm,
+        },
         created() {
-            this.$store.dispatch("GET_PLANS");
+            this.$store.dispatch("GET_PLANS").then(() => {
+                this.loadData();
+            });
             EventBus.$on([
                 'WORK_PLAN_SAVED',
                 'ACTIVITY_SAVED',
@@ -161,11 +195,15 @@
                 'TASK_SAVED',
             ], this.refreshData);
         },
+        mounted() {
+
+        },
         data() {
             return {
                 isLoading: false,
-                activePlan: null,
+                reportPeriod: '',
                 interventionId: '',
+                workPlanId: '',
                 activityId: '',
                 stageId: '',
             }
@@ -173,6 +211,7 @@
         computed: {
             ...mapGetters({
                 plans: "PLANS",
+                activePlan: "ACTIVE_PLAN",
                 workPlans: "WORK_PLANS",
                 activeWorkPlan: "ACTIVE_WORK_PLAN",
                 interventions: "INTERVENTIONS",
@@ -217,6 +256,12 @@
                     }
                 });
             },
+            reportPeriods() {
+                if (!this.activePlan) {
+                    return [];
+                }
+                return this.activePlan.reportPeriods;
+            },
             tasks() {
                 if (!this.activeWorkPlan) {
                     return [];
@@ -224,45 +269,59 @@
                 return this.workPlan.tasks.filter((task) => {
                     return task.stageId === this.stageId;
                 });
+            },
+        },
+        watch: {
+            workPlanId(newValue, oldVale) {
+                this.setActiveWorkPlan();
+                this.interventionId = '';
+                this.activityId = '';
             }
         },
         methods: {
             setActivePlan(planId) {
-                let plan = this.plans.find((plan) => {
-                    return plan.id == planId;
-                });
-                if (plan) {
-                    this.setActiveWorkPlan(null);
-                    this.activePlan = plan;
-                    this.$store.dispatch("SET_ACTIVE_PLAN", plan);
-                    this.getWorkPlans();
-                    this.getInterventions();
-                } else {
+                this.workPlanId = '';
+                let plan = this.plans.find((plan) => plan.id == planId);
+                if (!plan) {
                     swal({title: "No strategic plan selected!", icon: 'info', timer: 2000});
-                    this.activePlan = null;
                     this.$store.dispatch("SET_ACTIVE_PLAN", null);
                     this.$store.dispatch("SET_ACTIVE_WORK_PLAN", null);
+                    this.$store.dispatch("SET_WORK_PLANS", []);
+                } else {
+                    this.$store.dispatch("SET_ACTIVE_PLAN", plan);
+                    this.loadData();
                 }
             },
-            setActiveWorkPlan(workPlan) {
-                //this.activeWorkPlan = workPlan;
-                this.$store.dispatch("SET_ACTIVE_WORK_PLAN", workPlan);
-            },
-            async getWorkPlans() {
-                try {
-                    this.isLoading = true;
-                    await this.$store.dispatch("GET_WORK_PLANS", this.activePlan.id);
-                    this.isLoading = false;
-                } catch (error) {
-                    this.isLoading = false;
-                    console.error(error);
+            setActiveWorkPlan() {
+                console.log(this.workPlanId);
+                if (!!!this.workPlanId || (this.activeWorkPlan && this.activeWorkPlan.id === this.workPlanId)) {
+                    this.$store.dispatch("SET_ACTIVE_WORK_PLAN", null);
+                } else {
+                    let workPlan = this.workPlans.find((wplan) => wplan.id === this.workPlanId);
+                    this.$store.dispatch("SET_ACTIVE_WORK_PLAN", workPlan || null);
                 }
+            },
+            async loadData() {
+                if (!!this.activePlan) {
+                    try {
+                        this.isLoading = true;
+                        await this.getWorkPlans();
+                        await this.getInterventions();
+                        this.isLoading = false;
+                    } catch (error) {
+                        console.log(error);
+                        this.isLoading = false;
+                    }
+                }
+            },
+            getWorkPlans() {
+                return this.$store.dispatch("GET_WORK_PLANS", this.activePlan.id);
+            },
+            getInterventions() {
+                return this.$store.dispatch("GET_INTERVENTIONS", {planId: this.activePlan.id});
             },
             refreshData() {
                 this.$store.dispatch("GET_WORK_PLANS", this.activePlan.id);
-            },
-            getInterventions() {
-                this.$store.dispatch("GET_INTERVENTIONS", {planId: this.activePlan.id});
             },
             editWorkPlan(workPlan = null) {
                 EventBus.$emit("EDIT_WORK_PLAN", workPlan);
@@ -272,7 +331,13 @@
             },
             editActivity(activity = null) {
                 EventBus.$emit("EDIT_ACTIVITY", activity);
-            }
+            },
+            loadOutputAchievementsData() {
+                this.$emit("LOAD_OUTPUT_DATA");
+            },
+            loadOutcomeAchievementsData() {
+                this.$emit("LOAD_OUTCOME_DATA");
+            },
         }
 
     }

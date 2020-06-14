@@ -227,6 +227,8 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::put('', 'StrategicObjectivesGateway@update');
                 Route::get('show/{id}', 'SpmsController@objectiveDetails');
                 Route::get('details', 'StrategicObjectivesGateway@getObjectiveDetails');
+                Route::get('achievements', 'StrategicObjectivesGateway@getOutputAchievements');
+                Route::post('achievements', 'StrategicObjectivesGateway@storeOutputAchievements');
             });
 
             Route::group(['prefix' => 'swots'], function () {
@@ -269,6 +271,8 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::put('', 'KeyResultAreasGateway@update');
                 Route::get('show/{id}', 'SpmsController@keyResultAreaDetails');
                 Route::get('details', 'KeyResultAreasGateway@getKeyResultAreaDetails');
+                Route::get('achievements', 'KeyResultAreasGateway@getOutcomeAchievements');
+                Route::post('achievements', 'KeyResultAreasGateway@storeOutcomeAchievements');
             });
 
             Route::group(['prefix' => 'outcomes'], function () {

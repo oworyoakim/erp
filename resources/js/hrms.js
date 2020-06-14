@@ -111,11 +111,11 @@ const app = new Vue({
 });
 
 hrmsStore.dispatch("getUser").then(() => {
-    if (!window.intervalId) {
-        window.intervalId = setInterval(async () => {
-            await hrmsStore.dispatch("getUser");
-        }, 60000);
-    }
+    // if (!window.GET_USER_INTERVAL) {
+    //     window.GET_USER_INTERVAL = setInterval(async () => {
+    //         await hrmsStore.dispatch("getUser");
+    //     }, 60000);
+    // }
 }).catch(error => {
     console.error(error);
 });

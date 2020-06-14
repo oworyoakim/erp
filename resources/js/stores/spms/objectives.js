@@ -1,9 +1,11 @@
 import axios from 'axios';
 import routes from "../../routes";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default {
     state: {
         objectives: [],
+        outputAchievements: [],
         objective: null,
     },
     getters: {
@@ -12,6 +14,9 @@ export default {
         },
         OBJECTIVE_DETAILS: (state) => {
             return state.objective;
+        },
+        OUTPUT_ACHIEVEMENTS: (state) => {
+            return state.outputAchievements || [];
         }
     },
     mutations: {
@@ -21,16 +26,20 @@ export default {
         SET_OBJECTIVE_DETAILS: (state, payload) => {
             state.objective = payload;
         },
+        SET_OUTPUT_ACHIEVEMENTS: (state, payload) => {
+            state.outputAchievements = payload;
+        },
     },
     actions: {
         GET_OBJECTIVES: async ({commit}, payload) => {
             try {
-                let response = await axios.get(routes.OBJECTIVES + '?planId=' + payload);
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.OBJECTIVES + queryParams);
                 commit('SET_OBJECTIVES', response.data);
                 return Promise.resolve("Ok");
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
 
@@ -46,8 +55,8 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
 
@@ -57,8 +66,19 @@ export default {
                 commit('SET_OBJECTIVE_DETAILS', response.data);
                 return Promise.resolve("Ok");
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+
+        GET_OUTPUT_ACHIEVEMENTS: async ({commit}, payload) => {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.OBJECTIVES + '/achievements' + queryParams);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
 
@@ -74,8 +94,8 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_OUTPUT: async ({commit}, payload) => {
@@ -90,8 +110,8 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_OUTPUT_INDICATOR: async ({commit}, payload) => {
@@ -106,8 +126,8 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_OUTPUT_INDICATOR_TARGET: async ({commit}, payload) => {
@@ -122,25 +142,21 @@ export default {
                 }
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         SAVE_OUTPUT_ACHIEVEMENT: async ({commit}, payload) => {
             try {
-                let response;
-                if (!!payload.id) {
-                    // update
-                    response = await axios.put(routes.OUTPUT_ACHIEVEMENTS, payload);
-                } else {
-                    // insert new
-                    response = await axios.post(routes.OUTPUT_ACHIEVEMENTS, payload);
-                }
+                let response = await axios.post(routes.OUTPUT_ACHIEVEMENTS, payload);
                 return Promise.resolve(response.data);
             } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
+        SET_OUTPUT_ACHIEVEMENTS({commit}, payload) {
+            commit("SET_OUTPUT_ACHIEVEMENTS", payload);
+        }
     },
 }

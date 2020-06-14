@@ -1,5 +1,5 @@
 <template>
-    <span class="fa fa-spinner fa-spin fa-5x"></span>
+    <span class="fa fa-spinner fa-spin fa-2x"></span>
 </template>
 
 <script>
