@@ -27,7 +27,7 @@ RUN composer dump-autoload
 RUN chown -R www-data:www-data /var/www/html/ \
     && chmod 755 /var/www/html/ \
     #&& chmod -R 775 storage \
-    && && php artisan key:generate
+    && php artisan key:generate
 ## Set up supervisor
 ## Start the supervisor queue worker
 RUN service supervisor start \

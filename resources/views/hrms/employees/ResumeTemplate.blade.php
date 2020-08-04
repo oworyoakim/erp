@@ -404,7 +404,7 @@
     <tr class="c16">
         <td class="c23" colspan="1" rowspan="1"><p class="c15"><span
                     style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 229.53px; height: 229.53px;"><img
-                        alt="" src="/images/image1.png"
+                        alt="" src="/storage/images/image1.png"
                         style="width: 229.53px; height: 229.53px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
                         title="Professional Headshot of Man"></span></p></td>
         <td class="c18" colspan="1" rowspan="1"><p class="c3 c9"><span class="c0"></span></p></td>
@@ -463,7 +463,7 @@
             <h2 class="c11"><span class="c22">SKILLS</span></h2>
             <p class="c3"><span
                     style="overflow: hidden; display: inline-block; margin: 0.00px 0.00px; border: 0.00px solid #000000; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px); width: 394.40px; height: 132.00px;"><img
-                        alt="" src="/images/image2.png"
+                        alt="" src="/storage/images/image2.png"
                         style="width: 394.40px; height: 132.00px; margin-left: 0.00px; margin-top: 0.00px; transform: rotate(0.00rad) translateZ(0px); -webkit-transform: rotate(0.00rad) translateZ(0px);"
                         title=""></span></p></td>
     </tr>

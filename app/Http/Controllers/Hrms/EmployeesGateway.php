@@ -67,7 +67,7 @@ class EmployeesGateway extends GatewayController
                 'password' => $data['password'],
                 'first_name' => $data['firstName'],
                 'last_name' => $data['lastName'],
-                'avatar' => '/images/avatar.png',
+                'avatar' => '/storage/images/avatar.png',
             ];
             DB::beginTransaction();
             // create the employee

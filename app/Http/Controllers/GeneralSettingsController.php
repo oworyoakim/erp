@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exceptions\UnauthorizedAccessException;
 use App\Models\Setting;
+use App\Traits\ValidatesHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +16,8 @@ use stdClass;
 
 class GeneralSettingsController extends Controller
 {
+    use ValidatesHttpRequests;
+
     public function index(Request $request)
     {
         try
@@ -24,15 +27,15 @@ class GeneralSettingsController extends Controller
                 throw  new UnauthorizedAccessException('Permission Denied!');
             }
             return view('acl.settings.global');
-        }catch (UnauthorizedAccessException $ex)
+        } catch (UnauthorizedAccessException $ex)
         {
             $error = $ex->getMessage();
-            return view('errors.401',['error' => $error]);
+            return view('errors.401', ['error' => $error]);
         } catch (Exception $ex)
         {
             Log::error("Settings: {$ex->getMessage()}");
             $error = $ex->getMessage();
-            return view('errors.500',['error' => $error]);
+            return view('errors.500', ['error' => $error]);
         }
     }
 
@@ -78,38 +81,32 @@ class GeneralSettingsController extends Controller
             settings()->set('reset_password_email_subject', $request->get('reset_password_email_subject'));
             settings()->set('reset_password_email_template', $request->get('reset_password_email_template'));
             // upload logo
-            /*
+
             if ($request->hasFile('company_logo'))
             {
                 $logo = $request->file('company_logo');
                 $file = array('company_logo' => $logo);
-                $rules = array('company_logo' => 'required|mimes:jpeg,jpg,bmp,png');
-                $validator = Validator::make($file, $rules);
-                if ($validator->fails())
+                $rules = array('company_logo' => 'required|image|mimes:jpeg,jpg,bmp,png');
+                $this->validateData($file, $rules);
+                $fileName = md5($logo->getClientOriginalName() . '_' . Sentinel::getUser()->getUserId() . '_' . now()) . '.png';
+                //$filePath = public_path("/storage/images/{$fileName}");
+                $filePath = "storage/images/{$fileName}";
+                $image = Image::make($logo->getRealPath());
+                // resize
+                if ($image->width() > 140 || $image->height() > 140)
                 {
-                    session()->flash('warning', trans('general.validation_error'));
-                    return redirect()->back()->withInput()->withErrors($validator);
-                } else
-                {
-                    $fileName = md5($logo->getClientOriginalName() . '_' . now()) . '.png';
-                    $filePath = "images/{$fileName}";
-                    $image = Image::make($logo->getRealPath());
-                    // resize
-                    if ($image->width() > 215 || $image->height() > 215)
-                    {
-                        $image->resize(215, 215);
-                    }
-                    $image->save($filePath);
-                    settings()->set('company_logo', "/{$filePath}");
+                    $image->resize(140, 140);
                 }
+                $image->save($filePath);
+                settings()->set('company_logo', "/{$filePath}");
             }
-            */
+
             session()->flash('success', "Settings Saved!");
             return redirect()->back();
         } catch (Exception $ex)
         {
             session()->flash('error', $ex->getMessage());
-            return redirect()->back()->withInput();
+            return redirect()->back()->withInput()->with(['error' => $ex->getMessage()]);
         }
     }
 
