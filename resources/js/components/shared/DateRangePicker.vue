@@ -1,10 +1,12 @@
 <template>
-    <input type="text"
-           class="form-control"
-           :value="dateRange"
-           v-bind:class="{'is-invalid': !!hasErrors}"
-           ref="dateRangePicker"
-           id="dateRangePicker">
+    <div class="cal-icon">
+        <input type="text"
+               class="form-control"
+               :value="dateRange"
+               v-bind:class="{'is-invalid': !!hasErrors}"
+               ref="dateRangePicker"
+               id="dateRangePicker">
+    </div>
 </template>
 
 <script>

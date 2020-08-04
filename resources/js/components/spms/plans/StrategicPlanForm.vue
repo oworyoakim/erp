@@ -24,27 +24,44 @@
             <div class="form-group row">
                 <label class="col-sm-4">Theme</label>
                 <div class="col-sm-8">
-                    <textarea v-model="plan.theme" class="form-control"></textarea>
+<!--                    <textarea v-model="plan.theme" class="form-control"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        v-model="plan.theme"
+                    />
                 </div>
             </div>
             <div class="form-group row">
                 <label class="col-sm-4">Vision</label>
                 <div class="col-sm-8">
-                    <textarea v-model="plan.vision" class="form-control"></textarea>
+<!--                    <textarea v-model="plan.vision" class="form-control"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        v-model="plan.vision"
+                    />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-4">Mission</label>
                 <div class="col-sm-8">
-                    <textarea v-model="plan.mission" class="form-control"></textarea>
+<!--                    <textarea v-model="plan.mission" class="form-control"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        v-model="plan.mission"
+                    />
                 </div>
             </div>
 
             <div class="form-group row">
                 <label class="col-sm-4">Values</label>
                 <div class="col-sm-8">
-                    <textarea v-model="plan.values" class="form-control"></textarea>
+<!--                    <textarea v-model="plan.values" class="form-control"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        :init="$store.getters.EDITOR_CONFIG"
+                        v-model="plan.values"
+                    />
                 </div>
             </div>
 
@@ -80,6 +97,9 @@
     export default {
         props: {
             startOfNextFinancialYear: String,
+        },
+        components:{
+            TinymceEditor: require('@tinymce/tinymce-vue').default,
         },
         created() {
             EventBus.$on('EDIT_PLAN', this.editPlan);

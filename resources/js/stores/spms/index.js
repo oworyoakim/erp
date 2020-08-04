@@ -12,6 +12,9 @@ import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
 import workPlansModule from "./work-plans";
+import directivesAndResolutionsModule from "./directives-and-resolutions";
+import dirAndResActivitiesModule from "./directives-and-resolutions-activities";
+import dirAndResActivityOutputsModule from "./directives-and-resolutions-outputs";
 import {resolveError} from "../../utils/helpers";
 
 export default new Vuex.Store({
@@ -23,6 +26,9 @@ export default new Vuex.Store({
         keyResultAreas: keyResultAreasModule,
         swots: swotsModule,
         workPlans: workPlansModule,
+        directivesAndResolutions: directivesAndResolutionsModule,
+        dirAndResActivities: dirAndResActivitiesModule,
+        dirAndResActivityOutputs: dirAndResActivityOutputsModule,
     },
     state: {
         user: null,
@@ -32,6 +38,28 @@ export default new Vuex.Store({
             usernames: [],
             documentCategories: [],
             documentTypes: [],
+        },
+        directoratesOptions: [],
+        editorConfig: {
+            media_live_embeds: true,
+            menubar: "insert edit format",
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks fullscreen',
+                'insertdatetime media table paste hr code wordcount',
+                'toc'
+            ],
+            toolbar: 'undo redo | insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image video code|toc'
+        },
+        singleDateConfig: {
+            showDropdowns: true,
+            singleDatePicker: true,
+            minDate: null,
+            maxDate: null,
+            opens: "center",
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
         },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
@@ -51,16 +79,44 @@ export default new Vuex.Store({
         getFormSelections: (state) => {
             return state.formSelections;
         },
+        TINYMCE_API_KEY: (state) => {
+            if (!state.user) {
+                return 'no-api-key';
+            }
+            return state.user.tinymceApiKey || 'no-api-key';
+        },
+        EDITOR_CONFIG(state) {
+            return state.editorConfig;
+        },
+        DIRECTORATES_OPTIONS(state) {
+            return state.directoratesOptions
+        },
+        SINGLE_DATE_CONFIG(state) {
+            return state.singleDateConfig;
+        },
+        HAS_ACCESS(state){
+            return (permission = '') => {
+                return !!permission && !!state.user && !!state.user.permissions[permission];
+            }
+        },
+        HAS_ANY_ACCESS(state){
+            return (permissions = []) => {
+                return !!state.user && permissions.some((permission) => !!state.user.permissions[permission]);
+            }
+        },
     },
     mutations: {
-        setUser: (state, payload) => {
+        setUser(state, payload){
             state.user = payload;
         },
-        setDashboardStatistics: (state, payload) => {
+        setDashboardStatistics(state, payload){
             state.dashboardStatistics = payload;
         },
-        setGeneralSettings: (state, payload) => {
+        setGeneralSettings(state, payload) {
             state.generalSettings = payload;
+        },
+        SET_DIRECTORATES_OPTIONS(state, payload) {
+            state.directoratesOptions = payload;
         },
     },
     actions: {
@@ -113,6 +169,15 @@ export default new Vuex.Store({
                 return Promise.reject(error.response.data);
             }
         },
-
+        async GET_DIRECTORATES_OPTIONS({commit}) {
+            try {
+                let response = await axios.get('/hrms/directorates/unscoped');
+                commit('SET_DIRECTORATES_OPTIONS', response.data);
+                return Promise.resolve('Ok');
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
     }
 });

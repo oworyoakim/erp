@@ -1,7 +1,7 @@
 <template>
     <div id="mainModal" ref="mainModal" class="modal custom-modal fade" role="dialog"
          tabindex="-1" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-dialog-centered" v-bind:class="'modal-' + (size || 'lg')" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">
@@ -34,6 +34,10 @@
             isOpen: {
                 type: Boolean,
                 required: true
+            },
+            size: {
+                type: String,
+                default: 'lg'
             },
         },
         watch: {

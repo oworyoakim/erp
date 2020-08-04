@@ -71,7 +71,6 @@ class AccountController extends Controller
                 $url = "{$this->urlEndpoint}/v1/can-login";
                 $params = ['userId' => $user->id];
                 $response = $this->get($url, $params);
-                //dd($response);
                 if (!$response['canLogin'])
                 {
                     throw new Exception('Sorry, your account is not active!');
@@ -192,6 +191,7 @@ class AccountController extends Controller
                 $loggedInUser->role->slug = $role->slug;
                 $loggedInUser->permissions = array_merge($loggedInUser->permissions, $role->getPermissions());
             }
+            $user->tinymceApiKey = env('TINYMCE_API_KEY', null);
             return response()->json($loggedInUser);
         } catch (Exception $ex)
         {

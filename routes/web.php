@@ -49,6 +49,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'HrmsController@directorates')->name('hrms.directorates.list');
                 Route::get('view/{id}', 'HrmsController@directorateDetails')->name('hrms.directorates.details');
                 Route::get('all-json', 'DirectoratesGateway@index');
+                Route::get('unscoped', 'DirectoratesGateway@indexUnscoped');
                 Route::get('details', 'DirectoratesGateway@show');
                 Route::post('', 'DirectoratesGateway@store');
                 Route::put('', 'DirectoratesGateway@update');
@@ -106,6 +107,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('profile/{username}', 'HrmsController@employeeProfile')->name('hrms.employees.profile');
                 Route::get('create', 'HrmsController@createEmployee')->name('hrms.employees.create');
                 Route::get('all-json', 'EmployeesGateway@index');
+                Route::get('details', 'EmployeesGateway@show');
                 Route::get('profile-data', 'EmployeesGateway@profileData');
                 Route::post('', 'EmployeesGateway@store');
                 Route::patch('activate', 'EmployeesGateway@activate');
@@ -214,11 +216,50 @@ Route::middleware('ensure.authenticated')->group(function () {
             Route::group(['prefix' => 'plans'], function () {
                 Route::get('', 'SpmsController@plans')->name('spms.plans.plan');
                 Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
-                Route::get('execute', 'SpmsController@execute')->name('spms.plans.execute');
-                Route::get('monitor', 'SpmsController@monitor')->name('spms.plans.monitor');
                 Route::get('all-json', 'StrategicPlansGateway@index');
                 Route::post('', 'StrategicPlansGateway@store');
                 Route::put('', 'StrategicPlansGateway@update');
+
+                // Execution
+                Route::prefix('execute')->group(function(){
+                    Route::get('work-plan', 'SpmsController@workPlan')->name('spms.plans.execute.work-plan');
+                    Route::get('performance-capture', 'SpmsController@performanceCapture')->name('spms.plans.execute.performance-capture');
+                    Route::get('resolutions-and-directives', 'SpmsController@resolutionsAndDirectives')->name('spms.plans.execute.resolutions-and-directives');
+                });
+
+                // Monitoring
+                Route::prefix('monitor')->group(function (){
+                    Route::get('strategy', 'SpmsController@monitorStrategy')->name('spms.plans.monitor.strategy');
+                    Route::get('strategy/report', 'SpmsReportsGateway@strategyReport');
+                    Route::get('strategy/excel', 'SpmsReportsGateway@strategyReportExcel');
+                    Route::get('activity', 'SpmsController@monitorActivity')->name('spms.plans.monitor.activity');
+                    Route::get('directives-and-resolutions', 'SpmsController@monitorDirectivesAndResolutions')->name('spms.plans.monitor.directives-and-resolutions');
+                    Route::get('directives-and-resolutions/report', 'SpmsReportsGateway@directivesAndResolutionsReport');
+                });
+
+            });
+
+            Route::prefix("directives-and-resolutions")->group(function (){
+                Route::get('', 'DirectivesAndResolutionsGateway@index');
+                Route::post('', 'DirectivesAndResolutionsGateway@store');
+                Route::put('', 'DirectivesAndResolutionsGateway@update');
+                Route::get('selection-options', 'DirectivesAndResolutionsGateway@getSelectionOptions');
+
+                // activities
+                Route::prefix("activities")->group(function (){
+                    Route::get('', 'DirAndResActivitiesGateway@index');
+                    Route::post('', 'DirAndResActivitiesGateway@store');
+                    Route::put('', 'DirAndResActivitiesGateway@update');
+                    Route::patch('', 'DirAndResActivitiesGateway@updateStatus');
+                    Route::patch('complete', 'DirAndResActivitiesGateway@complete');
+                });
+
+                // activities
+                Route::prefix("outputs")->group(function (){
+                    Route::get('', 'DirAndResActivityOutputsGateway@index');
+                    Route::post('', 'DirAndResActivityOutputsGateway@store');
+                    Route::put('', 'DirAndResActivityOutputsGateway@update');
+                });
             });
 
             Route::group(['prefix' => 'objectives'], function () {

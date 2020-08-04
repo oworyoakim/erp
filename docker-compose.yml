@@ -38,7 +38,7 @@ services:
     networks:
       - unebnet
   uneb_hrms:
-    image: oworyoakim/uneb_hrms:v1
+    image: oworyoakim/uneb_hrms:latest
     container_name: ${HRMS_CACHE_KEY}
     restart: always
     environment:

@@ -13,7 +13,12 @@
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="keyResultArea.description" class="form-control"></textarea>
+<!--                    <textarea v-model="keyResultArea.description" class="form-control"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        :init="$store.getters.EDITOR_CONFIG"
+                        v-model="keyResultArea.description"
+                    />
                 </div>
             </div>
             <div class="form-group row">
@@ -46,6 +51,9 @@
                 type: Number,
                 required: true
             }
+        },
+        components:{
+            TinymceEditor: require('@tinymce/tinymce-vue').default,
         },
         created() {
             EventBus.$on('EDIT_KEY_RESULT_AREA', this.editKeyResultArea);

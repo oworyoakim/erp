@@ -52,7 +52,7 @@
                     <app-date-range-picker
                         v-model="task.dueDate"
                         :value="task.dueDate"
-                        :config="dateConfig"
+                        :config="$store.getters.SINGLE_DATE_CONFIG"
                         :key="Math.random() * 10"
                     />
                 </div>
@@ -60,7 +60,12 @@
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="task.description" class="form-control" rows="5"></textarea>
+<!--                    <textarea v-model="task.description" class="form-control" rows="5"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        :init="$store.getters.EDITOR_CONFIG"
+                        v-model="task.description"
+                    />
                 </div>
             </div>
             <div class="submit-section">
@@ -80,6 +85,9 @@
     import {deepClone} from "../../../utils/helpers";
 
     export default {
+        components: {
+            TinymceEditor: require('@tinymce/tinymce-vue').default,
+        },
         created() {
             EventBus.$on(["EDIT_TASK"], this.editTask);
         },
@@ -89,16 +97,6 @@
                 isEditing: false,
                 isSending: false,
                 interventionId: '',
-                dateConfig: {
-                    showDropdowns: true,
-                    singleDatePicker: true,
-                    minDate: null,
-                    maxDate: null,
-                    opens: "center",
-                    locale: {
-                        format: 'YYYY-MM-DD'
-                    }
-                },
             }
         },
         computed: {
