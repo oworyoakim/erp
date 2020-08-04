@@ -43,7 +43,15 @@ class AccountController extends Controller
             }
             return redirect()->route("service");
         }
-        return view('account.login');
+        $logo = settings()->get('company_log');
+        if (empty($logo))
+        {
+            $logo = '/storage/images/logo2.png';
+        }
+        $data = [
+            'companyLogo' => $logo,
+        ];
+        return view('account.login', $data);
     }
 
     public function processLogin(Request $request)

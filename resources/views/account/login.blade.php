@@ -5,7 +5,7 @@
         <div class="container">
             <!-- Account Logo -->
             <div class="account-logo">
-                <a href="#"><img src="{{asset('smarthr/maroon/img/logo2.png')}}" alt="ERP"></a>
+                <a href="#"><img src="{{$companyLogo}}" alt="ERP"></a>
             </div>
             <!-- /Account Logo -->
             <app-login></app-login>
