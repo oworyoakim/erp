@@ -309,6 +309,10 @@ class SpmsReportsGateway extends GatewayController
                             {
                                 $sheet->mergeCells("A{$rowIndex}:E{$rowIndex}");
                                 $sheet->setCellValue("A{$rowIndex}", $output['name']);
+                                $sheet->getStyle("A{$rowIndex}")
+                                      ->getAlignment()
+                                      ->setWrapText(true)
+                                      ->setVertical(Alignment::VERTICAL_CENTER);
                                 $sheet->mergeCells("F{$rowIndex}:T{$rowIndex}");
                                 $sheet->setCellValue("F{$rowIndex}", "No indicators!");
                                 $sheet->getStyle("A{$rowIndex}:T{$rowIndex}")
