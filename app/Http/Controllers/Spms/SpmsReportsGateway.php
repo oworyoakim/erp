@@ -39,6 +39,15 @@ class SpmsReportsGateway extends GatewayController
 
             $responseData = $this->get("{$this->urlEndpoint}/strategy-report", $params);
 
+            // the logo
+            $logo = settings()->get('company_logo');
+            if(!empty($logo)){
+                $logo = ltrim($logo,'/');
+            }else{
+                $logo = "storage/images/logo2.png";
+            }
+            $responseData['companyLogo'] = "/{$logo}";
+
             return response()->json($responseData);
         } catch (Exception $ex)
         {
@@ -63,11 +72,19 @@ class SpmsReportsGateway extends GatewayController
             $rowHeight = 18;
 
             // the logo
+            $logo = settings()->get('company_logo');
+            if(!empty($logo)){
+                $logo = ltrim($logo,'/');
+            }else{
+                $logo = "storage/images/logo2.png";
+            }
             $drawing = new Drawing();
             $drawing->setCoordinates("A1");
-            $drawing->setPath("images/logo2.png");
-            $drawing->setHeight(50);
-            $drawing->setWidth(50);
+            $drawing->setPath($logo);
+            $drawing->setOffsetY(11);
+            $drawing->setOffsetX(5);
+            //$drawing->setHeight(50);
+            //$drawing->setWidth(50);
             $drawing->setWorksheet($sheet);
             $sheet->getStyle("A1")
                   ->getAlignment()
@@ -231,6 +248,7 @@ class SpmsReportsGateway extends GatewayController
                                 $sheet->setCellValue("A{$rowIndex}", $output['name']);
                                 $sheet->getStyle("A{$rowIndex}")
                                       ->getAlignment()
+                                      ->setWrapText(true)
                                       ->setVertical(Alignment::VERTICAL_CENTER);
                                 $sheet->getStyle("A{$rowIndex}:T{$rowIndex}")
                                       ->getBorders()
@@ -245,6 +263,9 @@ class SpmsReportsGateway extends GatewayController
                                 {
                                     $sheet->mergeCells("F{$rowIndex}:J{$rowIndex}");
                                     $sheet->setCellValue("F{$rowIndex}", $indicator['name']);
+                                    $sheet->getStyle("F{$rowIndex}:J{$rowIndex}")
+                                          ->getAlignment()
+                                          ->setWrapText(true);
                                     $unit = ($indicator['unit'] == 'percent') ? "Percentage" : "Count";
                                     $sheet->setCellValue("K{$rowIndex}", $unit);
                                     $sheet->setCellValue("L{$rowIndex}", $indicator['target']);

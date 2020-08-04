@@ -40,7 +40,7 @@
                         <table class="table-bordered table-sm" width="100%">
                             <tr>
                                 <td>
-                                    <img src="/images/logo2.png" class="img-fluid small" alt="UNEB-SPMS"/>
+                                    <img :src="reportData.companyLogo" class="img-fluid small" alt="UNEB-SPMS"/>
                                 </td>
                                 <td colspan="7" class="text-center">
                                     <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>

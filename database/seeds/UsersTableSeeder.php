@@ -26,7 +26,7 @@ class UsersTableSeeder extends Seeder
                 'email' => 'admin@erp.kim',
                 'username' => 'admin',
                 'password' => 'admin',
-                'avatar' => '/images/avatar.png',
+                'avatar' => '/storage/images/avatar.png',
             ];
 
             $user = Sentinel::registerAndActivate($credentials);

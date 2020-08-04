@@ -1,6 +1,8 @@
 version: '3.3'
 networks:
   unebnet:
+volumes:
+  erp-user-data:
 
 services:
 ### Apache2 PHP 7.4.6
@@ -65,7 +67,7 @@ services:
           memory: 1536m
           cpus: "1.0"
     #volumes:
-      #- /var/www/html/erp/storage/:/var/www/html/storage/
+      #- /var/www/html/erp/:/var/www/html/public/storage/:rw
     ports:
       - "${HRMS_PORT}:80"
     networks:
@@ -102,8 +104,8 @@ services:
         reservations:
           memory: 1536m
           cpus: "1.0"
-      #volumes:
-      #- /var/www/html/erp/storage/:/var/www/html/storage/
+    #volumes:
+      #- /var/www/html/erp/:/var/www/html/public/storage/:rw
     ports:
       - "${APP_PORT}:80"
     networks:

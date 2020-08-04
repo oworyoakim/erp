@@ -104,7 +104,7 @@ class UsersController extends Controller
                 'username' => $request->get('username'),
                 'email' => $request->get('email'),
                 'password' => $request->get('password'),
-                'avatar' => '/images/avatar.png',
+                'avatar' => '/storage/images/avatar.png',
             ];
             // Since users are
             $user = Sentinel::registerAndActivate($credentials);
