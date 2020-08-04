@@ -106,6 +106,7 @@ services:
           cpus: "1.0"
     #volumes:
       #- /var/www/html/erp/:/var/www/html/public/storage/:rw
+      #- /var/www/html/erp/logs/:/var/www/html/storage/logs/:rw
     ports:
       - "${APP_PORT}:80"
     networks:

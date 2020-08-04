@@ -90,15 +90,15 @@ class GeneralSettingsController extends Controller
                 $this->validateData($file, $rules);
                 $fileName = md5($logo->getClientOriginalName() . '_' . Sentinel::getUser()->getUserId() . '_' . now()) . '.png';
                 //$filePath = public_path("/storage/images/{$fileName}");
-                $filePath = "storage/images/{$fileName}";
+                $filePath = "/storage/images/{$fileName}";
                 $image = Image::make($logo->getRealPath());
                 // resize
                 if ($image->width() > 140 || $image->height() > 140)
                 {
                     $image->resize(140, 140);
                 }
-                $image->save($filePath);
-                settings()->set('company_logo', "/{$filePath}");
+                $image->save(public_path($filePath));
+                settings()->set('company_logo', $filePath);
             }
 
             session()->flash('success', "Settings Saved!");
