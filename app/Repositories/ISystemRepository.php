@@ -20,4 +20,6 @@ interface ISystemRepository
 
     public function rollbackTransaction();
 
+    public function createOutputBasedReport($params = array());
+
 }

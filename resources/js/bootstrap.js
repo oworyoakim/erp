@@ -12,7 +12,7 @@ try {
     window.$ = window.jQuery = Vue.prototype.$jquery = require('jquery');
     // Popper
     //window.Popper = window.popper = require('popper.js').default;
-    window.Popper = window.popper = require('../../public/smarthr/maroon/js/popper.min');
+    window.Popper = window.popper = require('../../public/smarthr/maroon/js/popper.min') || require('popper.js').default;
     // Bootstrap
     //require('bootstrap');
     require('../../public/smarthr/maroon/js/bootstrap.min') || require('bootstrap');

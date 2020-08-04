@@ -59,6 +59,9 @@ const routes = {
     ACTIVITIES: '/spms/activities',
     STAGES: '/spms/stages',
     TASKS: '/spms/tasks',
+    DIRECTIVES_AND_RESOLUTIONS: '/spms/directives-and-resolutions',
+    DIRECTIVES_AND_RESOLUTIONS_ACTIVITIES: '/spms/directives-and-resolutions/activities',
+    DIRECTIVES_AND_RESOLUTIONS_ACTIVITY_OUTPUTS: '/spms/directives-and-resolutions/outputs',
 };
 
 export default routes;

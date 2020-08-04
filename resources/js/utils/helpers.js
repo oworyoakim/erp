@@ -28,3 +28,10 @@ export function resolveError(error) {
     }
     return error.message;
 }
+
+export function displayErrorMessage(message) {
+    let messageElement = document.createElement('div');
+    //messageElement.innerHTML = message.trim('"');
+    messageElement.innerHTML = message;
+    return swal({content: messageElement, icon: 'error'});
+}

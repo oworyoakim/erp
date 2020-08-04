@@ -23,10 +23,30 @@ export default new Vuex.Store({
             roles: [],
             usernames: [],
         },
+        editorConfig: {
+            media_live_embeds: true,
+            menubar: "insert edit format",
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks fullscreen',
+                'insertdatetime media table paste hr code wordcount',
+                'toc'
+            ],
+            toolbar: 'undo redo | insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image video code|toc'
+        },
     },
     getters: {
         getUser(state) {
             return state.user;
+        },
+        TINYMCE_API_KEY: (state) => {
+            if(!state.user){
+                return 'no-api-key';
+            }
+            return state.user.tinymceApiKey || 'no-api-key';
+        },
+        EDITOR_CONFIG(state){
+            return state.editorConfig;
         },
         getGeneralSettings(state) {
             return state.generalSettings;
@@ -36,7 +56,17 @@ export default new Vuex.Store({
         },
         FORM_SELECTIONS_OPTIONS(state) {
             return state.selectionsOptions;
-        }
+        },
+        HAS_ACCESS(state){
+            return (permission = '') => {
+                return !!permission && !!state.user && !!state.user.permissions[permission];
+            }
+        },
+        HAS_ANY_ACCESS(state){
+            return (permissions = []) => {
+                return !!state.user && permissions.some((permission) => !!state.user.permissions[permission]);
+            }
+        },
     },
     mutations: {
         setUser(state, payload) {

@@ -42,7 +42,7 @@ export default {
             try {
                 let response = await axios.get(routes.DIRECTORATES + '/details?directorateId=' + payload);
                 commit('SET_ACTIVE_DIRECTORATE', response.data);
-                return Promise.resolve('Ok');
+                return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);
                 console.error(message);

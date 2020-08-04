@@ -34,7 +34,11 @@
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="activity.description" class="form-control" rows="5"></textarea>
+<!--                    <textarea v-model="activity.description" class="form-control" rows="5"></textarea>-->
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        v-model="activity.description"
+                    />
                 </div>
             </div>
             <div class="submit-section">
@@ -54,6 +58,7 @@
     import {deepClone} from "../../../utils/helpers";
 
     export default {
+        components: {TinymceEditor: require('@tinymce/tinymce-vue').default,},
         created() {
             this.dateConfig.minDate = this.workPlan.startDate;
             this.dateConfig.maxDate = this.workPlan.endDate;

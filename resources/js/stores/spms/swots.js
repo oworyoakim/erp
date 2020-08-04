@@ -3,7 +3,7 @@ import routes from "../../routes";
 
 export default {
     state: {
-        swots: [],
+        swots: null,
         categories: [],
         types: [
             {text: 'Strengths', value: 'strengths'},

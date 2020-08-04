@@ -59,11 +59,31 @@ export default new Vuex.Store({
             salaryScales: [],
             nextEmployeeId: '0001',
         },
+        editorConfig: {
+            media_live_embeds: true,
+            menubar: "insert edit format",
+            plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks fullscreen',
+                'insertdatetime media table paste hr code wordcount',
+                'toc'
+            ],
+            toolbar: 'undo redo | insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image video code|toc'
+        },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },
     getters: {
         getUser: (state) => {
             return state.user;
+        },
+        TINYMCE_API_KEY: (state) => {
+            if(!state.user){
+                return 'no-api-key';
+            }
+            return state.user.tinymceApiKey || 'no-api-key';
+        },
+        EDITOR_CONFIG(state){
+            return state.editorConfig;
         },
         getGeneralSettings: (state) => {
             return state.generalSettings;
@@ -79,6 +99,16 @@ export default new Vuex.Store({
         },
         getSalaryScales: (state) => {
             return state.salaryScales;
+        },
+        HAS_ACCESS(state){
+            return (permission = '') => {
+                return !!permission && !!state.user && !!state.user.permissions[permission];
+            }
+        },
+        HAS_ANY_ACCESS(state){
+            return (permissions = []) => {
+                return !!state.user && permissions.some((permission) => !!state.user.permissions[permission]);
+            }
         },
     },
     mutations: {

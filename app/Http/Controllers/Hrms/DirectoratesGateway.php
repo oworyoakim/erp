@@ -30,6 +30,21 @@ class DirectoratesGateway extends GatewayController
         }
     }
 
+    public function indexUnscoped(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->get("{$this->urlEndpoint}/unscoped", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
     public function store(Request $request)
     {
         try
@@ -74,6 +89,5 @@ class DirectoratesGateway extends GatewayController
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
-
 
 }

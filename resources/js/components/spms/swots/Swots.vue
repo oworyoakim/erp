@@ -1,80 +1,77 @@
 <template>
     <span v-if="isLoading" class="fa fa-spinner fa-spin"></span>
-    <div v-else class="faq-card">
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#strengths">Strengths</a>
-                </h4>
-            </div>
-            <div id="strengths" class="card-collapse collapse">
-                <div class="card-body">
-                    <div class="mb-2" v-for="category in strengths">
-                        <h4>{{category.name}}</h4>
-                        <ul>
-                            <li v-for="swot in category.swots" :key="swot.id">
-                                {{swot.description}}
-                            </li>
-                        </ul>
+    <div v-else class="mt-2">
+        <ul class="nav nav-tabs nav-tabs-bottom">
+            <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#tab_strengths">STRENGTHS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_weaknesses">WEAKNESSES</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_opportunities">OPPORTUNITIES</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab_threats">THREATS</a>
+            </li>
+        </ul>
+        <!-- Tab Content -->
+        <div class="tab-content">
+            <!-- Strengths Tab -->
+            <div class="tab-pane show active" id="tab_strengths">
+                <div class="card" v-if="swots.strengths">
+                    <div class="card-header">
+                        <button @click="editSwot(swots.strengths)" title="Edit" type="button" class="btn btn-sm btn-info pull-right">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
+                    <div class="card-body" v-html="swots.strengths.description"></div>
                 </div>
+                <template v-else>
+                    <h4>No strengths entered!</h4>
+                </template>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#weaknesses">Weaknesses</a>
-                </h4>
-            </div>
-            <div id="weaknesses" class="card-collapse collapse">
-                <div class="card-body">
-                    <div class="mb-2" v-for="category in weaknesses">
-                        <h4>{{category.name}}</h4>
-                        <ul>
-                            <li v-for="swot in category.swots" :key="swot.id">
-                                {{swot.description}}
-                            </li>
-                        </ul>
+            <!-- Weaknesses Tab -->
+            <div class="tab-pane" id="tab_weaknesses">
+                <div class="card" v-if="swots.weaknesses">
+                    <div class="card-header">
+                        <button @click="editSwot(swots.weaknesses)" title="Edit" type="button" class="btn btn-sm btn-info pull-right">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
+                    <div class="card-body" v-html="swots.weaknesses.description"></div>
                 </div>
+                <template v-else>
+                    <h4>No weaknesses entered!</h4>
+                </template>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#opportunities">Opportunities</a>
-                </h4>
-            </div>
-            <div id="opportunities" class="card-collapse collapse">
-                <div class="card-body">
-                    <div class="mb-2" v-for="category in opportunities">
-                        <h4>{{category.name}}</h4>
-                        <ul>
-                            <li v-for="swot in category.swots" :key="swot.id">
-                                {{swot.description}}
-                            </li>
-                        </ul>
+            <!-- Opportunities Tab -->
+            <div class="tab-pane" id="tab_opportunities">
+                <div class="card" v-if="swots.opportunities">
+                    <div class="card-header">
+                        <button @click="editSwot(swots.opportunities)" title="Edit" type="button" class="btn btn-sm btn-info pull-right">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
+                    <div class="card-body" v-html="swots.opportunities.description"></div>
                 </div>
+                <template v-else>
+                    <h4>No opportunities entered!</h4>
+                </template>
             </div>
-        </div>
-        <div class="card">
-            <div class="card-header">
-                <h4 class="card-title">
-                    <a class="collapsed" data-toggle="collapse" href="#threats">Threats</a>
-                </h4>
-            </div>
-            <div id="threats" class="card-collapse collapse">
-                <div class="card-body">
-                    <div class="mb-2" v-for="category in threats">
-                        <h4>{{category.name}}</h4>
-                        <ul>
-                            <li v-for="swot in category.swots" :key="swot.id">
-                                {{swot.description}}
-                            </li>
-                        </ul>
+            <!-- Threats Tab -->
+            <div class="tab-pane" id="tab_threats">
+                <div class="card" v-if="swots.threats">
+                    <div class="card-header">
+                        <button @click="editSwot(swots.threats)" title="Edit" type="button" class="btn btn-sm btn-info pull-right">
+                            <i class="fa fa-edit"></i>
+                        </button>
                     </div>
+                    <div class="card-body" v-html="swots.threats.description"></div>
                 </div>
+                <template v-else>
+                    <h4>No threats entered!</h4>
+                </template>
             </div>
         </div>
     </div>
@@ -95,22 +92,6 @@
             ...mapGetters({
                 swots: "SWOTS"
             }),
-            strengths() {
-                //return this.swots.filter(swot => swot.type === 'strengths');
-                return this.swots.strengths;
-            },
-            weaknesses() {
-                //return this.swots.filter(swot => swot.type === 'weaknesses');
-                return this.swots.weaknesses;
-            },
-            opportunities() {
-                //return this.swots.filter(swot => swot.type === 'opportunities');
-                return this.swots.opportunities;
-            },
-            threats() {
-                //return this.swots.filter(swot => swot.type === 'threats');
-                return this.swots.threats;
-            },
         },
         data() {
             return {
@@ -140,6 +121,9 @@
                     this.isLoading = false;
                     console.error(error);
                 }
+            },
+            editSwot(swot = null) {
+                EventBus.$emit("EDIT_SWOT", swot);
             },
         }
     }

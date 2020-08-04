@@ -4,22 +4,16 @@
         <thead>
         <tr>
             <th>Name</th>
-            <th>Description</th>
-            <th class="text-center">Rank</th>
             <th class="text-center">Actions</th>
         </tr>
         </thead>
         <tbody>
          <tr v-if="keyResultAreas.length === 0">
-             <td colspan="5" class="text-center">No objectives</td>
+             <td colspan="2" class="text-center">No objectives</td>
          </tr>
         <template v-else>
             <tr v-for="keyResultArea in keyResultAreas" :key="keyResultArea.id">
                 <td><a href="javascript:void(0)" @click="viewKeyResultArea(keyResultArea)">{{keyResultArea.name}}</a></td>
-                <td>{{$stringLimit(keyResultArea.description)}}</td>
-                <td class="text-center">
-                    {{keyResultArea.rank}}
-                </td>
                 <td class="text-center">
                     <a @click="editKeyResultArea(keyResultArea)" class="" href="#" data-toggle="modal"
                        data-target="#edit_project"><i class="fa fa-pencil m-r-5"></i></a>

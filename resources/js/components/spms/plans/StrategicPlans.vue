@@ -23,39 +23,37 @@
                 </div>
                 <div class="col-sm-8 col-md-8 col-lg-8 col-xl-9 table-responsive">
                     <template v-if="activePlan">
+                        <div class="card card-body m-b-5">
+                            <h3 class="card-title bb-1">Theme</h3>
+                            <div class="card-text" v-html="activePlan.theme"></div>
+                        </div>
+                        <div class="card card-body m-b-5">
+                            <h3 class="card-title bb-1">Vision</h3>
+                            <div class="card-text" v-html="activePlan.vision"></div>
+                        </div>
+                        <div class="card card-body m-b-5">
+                            <h3 class="card-title bb-1">Mission</h3>
+                            <div class="card-text" v-html="activePlan.mission"></div>
+                        </div>
+                        <div class="card card-body m-b-5">
+                            <h3 class="card-title bb-1">Values</h3>
+                            <div class="card-text" v-html="activePlan.values"></div>
+                        </div>
                         <div class="m-b-30">
                             <ul class="list-group notification-list">
-                                <li class="list-group-item">
-                                    Theme:
-                                    <div class="status-toggle">{{activePlan.theme}}</div>
-                                </li>
-                                <li class="list-group-item">
-                                    Vision:
-                                    <div class="status-toggle">{{activePlan.vision}}</div>
-                                </li>
-
-                                <li class="list-group-item">
-                                    Mission:
-                                    <div class="status-toggle">{{activePlan.mission}}</div>
-                                </li>
-
-                                <li class="list-group-item">
-                                    Values:
-                                    <div class="status-toggle">{{activePlan.values}}</div>
-                                </li>
                                 <li class="list-group-item">
                                     Report Frequency:
                                     <div class="status-toggle">{{activePlan.frequency}}</div>
                                 </li>
                                 <li class="list-group-item">
-                  <span class="pull-left">
-                    Start Date:
-                    <span>{{$moment(activePlan.startDate).format('DD MM, YYYY')}}</span>
-                  </span>
-                                    <span class="pull-right">
-                    End Date:
-                    <span>{{$moment(activePlan.endDate).format('DD MM, YYYY')}}</span>
-                  </span>
+                                  <span class="pull-left">
+                                    Start Date:
+                                    <span>{{$moment(activePlan.startDate).format('DD MM, YYYY')}}</span>
+                                  </span>
+                                                    <span class="pull-right">
+                                    End Date:
+                                    <span>{{$moment(activePlan.endDate).format('DD MM, YYYY')}}</span>
+                                  </span>
                                 </li>
                                 <li class="list-group-item">
                                     Action:
@@ -117,13 +115,8 @@
                                         <i class="fa fa-plus"></i>
                                         Add Swot
                                     </button>
-                                    <button @click="editSwotCategory()" class="btn btn-info btn-sm">
-                                        <i class="fa fa-plus"></i>
-                                        Add Swot Category
-                                    </button>
                                 </div>
                             </div>
-                            <app-swots-category-form :plan-id="activePlan.id"/>
                             <app-swots-analysis :plan-id="activePlan.id"/>
                             <app-swots-analysis-form :plan-id="activePlan.id"/>
                         </div>
@@ -158,9 +151,7 @@
         },
         created() {
             this.getPlans();
-            this.getSwotCategories();
             EventBus.$on(["PLAN_SAVED"], this.getPlans);
-            EventBus.$on("SWOT_CATEGORY_SAVED", this.getSwotCategories);
         },
         methods: {
             setActivePlan(plan) {
@@ -181,13 +172,6 @@
                     console.error(error);
                 }
             },
-            async getSwotCategories() {
-                try {
-                    await this.$store.dispatch("GET_SWOT_CATEGORIES");
-                } catch (error) {
-                    console.error(error);
-                }
-            },
             async deletePlan(plan) {
                 try {
                 } catch (error) {
@@ -203,9 +187,6 @@
             editSwot(swot = null) {
                 EventBus.$emit("EDIT_SWOT", swot);
             },
-            editSwotCategory(swotCategory = null) {
-                EventBus.$emit("EDIT_SWOT_CATEGORY", swotCategory);
-            }
         }
     };
 </script>

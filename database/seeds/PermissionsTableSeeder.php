@@ -193,5 +193,68 @@ class PermissionsTableSeeder extends Seeder
             ]);
         }
 
+        // activities management permissions
+        if ($perm = Permission::query()->create([
+            'name' => 'Manage Activities',
+            'slug' => 'activities',
+            'description' => 'Manage Activities',
+        ]))
+        {
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Create activities',
+                'slug' => 'activities.create',
+                'description' => 'Create activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Update activities',
+                'slug' => 'activities.update',
+                'description' => 'Update activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'View activities',
+                'slug' => 'activities.view',
+                'description' => 'View activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Delete activities',
+                'slug' => 'activities.delete',
+                'description' => 'Delete activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Approve activities',
+                'slug' => 'activities.approve',
+                'description' => 'Approve activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Decline activities',
+                'slug' => 'activities.decline',
+                'description' => 'Decline activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Start activities',
+                'slug' => 'activities.start',
+                'description' => 'Start activities',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Put activities on hold',
+                'slug' => 'activities.hold',
+                'description' => 'Put activities on hold',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Complete activities',
+                'slug' => 'activities.complete',
+                'description' => 'Complete activities',
+            ]);
+        }
+
     }
 }

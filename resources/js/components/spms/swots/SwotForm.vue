@@ -2,18 +2,6 @@
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
         <form @submit.prevent="saveSwot" autocomplete="off">
             <div class="form-group row">
-                <label class="col-sm-3">Category</label>
-                <div class="col-sm-9">
-                    <select v-model="swot.categoryId" class="form-control" :disabled="!!swot.id" required>
-                        <option value="">Select...</option>
-                        <option v-for="category in swotCategories" :key="`swot-category-${category.id}`" :value="category.id">
-                            {{category.name}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="form-group row">
                 <label class="col-sm-3">Type</label>
                 <div class="col-sm-9">
                     <select v-model="swot.type" class="form-control" :disabled="!!swot.id" required>
@@ -24,25 +12,14 @@
                     </select>
                 </div>
             </div>
-
-            <div class="form-group row">
-                <label class="col-sm-3">Name</label>
-                <div class="col-sm-9">
-                    <input type="text"
-                           v-model="swot.name"
-                           class="form-control"
-                           placeholder="Enter first name"
-                           required>
-                </div>
-            </div>
             <div class="form-group row">
                 <label class="col-sm-3">Description</label>
                 <div class="col-sm-9">
-                    <textarea type="text"
-                              v-model="swot.description"
-                              class="form-control"
-                              required>
-                    </textarea>
+                    <TinymceEditor
+                        :api-key="$store.getters.TINYMCE_API_KEY"
+                        :init="{...$store.getters.EDITOR_CONFIG,hieght: 320}"
+                        v-model="swot.description"
+                    />
                 </div>
             </div>
 
@@ -66,28 +43,22 @@
             planId: Number,
             required: true
         },
+        components:{
+            TinymceEditor: require('@tinymce/tinymce-vue').default,
+        },
         created() {
             EventBus.$on("EDIT_SWOT", this.editSwot);
         },
         computed: {
             ...mapGetters({
                 plan: "ACTIVE_PLAN",
-                swotCategories: "SWOT_CATEGORIES",
                 swotTypes: "SWOT_TYPES",
             }),
-            categories() {
-                return this.swotCategories.map((category) => {
-                    return {
-                        text: category.name,
-                        value: category.id,
-                    }
-                });
-            },
             title() {
                 return (!!this.swot.id) ? "Edit Swot" : "Add Swot";
             },
             formIsInvalid() {
-                return this.isSending || !(!!this.swot.name.trim() && !!this.swot.type && !!this.swot.categoryId);
+                return this.isSending || !(!!this.swot.type && !!this.swot.description);
             },
         },
         data() {

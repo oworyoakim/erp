@@ -42,16 +42,20 @@ import OutcomeIndicatorForm from "./components/spms/indicators/OutcomeIndicatorF
 import OutcomeIndicatorTargets from "./components/spms/targets/OutcomeIndicatorTargets";
 import OutcomeIndicatorTargetForm from "./components/spms/targets/OutcomeIndicatorTargetForm";
 
+import ExecuteWorkPlan from "./components/spms/plans/ExecuteWorkPlan";
+import ExecuteResolutionsAndDirectives from "./components/spms/plans/ExecuteResolutionsAndDirectives";
+import ExecutePerformanceCapture from "./components/spms/plans/ExecutePerformanceCapture";
 
-
-import ExecuteStrategicPlan from "./components/spms/plans/ExecuteStrategicPlan";
-import WorkPlanForm from "./components/spms/work-plans/WorkPlanForm";
 import Activities from "./components/spms/activities/Activities";
 import ActivityForm from "./components/spms/activities/ActivityForm";
 import Stages from "./components/spms/stages/Stages";
 import StageForm from "./components/spms/stages/StageForm";
 import Tasks from "./components/spms/tasks/Tasks";
 import TaskForm from "./components/spms/tasks/TaskForm";
+
+import MonitorStrategicPlan from "./components/spms/plans/MonitorStrategicPlan";
+import MonitorActivity from "./components/spms/plans/MonitorActivity";
+import MonitorDirectivesAndResolutions from "./components/spms/plans/MonitorDirectivesAndResolutions";
 
 Vue.component("app-admin-dashboard", Dashboard);
 Vue.component('app-plans', StrategicPlans);
@@ -84,8 +88,9 @@ Vue.component('app-outcome-indicator-form', OutcomeIndicatorForm);
 Vue.component('app-outcome-indicator-targets', OutcomeIndicatorTargets);
 Vue.component('app-outcome-indicator-target-form', OutcomeIndicatorTargetForm);
 
-Vue.component('app-plan-execute', ExecuteStrategicPlan);
-Vue.component('app-work-plan-form', WorkPlanForm);
+Vue.component('app-plan-execute-performance-capture', ExecutePerformanceCapture);
+Vue.component('app-plan-execute-work-plan', ExecuteWorkPlan);
+Vue.component('app-plan-execute-resolutions-and-directives', ExecuteResolutionsAndDirectives);
 
 Vue.component('app-activities', Activities);
 Vue.component('app-activity-form', ActivityForm);
@@ -96,6 +101,10 @@ Vue.component('app-stage-form', StageForm);
 Vue.component('app-tasks', Tasks);
 Vue.component('app-task-form', TaskForm);
 
+Vue.component('app-plan-monitor-strategy', MonitorStrategicPlan);
+Vue.component('app-plan-monitor-activity', MonitorActivity);
+Vue.component('app-plan-monitor-directives-and-resolutions', MonitorDirectivesAndResolutions);
+
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
@@ -103,6 +112,7 @@ Vue.component('app-task-form', TaskForm);
  */
 
 import spmsStore from "./stores/spms";
+
 
 const app = new Vue({
     el: "#main-app",

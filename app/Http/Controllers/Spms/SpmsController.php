@@ -19,6 +19,7 @@ class SpmsController extends GatewayController
 
     public function indexSpms()
     {
+        settings()->createOutputBasedReport();
         return view('spms.dashboard');
     }
 
@@ -28,14 +29,33 @@ class SpmsController extends GatewayController
         return view('spms.plans.index',['startOfNextFinancialYear' => $startOfNFF->toDateString()]);
     }
 
-    public function execute()
+    public function workPlan()
     {
-        return view('spms.plans.execute');
+        return view('spms.plans.execute_work_plan');
     }
 
-    public function monitor()
+    public function performanceCapture()
     {
-        return view('spms.plans.monitor');
+        return view('spms.plans.execute_performance_capture');
+    }
+
+    public function resolutionsAndDirectives()
+    {
+        return view('spms.plans.execute_resolutions_and_directives');
+    }
+
+    public function monitorStrategy()
+    {
+        return view('spms.plans.monitor_strategy');
+    }
+
+    public function monitorActivity()
+    {
+        return view('spms.plans.monitor_activity');
+    }
+    public function monitorDirectivesAndResolutions()
+    {
+        return view('spms.plans.monitor_directives_and_resolutions');
     }
 
     public function objectiveDetails($id)

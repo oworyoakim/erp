@@ -11,6 +11,7 @@ export default class Plan {
         this.endDate = '';
         this.financialYears = [];
         this.reportPeriods = [];
+        this.previousReportPeriod = null;
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';

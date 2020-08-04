@@ -293,11 +293,10 @@
                 }
             },
             setActiveWorkPlan() {
-                console.log(this.workPlanId);
                 if (!!!this.workPlanId || (this.activeWorkPlan && this.activeWorkPlan.id === this.workPlanId)) {
                     this.$store.dispatch("SET_ACTIVE_WORK_PLAN", null);
                 } else {
-                    let workPlan = this.workPlans.find((wplan) => wplan.id === this.workPlanId);
+                    let workPlan = this.workPlans.find((workPlan) => workPlan.id === this.workPlanId);
                     this.$store.dispatch("SET_ACTIVE_WORK_PLAN", workPlan || null);
                 }
             },
