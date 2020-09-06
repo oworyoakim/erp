@@ -13,6 +13,18 @@
                     </select>
                 </div>
             </div>
+            <div class="form-group row" v-if="!!activity">
+                <label class="col-sm-4">Activity <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" v-model="output.activityId" :disabled="!!output.id" required>
+                        <option value="">Select...</option>
+                        <option v-for="activity in activitiesOptions" :value="activity.value"
+                                :key="activity.value">
+                            {{activity.text}}
+                        </option>
+                    </select>
+                </div>
+            </div>
             <div class="form-group row">
                 <label class="col-sm-4">Name <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
@@ -41,6 +53,9 @@
     import {mapGetters} from "vuex";
 
     export default {
+        props: {
+            activity: {type: Boolean, default: false,},
+        },
         created() {
             EventBus.$on(["EDIT_OUTPUT"], this.editOutput);
         },
@@ -54,28 +69,58 @@
         computed: {
             ...mapGetters({
                 objective: "OBJECTIVE_DETAILS",
+                activities: "ACTIVITIES",
+                interventions: "INTERVENTIONS",
+                workPlan: "ACTIVE_WORK_PLAN",
             }),
             interventionsOptions() {
-                return this.objective.interventions.map((intervention) => {
+                if (!!this.objective) {
+                    return this.objective.interventions.map((intervention) => {
+                        return {
+                            text: intervention.name,
+                            value: intervention.id,
+                        }
+                    });
+                }
+                return this.interventions.map((intervention) => {
                     return {
                         text: intervention.name,
                         value: intervention.id,
                     }
                 });
             },
+            activitiesOptions() {
+                if (!!this.activity && !!this.workPlan) {
+                    return this.workPlan.activities.filter((activity) => {
+                        return activity.interventionId === this.output.interventionId;
+                    }).map((activity) => {
+                        return {
+                            text: activity.title,
+                            value: activity.id,
+                        }
+                    });
+                }
+                return [];
+            },
             title() {
                 return (!!this.output.id) ? "Edit Output" : "Add Output";
             },
             formInvalid() {
-                return this.isSending || !(!!this.output.name && !!this.output.description);
+                return this.isSending || !(
+                    !!this.output.name &&
+                    !!this.output.description &&
+                    (!this.activity || !!this.output.activityId)
+                );
             },
         },
         methods: {
-            editOutput(output = null) {
-                if (output) {
-                    this.output = deepClone(output);
+            editOutput(data) {
+                if (data.output) {
+                    this.output = deepClone(data.output);
                 } else {
                     this.output = new Output();
+                    this.output.interventionId = data.interventionId;
+                    this.output.activityId = data.activityId;
                 }
                 this.isEditing = true;
             },
@@ -83,7 +128,15 @@
                 try {
                     this.isSending = true;
                     if (!this.output.objectiveId) {
-                        this.output.objectiveId = this.objective.id;
+                        if (!!this.objective) {
+                            this.output.objectiveId = this.objective.id;
+                        } else {
+                            let intervention = this.interventions.find((intervention) => intervention.id === this.output.interventionId);
+                            if (!intervention) {
+                                return await swal({title: 'Strategic objective not set!', icon: 'error'});
+                            }
+                            this.output.objectiveId = intervention.objectiveId;
+                        }
                     }
                     let response = await this.$store.dispatch('SAVE_OUTPUT', this.output);
                     toastr.success(response);

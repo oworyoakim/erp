@@ -11,11 +11,13 @@ import plansModule from './plans';
 import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
+import activitiesModule from "./activities";
+import outputsModule from "./outputs";
 import workPlansModule from "./work-plans";
 import directivesAndResolutionsModule from "./directives-and-resolutions";
 import dirAndResActivitiesModule from "./directives-and-resolutions-activities";
 import dirAndResActivityOutputsModule from "./directives-and-resolutions-outputs";
-import {resolveError} from "../../utils/helpers";
+import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default new Vuex.Store({
     modules: {
@@ -25,6 +27,8 @@ export default new Vuex.Store({
         objectives: objectivesModule,
         keyResultAreas: keyResultAreasModule,
         swots: swotsModule,
+        activities: activitiesModule,
+        outputs: outputsModule,
         workPlans: workPlansModule,
         directivesAndResolutions: directivesAndResolutionsModule,
         dirAndResActivities: dirAndResActivitiesModule,
@@ -40,6 +44,7 @@ export default new Vuex.Store({
             documentTypes: [],
         },
         directoratesOptions: [],
+        departmentsOptions: [],
         editorConfig: {
             media_live_embeds: true,
             menubar: "insert edit format",
@@ -89,27 +94,30 @@ export default new Vuex.Store({
             return state.editorConfig;
         },
         DIRECTORATES_OPTIONS(state) {
-            return state.directoratesOptions
+            return state.directoratesOptions;
+        },
+        DEPARTMENTS_OPTIONS(state) {
+            return state.departmentsOptions;
         },
         SINGLE_DATE_CONFIG(state) {
             return state.singleDateConfig;
         },
-        HAS_ACCESS(state){
+        HAS_ACCESS(state) {
             return (permission = '') => {
                 return !!permission && !!state.user && !!state.user.permissions[permission];
             }
         },
-        HAS_ANY_ACCESS(state){
+        HAS_ANY_ACCESS(state) {
             return (permissions = []) => {
                 return !!state.user && permissions.some((permission) => !!state.user.permissions[permission]);
             }
         },
     },
     mutations: {
-        setUser(state, payload){
+        setUser(state, payload) {
             state.user = payload;
         },
-        setDashboardStatistics(state, payload){
+        setDashboardStatistics(state, payload) {
             state.dashboardStatistics = payload;
         },
         setGeneralSettings(state, payload) {
@@ -117,6 +125,9 @@ export default new Vuex.Store({
         },
         SET_DIRECTORATES_OPTIONS(state, payload) {
             state.directoratesOptions = payload;
+        },
+        SET_DEPARTMENTS_OPTIONS(state, payload) {
+            state.departmentsOptions = payload;
         },
     },
     actions: {
@@ -174,6 +185,28 @@ export default new Vuex.Store({
                 let response = await axios.get('/hrms/directorates/unscoped');
                 commit('SET_DIRECTORATES_OPTIONS', response.data);
                 return Promise.resolve('Ok');
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+
+        async GET_DEPARTMENTS_OPTIONS({commit}) {
+            try {
+                let response = await axios.get('/hrms/departments/unscoped');
+                commit('SET_DEPARTMENTS_OPTIONS', response.data);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+
+        async GET_EMPLOYEE_OPTIONS({commit}, payload) {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get('/hrms/employees/unscoped' + queryParams);
+                return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);
                 return Promise.reject(message);

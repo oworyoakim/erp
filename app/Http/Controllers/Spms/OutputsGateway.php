@@ -16,6 +16,26 @@ class OutputsGateway extends GatewayController
         $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/outputs';
     }
 
+    public function index(Request $request)
+    {
+        try
+        {
+            $params = $request->only(['interventionId','activityId']);
+
+            if (empty($params['interventionId']))
+            {
+                throw new Exception("Strategic intervention id required!");
+            }
+
+            $responseData = $this->get($this->urlEndpoint, $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
     public function store(Request $request)
     {
         try

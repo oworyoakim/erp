@@ -49,10 +49,10 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'HrmsController@directorates')->name('hrms.directorates.list');
                 Route::get('view/{id}', 'HrmsController@directorateDetails')->name('hrms.directorates.details');
                 Route::get('all-json', 'DirectoratesGateway@index');
-                Route::get('unscoped', 'DirectoratesGateway@indexUnscoped');
                 Route::get('details', 'DirectoratesGateway@show');
                 Route::post('', 'DirectoratesGateway@store');
                 Route::put('', 'DirectoratesGateway@update');
+                Route::get('unscoped', 'DirectoratesGateway@indexUnscoped');
             });
 
             // departments
@@ -63,6 +63,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('details', 'DepartmentsGateway@show');
                 Route::post('', 'DepartmentsGateway@store');
                 Route::put('', 'DepartmentsGateway@update');
+                Route::get('unscoped', 'DepartmentsGateway@indexUnscoped');
             });
 
             // divisions
@@ -115,6 +116,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::patch('dismiss', 'EmployeesGateway@dismiss');
                 Route::patch('release', 'EmployeesGateway@release');
                 Route::patch('retire', 'EmployeesGateway@retire');
+                Route::get('unscoped', 'EmployeesGateway@indexUnscoped');
 
                 // employees/education
                 Route::get('education', 'EducationInfoGateway@index');
@@ -291,6 +293,7 @@ Route::middleware('ensure.authenticated')->group(function () {
             });
 
             Route::group(['prefix' => 'outputs'], function () {
+                Route::get('', 'OutputsGateway@index');
                 Route::post('', 'OutputsGateway@store');
                 Route::put('', 'OutputsGateway@update');
             });

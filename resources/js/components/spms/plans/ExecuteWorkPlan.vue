@@ -124,7 +124,7 @@
                             <!-- Activity Outputs Tab -->
                             <div class="tab-pane" id="tab_outputs">
                                 <!--  Activity Outputs   -->
-
+                                <ActivityOutputs />
                                 <!--//Activity Outputs    -->
                             </div>
                             <!-- /Activity Outputs Tab -->
@@ -165,9 +165,11 @@
     import SelectBox from "../../shared/SelectBox";
     import {deepClone} from "../../../utils/helpers";
     import WorkPlanForm from "../work-plans/WorkPlanForm";
+    import ActivityOutputs from "../stages/ActivityOutputs";
 
     export default {
         components: {
+            ActivityOutputs,
             WorkPlanForm,
             SelectBox,
         },
