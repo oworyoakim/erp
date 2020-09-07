@@ -2,6 +2,7 @@ const routes = {
     // ACL
     USERS: '/acl/users',
     ROLES: '/acl/roles',
+    SETTINGS: '/settings',
     GENERAL_SETTINGS: '/acl/settings/general',
     GENERAL_SETTINGS_JSON: '/acl/settings/general/all-json',
     ACL_FROM_SELECTIONS_OPTIONS: '/acl/form-selections-options',

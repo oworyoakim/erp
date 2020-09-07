@@ -5,6 +5,7 @@ import axios from 'axios';
 Vue.use(Vuex);
 
 import routes from "../../routes";
+import generalSettingsModule from "../general-settings";
 import usersModule from '../acl/users';
 import rolesModule from '../acl/roles';
 import plansModule from './plans';
@@ -21,6 +22,7 @@ import {prepareQueryParams, resolveError} from "../../utils/helpers";
 
 export default new Vuex.Store({
     modules: {
+        generalSettings: generalSettingsModule,
         roles: rolesModule,
         users: usersModule,
         plans: plansModule,
@@ -36,7 +38,6 @@ export default new Vuex.Store({
     },
     state: {
         user: null,
-        generalSettings: [],
         formSelections: {
             roles: [],
             usernames: [],
@@ -71,9 +72,6 @@ export default new Vuex.Store({
     getters: {
         getUser: (state) => {
             return state.user;
-        },
-        getGeneralSettings: (state) => {
-            return state.generalSettings;
         },
         getRole: (state) => {
             return state.user ? state.user.role : null;
@@ -120,9 +118,6 @@ export default new Vuex.Store({
         setDashboardStatistics(state, payload) {
             state.dashboardStatistics = payload;
         },
-        setGeneralSettings(state, payload) {
-            state.generalSettings = payload;
-        },
         SET_DIRECTORATES_OPTIONS(state, payload) {
             state.directoratesOptions = payload;
         },
@@ -165,17 +160,6 @@ export default new Vuex.Store({
                 return Promise.resolve('Ok');
             } catch (error) {
                 console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
-            }
-        },
-        getGeneralSettings: async ({commit}) => {
-            try {
-                let response = await axios.get(routes.GENERAL_SETTINGS_JSON);
-                commit('setGeneralSettings', response.data);
-                return Promise.resolve('Ok');
-            } catch (error) {
-                console.log(error.response);
 
                 return Promise.reject(error.response.data);
             }

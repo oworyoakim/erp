@@ -37,6 +37,7 @@ Vue.component("app-general-settings", GeneralSettings);
  */
 
 import aclStore from "./stores/acl";
+import hrmsStore from "./stores/hrms";
 
 
 const app = new Vue({
@@ -52,10 +53,13 @@ let openPaths = [
 ];
 
 if (!openPaths.includes(location.pathname)) {
-    aclStore.dispatch("getUser").then(() => {
+    aclStore.dispatch("getUser").then((data) => {
+        return hrmsStore.dispatch("GET_GENERAL_SETTINGS");
+    }).then((data) => {
         // if (!window.GET_USER_INTERVAL) {
         //     window.GET_USER_INTERVAL = setInterval(async () => {
         //         await aclStore.dispatch("getUser");
+        //         await aclStore.dispatch("GET_GENERAL_SETTINGS");
         //     }, 60000);
         // }
     }).catch(error => {

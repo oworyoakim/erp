@@ -1,7 +1,11 @@
 <!-- Logo -->
 <div class="header-left">
     <a href="{{route('spms.dashboard')}}" class="logo">
-        <img src="{{asset('smarthr/maroon/img/logo.png')}}" width="40" height="40" alt="">
+        @if($logo = settings()->get('company_logo'))
+            <img src="{{$logo}}" width="40" height="40" alt="">
+        @else
+            <img src="{{asset('smarthr/maroon/img/logo.png')}}" width="40" height="40" alt="">
+        @endif
     </a>
 </div>
 <!-- /Logo -->

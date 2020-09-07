@@ -21,6 +21,7 @@ Route::post('/reset-password', 'AccountController@resetPassword')->name('reset-p
 Route::get('/reset-password/{email}/{code}', 'AccountController@resetPasswordForm')->name('reset-password-form');
 Route::put('/reset-password', 'AccountController@processResetPasswordForm')->name('do-reset-password');
 Route::get('/test', 'HomeController@test')->name('test');
+Route::get('/settings', 'HomeController@settings');
 
 Route::middleware('ensure.authenticated')->group(function () {
     Route::post('/logout', 'AccountController@logout')->name('logout');

@@ -119,10 +119,13 @@ const app = new Vue({
     store: spmsStore
 });
 
-spmsStore.dispatch("getUser").then(() => {
+spmsStore.dispatch("getUser").then((data) => {
+    return spmsStore.dispatch("GET_GENERAL_SETTINGS");
+}).then((data) => {
     // if (!window.GET_USER_INTERVAL) {
     //     window.GET_USER_INTERVAL = setInterval(async () => {
     //         await spmsStore.dispatch("getUser");
+    //         await spmsStore.dispatch("GET_GENERAL_SETTINGS");
     //     }, 60000);
     // }
 }).catch(error => {

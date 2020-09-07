@@ -4,6 +4,7 @@ import axios from "axios";
 import routes from "../../routes";
 import rolesModule from "./roles";
 import usersModule from "./users";
+import generalSettingsModule from "../general-settings";
 import {resolveError} from "../../utils/helpers";
 
 Vue.use(Vuex);
@@ -12,13 +13,13 @@ export default new Vuex.Store({
     modules: {
         roles: rolesModule,
         users: usersModule,
+        generalSettings: generalSettingsModule,
     },
     state: {
         user: null,
         loginPageForm: 'login',
         success: null,
         error: null,
-        generalSettings: [],
         selectionsOptions: {
             roles: [],
             usernames: [],
@@ -48,9 +49,6 @@ export default new Vuex.Store({
         EDITOR_CONFIG(state){
             return state.editorConfig;
         },
-        getGeneralSettings(state) {
-            return state.generalSettings;
-        },
         getRole(state) {
             return state.user ? state.user.role : null;
         },
@@ -72,9 +70,6 @@ export default new Vuex.Store({
         setUser(state, payload) {
             state.user = payload;
         },
-        setGeneralSettings(state, payload) {
-            state.generalSettings = payload;
-        },
         SET_FORM_SELECTIONS_OPTIONS(state, payload) {
             state.selectionsOptions = payload;
         },
@@ -87,17 +82,6 @@ export default new Vuex.Store({
                 return Promise.resolve('Ok');
             } catch (error) {
                 let message = resolveError(error);
-                return Promise.reject(message);
-            }
-        },
-        async getGeneralSettings({commit}) {
-            try {
-                let response = await axios.get(routes.GENERAL_SETTINGS_JSON);
-                commit('setGeneralSettings', response.data);
-                return Promise.resolve('Ok');
-            } catch (error) {
-                let message = resolveError(error);
-                console.error(message);
                 return Promise.reject(message);
             }
         },

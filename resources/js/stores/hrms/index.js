@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
 import routes from "../../routes";
+import generalSettingsModule from "../general-settings";
 import dashboardModule from './dashboard';
 import departmentsModule from './departments';
 import directoratesModule from './directorates';
@@ -20,6 +21,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     modules: {
+        generalSettings: generalSettingsModule,
         dashboard: dashboardModule,
         departments: departmentsModule,
         directorates: directoratesModule,
@@ -35,7 +37,6 @@ export default new Vuex.Store({
     },
     state: {
         user: null,
-        generalSettings: [],
         formSelections: {
             directorates: [],
             departments: [],
@@ -85,9 +86,6 @@ export default new Vuex.Store({
         EDITOR_CONFIG(state){
             return state.editorConfig;
         },
-        getGeneralSettings: (state) => {
-            return state.generalSettings;
-        },
         getRole: (state) => {
             return state.user ? state.user.role : null;
         },
@@ -114,9 +112,6 @@ export default new Vuex.Store({
     mutations: {
         setUser: (state, payload) => {
             state.user = payload;
-        },
-        setGeneralSettings: (state, payload) => {
-            state.generalSettings = payload;
         },
         SET_FORM_SELECTIONS_OPTIONS: (state, payload) => {
             state.formSelections = payload;
@@ -147,17 +142,6 @@ export default new Vuex.Store({
                 let queryParams = params.join('&');
                 let response = await axios.get(routes.EMPLOYEES_ATTRIBUTES + '?' + queryParams);
                 commit('SET_FORM_SELECTIONS_OPTIONS', response.data);
-                return Promise.resolve('Ok');
-            } catch (error) {
-                let message = resolveError(error);
-                console.error(message);
-                return Promise.reject(message);
-            }
-        },
-        getGeneralSettings: async ({commit}) => {
-            try {
-                let response = await axios.get(routes.GENERAL_SETTINGS_JSON);
-                commit('setGeneralSettings', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
                 let message = resolveError(error);
