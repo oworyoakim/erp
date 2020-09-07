@@ -7,7 +7,8 @@
                     <span class="text-danger">*</span>
                 </label>
                 <div class="col-sm-8">
-                    <select v-model="workPlan.financialYear" class="form-control" :disabled="!!workPlan.id" @change="setWorkPlanTitle()">
+                    <select v-model="workPlan.financialYear" class="form-control" :disabled="!!workPlan.id"
+                            @change="setWorkPlanTitle()">
                         <option value="">Select...</option>
                         <option v-for="financial in plan.financialYears"
                                 :value="financial"
@@ -24,6 +25,17 @@
                 </label>
                 <div class="col-sm-8">
                     <input type="text" v-model="workPlan.title" class="form-control" readonly/>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Planning Ends On <br/>
+                    <small class="text-muted">Format: {{dateConfig.locale.format}}</small></label>
+                <div class="col-sm-8">
+                    <app-date-range-picker
+                        v-model="workPlan.planningDeadline"
+                        :value="workPlan.planningDeadline"
+                        :config="dateConfig"
+                    />
                 </div>
             </div>
             <div class="form-group row">
@@ -68,7 +80,13 @@
                 return (!!this.workPlan.id) ? "Edit Work Plan" : "Add Work Plan";
             },
             formInvalid() {
-                return this.isSending || !(!!this.workPlan.title && !!this.workPlan.financialYear && !!this.workPlan.theme);
+                return this.isSending || !(
+                    !!this.workPlan.title &&
+                    !!this.workPlan.financialYear &&
+                    !!this.workPlan.theme &&
+                    !!this.workPlan.planningDeadline &&
+                    this.$moment(this.workPlan.planningDeadline).isValid()
+                );
             },
         },
         data() {
@@ -76,6 +94,16 @@
                 isEditing: false,
                 isSending: false,
                 workPlan: new WorkPlan(),
+                dateConfig: {
+                    showDropdowns: true,
+                    singleDatePicker: true,
+                    minDate: this.$moment(), // now
+                    opens: "center",
+                    locale: {
+                        format: 'YYYY-MM-DD',
+                        cancelLabel: 'Clear'
+                    }
+                }
             }
         },
         methods: {
@@ -87,10 +115,10 @@
                 }
                 this.isEditing = true;
             },
-            setWorkPlanTitle(){
-                if(!!this.workPlan.financialYear){
+            setWorkPlanTitle() {
+                if (!!this.workPlan.financialYear) {
                     this.workPlan.title = this.workPlan.financialYear + " Annual Work Plan";
-                }else{
+                } else {
                     this.workPlan.title = '';
                 }
 
@@ -98,7 +126,7 @@
             async saveWorkPlan() {
                 try {
                     this.isSending = true;
-                    if(!this.workPlan.planId){
+                    if (!this.workPlan.planId) {
                         this.workPlan.planId = this.plan.id;
                     }
                     let response = await this.$store.dispatch('SAVE_WORK_PLAN', this.workPlan);

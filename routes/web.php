@@ -21,6 +21,7 @@ Route::post('/reset-password', 'AccountController@resetPassword')->name('reset-p
 Route::get('/reset-password/{email}/{code}', 'AccountController@resetPasswordForm')->name('reset-password-form');
 Route::put('/reset-password', 'AccountController@processResetPasswordForm')->name('do-reset-password');
 Route::get('/test', 'HomeController@test')->name('test');
+Route::get('/settings', 'HomeController@settings');
 
 Route::middleware('ensure.authenticated')->group(function () {
     Route::post('/logout', 'AccountController@logout')->name('logout');
@@ -49,10 +50,10 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'HrmsController@directorates')->name('hrms.directorates.list');
                 Route::get('view/{id}', 'HrmsController@directorateDetails')->name('hrms.directorates.details');
                 Route::get('all-json', 'DirectoratesGateway@index');
-                Route::get('unscoped', 'DirectoratesGateway@indexUnscoped');
                 Route::get('details', 'DirectoratesGateway@show');
                 Route::post('', 'DirectoratesGateway@store');
                 Route::put('', 'DirectoratesGateway@update');
+                Route::get('unscoped', 'DirectoratesGateway@indexUnscoped');
             });
 
             // departments
@@ -63,6 +64,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('details', 'DepartmentsGateway@show');
                 Route::post('', 'DepartmentsGateway@store');
                 Route::put('', 'DepartmentsGateway@update');
+                Route::get('unscoped', 'DepartmentsGateway@indexUnscoped');
             });
 
             // divisions
@@ -115,6 +117,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::patch('dismiss', 'EmployeesGateway@dismiss');
                 Route::patch('release', 'EmployeesGateway@release');
                 Route::patch('retire', 'EmployeesGateway@retire');
+                Route::get('unscoped', 'EmployeesGateway@indexUnscoped');
 
                 // employees/education
                 Route::get('education', 'EducationInfoGateway@index');
@@ -291,11 +294,13 @@ Route::middleware('ensure.authenticated')->group(function () {
             });
 
             Route::group(['prefix' => 'outputs'], function () {
+                Route::get('', 'OutputsGateway@index');
                 Route::post('', 'OutputsGateway@store');
                 Route::put('', 'OutputsGateway@update');
             });
 
             Route::group(['prefix' => 'output-indicators'], function () {
+                Route::get('', 'OutputIndicatorsGateway@index');
                 Route::post('', 'OutputIndicatorsGateway@store');
                 Route::put('', 'OutputIndicatorsGateway@update');
             });
@@ -341,6 +346,8 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'ActivitiesGateway@index');
                 Route::post('', 'ActivitiesGateway@store');
                 Route::put('', 'ActivitiesGateway@update');
+                Route::get('performance', 'ActivitiesGateway@performance');
+                Route::post('performance', 'ActivitiesGateway@updatePerformance');
             });
 
             Route::group(['prefix' => 'stages'], function () {

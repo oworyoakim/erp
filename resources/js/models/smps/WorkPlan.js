@@ -10,6 +10,7 @@ export default class WorkPlan {
         this.status = '';
         this.startDate = null;
         this.endDate = null;
+        this.planningDeadline = '';
         this.activities = [];
         this.stages = [];
         this.tasks = [];

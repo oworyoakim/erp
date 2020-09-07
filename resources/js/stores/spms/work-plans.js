@@ -77,54 +77,6 @@ export default {
         SET_ACTIVE_WORK_PLAN: async ({commit}, payload) => {
             commit("SET_ACTIVE_WORK_PLAN", payload);
         },
-        SAVE_ACTIVITY: async ({commit}, payload) => {
-            try {
-                let response;
-                if (!!payload.id) {
-                    // update
-                    response = await axios.put(routes.ACTIVITIES, payload);
-                } else {
-                    // insert new
-                    response = await axios.post(routes.ACTIVITIES, payload);
-                }
-                return Promise.resolve(response.data);
-            } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
-            }
-        },
-        SAVE_STAGE: async ({commit}, payload) => {
-            try {
-                let response;
-                if (!!payload.id) {
-                    // update
-                    response = await axios.put(routes.STAGES, payload);
-                } else {
-                    // insert new
-                    response = await axios.post(routes.STAGES, payload);
-                }
-                return Promise.resolve(response.data);
-            } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
-            }
-        },
-        SAVE_TASK: async ({commit}, payload) => {
-            try {
-                let response;
-                if (!!payload.id) {
-                    // update
-                    response = await axios.put(routes.TASKS, payload);
-                } else {
-                    // insert new
-                    response = await axios.post(routes.TASKS, payload);
-                }
-                return Promise.resolve(response.data);
-            } catch (error) {
-                console.error(error.response);
-                return Promise.reject(error.response.data);
-            }
-        },
         SET_WORK_PLANS({commit},payload){
             commit('SET_WORK_PLANS', payload);
         }

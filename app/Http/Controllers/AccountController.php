@@ -43,7 +43,7 @@ class AccountController extends Controller
             }
             return redirect()->route("service");
         }
-        $logo = settings()->get('company_log');
+        $logo = settings()->get('company_logo');
         if (empty($logo))
         {
             $logo = '/storage/images/logo2.png';

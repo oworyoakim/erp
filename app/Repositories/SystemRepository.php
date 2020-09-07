@@ -21,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use stdClass;
 
 class SystemRepository implements ISystemRepository
 {
@@ -39,6 +40,72 @@ class SystemRepository implements ISystemRepository
         $setting = Setting::query()->firstOrNew(['key' => $key]);
         $setting->value = $value;
         return $setting->save();
+    }
+
+    public function getAllSettings()
+    {
+        $settings = new stdClass();
+        $settings->companyName = null;
+        $settings->companyPhone = null;
+        $settings->companyEmail = null;
+        $settings->companyWebsite = null;
+        $settings->companyAddress = null;
+        $settings->companyLogo = null;
+        $settings->resetPasswordEmailSubject = null;
+        $settings->resetPasswordEmailTemplate = null;
+        $settings->defaultLeaveApplicationVerifier = null;
+        $settings->defaultLeaveApplicationGranter = null;
+        foreach (Setting::all() as $setting)
+        {
+            if ($setting->key == 'company_name')
+            {
+                $settings->companyName = $setting->value;
+            }
+            if ($setting->key == 'company_phone')
+            {
+                $settings->companyPhone = $setting->value;
+            }
+
+            if ($setting->key == 'company_email')
+            {
+                $settings->companyEmail = $setting->value;
+            }
+
+            if ($setting->key == 'company_website')
+            {
+                $settings->companyWebsite = $setting->value;
+            }
+            if ($setting->key == 'company_address')
+            {
+                $settings->companyAddress = $setting->value;
+            }
+
+            if ($setting->key == 'company_logo')
+            {
+                $settings->companyLogo = $setting->value;
+            }
+
+            if ($setting->key == 'reset_password_email_subject')
+            {
+                $settings->resetPasswordEmailSubject = $setting->value;
+            }
+
+            if ($setting->key == 'reset_password_email_template')
+            {
+                $settings->resetPasswordEmailTemplate = $setting->value;
+            }
+
+            if ($setting->key == 'default_leave_application_verifier')
+            {
+                $settings->defaultLeaveApplicationVerifier = $setting->value;
+            }
+
+            if ($setting->key == 'default_leave_application_granter')
+            {
+                $settings->defaultLeaveApplicationGranter = $setting->value;
+            }
+        }
+        return $settings;
     }
 
     public function beginTransaction()

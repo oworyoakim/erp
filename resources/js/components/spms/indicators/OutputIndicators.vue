@@ -43,7 +43,10 @@
         },
         methods: {
             editOutputIndicator(indicator = null){
-                EventBus.$emit("EDIT_OUTPUT_INDICATOR",indicator);
+
+                EventBus.$emit("EDIT_OUTPUT_INDICATOR", {
+                    indicator: indicator
+                });
             },
             deleteOutputIndicator(indicator){
 

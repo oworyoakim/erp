@@ -103,6 +103,7 @@ Vue.component("app-approvals-settings", ApprovalsSettings);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import hrmsStore from './stores/hrms';
+import spmsStore from "./stores/spms";
 
 
 const app = new Vue({
@@ -110,10 +111,13 @@ const app = new Vue({
     store: hrmsStore
 });
 
-hrmsStore.dispatch("getUser").then(() => {
+hrmsStore.dispatch("getUser").then((data) => {
+    return hrmsStore.dispatch("GET_GENERAL_SETTINGS");
+}).then((data) => {
     // if (!window.GET_USER_INTERVAL) {
     //     window.GET_USER_INTERVAL = setInterval(async () => {
     //         await hrmsStore.dispatch("getUser");
+    //         await hrmsStore.dispatch("GET_GENERAL_SETTINGS");
     //     }, 60000);
     // }
 }).catch(error => {

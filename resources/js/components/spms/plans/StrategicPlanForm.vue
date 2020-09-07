@@ -22,8 +22,21 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Theme</label>
+                <label class="col-sm-4">Monitor Frequency</label>
                 <div class="col-sm-8">
+                    <select v-model="plan.frequency" class="form-control" disabled>
+                        <option value="">Select...</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                        <option value="4-months">Every 4 months</option>
+                        <option value="6-months">Every 6 months</option>
+                        <option value="yearly">Yearly</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-sm-12">
+                <label>Theme</label>
 <!--                    <textarea v-model="plan.theme" class="form-control"></textarea>-->
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
@@ -32,8 +45,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Vision</label>
-                <div class="col-sm-8">
+                <div class="col-sm-12">
+                <label>Vision</label>
 <!--                    <textarea v-model="plan.vision" class="form-control"></textarea>-->
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
@@ -43,8 +56,8 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4">Mission</label>
-                <div class="col-sm-8">
+                <div class="col-sm-12">
+                <label>Mission</label>
 <!--                    <textarea v-model="plan.mission" class="form-control"></textarea>-->
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
@@ -54,28 +67,14 @@
             </div>
 
             <div class="form-group row">
-                <label class="col-sm-4">Values</label>
-                <div class="col-sm-8">
+                <div class="col-sm-12">
+                <label>Values</label>
 <!--                    <textarea v-model="plan.values" class="form-control"></textarea>-->
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
                         :init="$store.getters.EDITOR_CONFIG"
                         v-model="plan.values"
                     />
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-sm-4">Monitor Frequency</label>
-                <div class="col-sm-8">
-                    <select v-model="plan.frequency" class="form-control">
-                        <option value="">Select...</option>
-                        <option value="monthly">Monthly</option>
-                        <option value="quarterly">Quarterly</option>
-                        <option value="4-months">Every 4 months</option>
-                        <option value="6-months">Every 6 months</option>
-                        <option value="yearly">Yearly</option>
-                    </select>
                 </div>
             </div>
 
@@ -139,7 +138,7 @@
                         format: 'YYYY-MM-DD',
                         cancelLabel: 'Clear'
                     }
-                }
+                },
             }
         },
         methods: {

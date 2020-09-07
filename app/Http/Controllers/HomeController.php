@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Setting;
 use App\Models\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
@@ -15,7 +16,8 @@ use stdClass;
 class HomeController extends Controller
 {
 
-    public function index(){
+    public function index()
+    {
         return view('acl.users.index');
     }
 
@@ -24,12 +26,26 @@ class HomeController extends Controller
         try
         {
             $data = array();
-            $data['roles'] = Role::query()->whereIn('type',['system','both'])->get(['id', 'name']);
+            $data['roles'] = Role::query()->whereIn('type', ['system', 'both'])->get(['id', 'name']);
             $data['usernames'] = User::query()->pluck('username')->all();
             return response()->json($data);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function settings()
+    {
+        try
+        {
+            $settings = settings()->getAllSettings();
+
+            return response()->json($settings);
+        } catch (Exception $ex)
+        {
+            Log::error("GET_ALL_SETTINGS: {$ex->getMessage()}");
+            response()->json($ex->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 
