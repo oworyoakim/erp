@@ -5,11 +5,15 @@ import {prepareQueryParams, resolveError} from "../../utils/helpers";
 export default {
     state: {
         outputs: [],
+        outputIndicators: [],
         outputAchievements: [],
     },
     getters: {
         OUTPUTS(state) {
             return state.outputs;
+        },
+        OUTPUT_INDICATORS(state) {
+            return state.outputIndicators || [];
         },
         OUTPUT_ACHIEVEMENTS(state) {
             return state.outputAchievements || [];
@@ -18,6 +22,9 @@ export default {
     mutations: {
         SET_OUTPUTS(state, payload) {
             state.outputs = payload;
+        },
+        SET_OUTPUT_INDICATORS(state, payload) {
+            state.outputIndicators = payload;
         },
         SET_OUTPUT_ACHIEVEMENTS(state, payload) {
             state.outputAchievements = payload;
@@ -87,6 +94,17 @@ export default {
             }
         },
 
+        async GET_OUTPUT_INDICATORS({commit}, payload) {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.OUTPUT_INDICATORS + queryParams);
+                commit("SET_OUTPUT_INDICATORS",response.data);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
         async GET_OUTPUT_ACHIEVEMENTS({commit}, payload) {
             try {
                 let queryParams = prepareQueryParams(payload);

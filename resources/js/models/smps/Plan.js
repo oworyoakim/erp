@@ -6,7 +6,7 @@ export default class Plan {
         this.mission = '';
         this.vision = '';
         this.values = '';
-        this.frequency = '';
+        this.frequency = 'quarterly';
         this.startDate = '';
         this.endDate = '';
         this.financialYears = [];

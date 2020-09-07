@@ -70,8 +70,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Description</label>
-                <div class="col-sm-8">
+                <div class="col-sm-12">
+                <label>Description</label>
                     <!--                    <textarea v-model="activity.description" class="form-control" rows="5"></textarea>-->
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"

@@ -10,6 +10,8 @@ namespace App\Repositories;
 
 interface ISystemRepository
 {
+    public function getAllSettings();
+
     public function get($key);
 
     public function set($key, $value);

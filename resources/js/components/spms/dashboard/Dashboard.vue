@@ -1,5 +1,12 @@
 <template>
-    <h2>SPMS Dashboard</h2>
+    <div class="spms-dashboard table-responsive">
+        <iframe width="100%"
+                height="600"
+                src="https://app.powerbi.com/view?r=eyJrIjoiM2Y4NzBjMTgtZTM0MC00MWEyLWI1OGEtZmVkOWQwYjUwZjk2IiwidCI6IjIwMTBhMjI3LWQ2YjctNGFjZS1iMzhiLTAyNDQ0ZDc0YjkwNCIsImMiOjh9"
+                frameborder="0"
+                allowFullScreen="true">
+        </iframe>
+    </div>
 </template>
 
 <script>

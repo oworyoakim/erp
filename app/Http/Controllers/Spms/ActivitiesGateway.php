@@ -65,4 +65,37 @@ class ActivitiesGateway extends GatewayController
         }
     }
 
+    public function performance(Request $request)
+    {
+        try
+        {
+            $params = $request->only(['activityId', 'reportPeriodId']);
+
+            $responseData = $this->get("{$this->urlEndpoint}/performance", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function updatePerformance(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            //dd($data);
+            $user = Sentinel::getUser();
+            $data['userId'] = $user->getUserId();
+
+            $responseData = $this->post("{$this->urlEndpoint}/performance", $data);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
 }

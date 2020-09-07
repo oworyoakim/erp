@@ -95,7 +95,7 @@
                                 <a class="nav-link" data-toggle="tab" href="#tab_indicators">Indicators</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#tab_targets">Targets</a>
+                                <a class="nav-link" data-toggle="tab" href="#tab_targets_and_achievements">Targets & Achievements</a>
                             </li>
                         </ul>
                         <!-- Tab Content -->
@@ -131,14 +131,14 @@
                             <!-- Activity Output Indicators Tab -->
                             <div class="tab-pane" id="tab_indicators">
                                 <!--  Activity Output Indicators   -->
-
+                                <ActivityOutputIndicators />
                                 <!--//Activity Output Indicators    -->
                             </div>
                             <!-- /Activity Output Indicators Tab -->
                             <!-- Activity Output Indicator Targets Tab -->
-                            <div class="tab-pane" id="tab_targets">
+                            <div class="tab-pane" id="tab_targets_and_achievements">
                                 <!--  Activity Output Indicator Targets  -->
-
+                                    <ActivityOutputIndicatorTargetsAndAchievements />
                                 <!--//Activity Output Indicator Targets    -->
                             </div>
                             <!-- /Activity Output Indicator Targets Tab -->
@@ -165,11 +165,15 @@
     import SelectBox from "../../shared/SelectBox";
     import {deepClone} from "../../../utils/helpers";
     import WorkPlanForm from "../work-plans/WorkPlanForm";
-    import ActivityOutputs from "../stages/ActivityOutputs";
+    import ActivityOutputs from "../activities/ActivityOutputs";
+    import ActivityOutputIndicators from "../activities/ActivityOutputIndicators";
+    import ActivityOutputIndicatorTargetsAndAchievements from "../activities/ActivityOutputIndicatorTargetsAndAchievements";
 
     export default {
         components: {
+            ActivityOutputIndicators,
             ActivityOutputs,
+            ActivityOutputIndicatorTargetsAndAchievements,
             WorkPlanForm,
             SelectBox,
         },
@@ -211,6 +215,11 @@
                 }
                 return this.activeWorkPlan.activities.filter((activity) => {
                     return activity.interventionId === this.interventionId;
+                });
+            },
+            outputs(){
+                return this.activities.map((activity) => {
+                    return activity.outputs.filter((output) => output.interventionId === this.interventionId);
                 });
             },
             interventionsOptions() {

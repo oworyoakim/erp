@@ -300,6 +300,7 @@ Route::middleware('ensure.authenticated')->group(function () {
             });
 
             Route::group(['prefix' => 'output-indicators'], function () {
+                Route::get('', 'OutputIndicatorsGateway@index');
                 Route::post('', 'OutputIndicatorsGateway@store');
                 Route::put('', 'OutputIndicatorsGateway@update');
             });
@@ -345,6 +346,8 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'ActivitiesGateway@index');
                 Route::post('', 'ActivitiesGateway@store');
                 Route::put('', 'ActivitiesGateway@update');
+                Route::get('performance', 'ActivitiesGateway@performance');
+                Route::post('performance', 'ActivitiesGateway@updatePerformance');
             });
 
             Route::group(['prefix' => 'stages'], function () {
