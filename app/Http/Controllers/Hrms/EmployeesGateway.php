@@ -9,7 +9,12 @@ use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 
 class EmployeesGateway extends GatewayController
 {
@@ -119,14 +124,52 @@ class EmployeesGateway extends GatewayController
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['updatedBy'] = $user->getUserId();
+            $employeeUser = Sentinel::findById($data['userId']);
+            DB::beginTransaction();
+            //TODO: update application user associated with this employee (firstName,lastName,email,password)
+            $rules = [
+                'firstName' => 'required',
+                'lastName' => 'required',
+            ];
+            if ($employeeUser->email != $data['email'])
+            {
+                $rules['email'] = 'required|email|unique:users';
+            }
+            if (!empty($data['password']))
+            {
+                $rules['password'] = 'min:6';
+            }
+            $this->validateData($data, $rules);
+            if ($employeeUser)
+            {
+                $credentials = [];
+                if (!empty($data['password']))
+                {
+                    $credentials['password'] = $data['password'];
+                }
+                if ($data['firstName'] != $employeeUser->first_name)
+                {
+                    $credentials['first_name'] = $data['firstName'];
+                }
 
-            //TODO: update application user associated with this employee (firstName,lastName,email,password,avatar)
+                if ($data['lastName'] != $employeeUser->last_name)
+                {
+                    $credentials['last_name'] = $data['lastName'];
+                }
 
+                if ($data['email'] != $employeeUser->email)
+                {
+                    $credentials['email'] = $data['email'];
+                }
+
+                Sentinel::update($employeeUser, $credentials);
+            }
             $responseData = $this->put($this->urlEndpoint, $data);
-
+            DB::commit();
             return response()->json($responseData);
         } catch (Exception $ex)
         {
+            DB::rollBack();
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
@@ -173,6 +216,106 @@ class EmployeesGateway extends GatewayController
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function uploadProfilePicture(Request $request)
+    {
+        $filePath = null;
+        $imageSave = false;
+        try
+        {
+            if (!$request->hasFile('avatar'))
+            {
+                throw new Exception("No image was received!");
+            }
+
+            $employee = $request->except(['avatar']);
+            if (empty($employee['userId']))
+            {
+                throw new Exception("Employee not found!");
+            }
+
+            $user = Sentinel::getUserRepository()->findById($employee['userId']);
+
+            $avatar = $request->file('avatar');
+            $file = array(
+                'avatar' => $avatar
+            );
+            $rules = array(
+                'avatar' => 'required|mimes:jpeg,jpg,bmp,png'
+            );
+            $validator = Validator::make($file, $rules);
+            if ($validator->fails())
+            {
+                throw new Exception("Allowed file types: jpeg,jpg,bmp,png!");
+            }
+            $fileName = str_replace('/', '_', $employee['employeeNumber']) . '.png';
+            $filePath = '/storage/images/profiles/' . $fileName;
+            $image = Image::make($avatar->getRealPath());
+            // resize
+            if ($image->width() > 215 || $image->height() > 215)
+            {
+                $image->resize(215, 215);
+            }
+            DB::beginTransaction();
+            $image->save(public_path($filePath));
+            $imageSave = true;
+            // update employee data
+            $employee['avatar'] = $filePath;
+            $responseData = $this->patch("{$this->urlEndpoint}/profile/photo", $employee);
+
+            if ($user)
+            {
+                $user->update([
+                    'avatar' => $filePath
+                ]);
+            }
+            DB::commit();
+            return response()->json("Profile picture uploaded!");
+        } catch (Exception $ex)
+        {
+            // first delete the file
+            if ($imageSave && !empty($filePath) && File::exists($filePath))
+            {
+                File::delete($filePath);
+            }
+            // rollback any local DB changes
+            DB::rollBack();
+            Log::error("PROFILE_PICTURE_UPLOAD: {$ex->getMessage()}");
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function downloadProfile(Request $request)
+    {
+        try
+        {
+            $email = $request->get('email');
+            $employee = Employee::query()->where('email', $email)->first();
+            if (!$employee)
+            {
+                throw new Exception("Employee not found!");
+            }
+
+            $data = [
+                'employee' => $employee
+            ];
+            // $employeeNumber = str_replace('/', '_', $employee->employee_number);
+            // $pdf = new Dompdf();
+            // $pdf->setBasePath(public_path());
+            // $html = View::make('employees.profile-download', $data)->render();
+            // $pdf->loadHtml($html);
+            // $pdf->setPaper('a4');
+            // $options = new Options(['dpi' => 150, 'margin' => 10]);
+            // $pdf->setOptions($options);
+            // $fileName = "{$employeeNumber}.pdf";
+            // return $pdf->stream($fileName);
+            return view('employees.ResumeTemplate', $data);
+        } catch (Exception $ex)
+        {
+            Log::error("Profile Download: {$ex->getMessage()}");
+            return redirect()->to('/');
         }
     }
 

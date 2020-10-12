@@ -21,6 +21,7 @@ class SettingsTableSeeder extends Seeder
                 <p>Please complete your request by clicking on the button below or ignore if this request was not initiated by you.</p>
                 <p><a href="{passwordResetLink}" target="_blank" style="font-size: 16px;color: #fff;padding: 10px 20px;border-radius: 3px;display: inline-block;text-decoration: none;background-color: #33adff;"> Reset Your Account Password</a></p>
                 <p><b>Important: </b>If your request is not completed within 24 hours, it will be deleted.</p><p>Warm Regards<br></p>');
+        settings()->set('date_format','d/m/Y');
     }
 
 }

@@ -8,12 +8,12 @@
             </li>
 
             {{--            Coorporate Structure     --}}
-            <li class="submenu @if(Request::is(['hrms/executive-secretary*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) active @endif">
+            <li class="submenu @if(Request::is(['hrms/executive-director*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) active @endif">
                 <a href="#"><i class="la la-tasks"></i> <span> Coorporate Structure</span> <span
                         class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is(['hrms/executive-secretary*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) block  @else none @endif;">
-                    <li class="@if(Request::is('hrms/executive-secretary*')) active @endif"><a
-                            href="{{route('hrms.executive-secretary')}}"><span>Executive Secretary</span></a></li>
+                <ul style="display: @if(Request::is(['hrms/executive-director*','hrms/directorates*','hrms/departments*','hrms/divisions*','hrms/sections*'])) block  @else none @endif;">
+                    <li class="@if(Request::is('hrms/executive-director*')) active @endif"><a
+                            href="{{route('hrms.executive-director')}}"><span>Executive Director</span></a></li>
                     <li class="@if(Request::is('hrms/directorates*')) active @endif"><a
                             href="{{route('hrms.directorates.list')}}"><span>Manage Directorates</span></a></li>
                     <li class="@if(Request::is('hrms/departments*')) active @endif"><a

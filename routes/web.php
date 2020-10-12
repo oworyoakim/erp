@@ -40,9 +40,9 @@ Route::middleware('ensure.authenticated')->group(function () {
             Route::get('dashboard-statistics', 'HrmsController@getDashboardStatistics')->name('hrms.dashboard.statistics');
             Route::get('form-selections-options', 'HrmsController@getFormSelectionsOptions')->name('hrms.form-selections-options');
 
-            // executive-secretary
-            Route::group(['prefix' => 'executive-secretary'], function () {
-                Route::get('', 'HrmsController@executiveSecretary')->name('hrms.executive-secretary');
+            // executive-director
+            Route::group(['prefix' => 'executive-director'], function () {
+                Route::get('', 'HrmsController@executiveDirector')->name('hrms.executive-director');
             });
 
             // directorates
@@ -106,18 +106,21 @@ Route::middleware('ensure.authenticated')->group(function () {
             Route::group(['prefix' => 'employees'], function () {
                 // employees
                 Route::get('', 'HrmsController@employees')->name('hrms.employees.list');
-                Route::get('profile/{username}', 'HrmsController@employeeProfile')->name('hrms.employees.profile');
-                Route::get('create', 'HrmsController@createEmployee')->name('hrms.employees.create');
                 Route::get('all-json', 'EmployeesGateway@index');
-                Route::get('details', 'EmployeesGateway@show');
-                Route::get('profile-data', 'EmployeesGateway@profileData');
                 Route::post('', 'EmployeesGateway@store');
+                Route::put('', 'EmployeesGateway@update');
+                Route::get('create', 'HrmsController@createEmployee')->name('hrms.employees.create');
+                Route::get('details', 'EmployeesGateway@show');
+                Route::get('profile/{username}', 'HrmsController@employeeProfile')->name('hrms.employees.profile');
+                Route::get('profile-data', 'EmployeesGateway@profileData');
                 Route::patch('activate', 'EmployeesGateway@activate');
                 Route::patch('suspend', 'EmployeesGateway@suspend');
                 Route::patch('dismiss', 'EmployeesGateway@dismiss');
                 Route::patch('release', 'EmployeesGateway@release');
                 Route::patch('retire', 'EmployeesGateway@retire');
                 Route::get('unscoped', 'EmployeesGateway@indexUnscoped');
+                Route::post('upload-profile-picture', 'EmployeesGateway@uploadProfilePicture');
+                Route::get('download-profile', 'EmployeesGateway@downloadProfile');
 
                 // employees/education
                 Route::get('education', 'EducationInfoGateway@index');
@@ -138,6 +141,12 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('related-persons', 'RelatedPersonInfoGateway@index');
                 Route::post('related-persons', 'RelatedPersonInfoGateway@store');
                 Route::put('related-persons', 'RelatedPersonInfoGateway@update');
+            });
+
+            // contacts
+            Route::group(['prefix' => 'contacts'], function () {
+                Route::post('', 'ContactsGateway@store');
+                Route::put('', 'ContactsGateway@update');
             });
 
             // settings

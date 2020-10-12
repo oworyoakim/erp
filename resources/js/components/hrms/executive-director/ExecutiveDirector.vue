@@ -17,16 +17,16 @@
                 <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                     <ul class="nav nav-tabs nav-tabs-bottom">
                         <li class="nav-item">
-                            <a href="#executive-secretary-departments" @click="getDepartments()" data-toggle="tab" class="nav-link active">Departments</a>
+                            <a href="#executive-director-departments" @click="getDepartments()" data-toggle="tab" class="nav-link active">Departments</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-divisions" @click="getDivisions()" data-toggle="tab" class="nav-link">Divisions</a>
+                            <a href="#executive-director-divisions" @click="getDivisions()" data-toggle="tab" class="nav-link">Divisions</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-sections" @click="getSections()" data-toggle="tab" class="nav-link">Sections</a>
+                            <a href="#executive-director-sections" @click="getSections()" data-toggle="tab" class="nav-link">Sections</a>
                         </li>
                         <li class="nav-item">
-                            <a href="#executive-secretary-employees" @click="getEmployees()" data-toggle="tab" class="nav-link">Employees</a>
+                            <a href="#executive-director-employees" @click="getEmployees()" data-toggle="tab" class="nav-link">Employees</a>
                         </li>
                     </ul>
                 </div>
@@ -34,7 +34,7 @@
         </div>
         <div class="tab-content">
             <!-- Departments Tab -->
-            <div id="executive-secretary-departments" class="pro-overview tab-pane fade active show">
+            <div id="executive-director-departments" class="pro-overview tab-pane fade active show">
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Departments
@@ -48,7 +48,7 @@
                 </div>
             </div>
             <!-- Divisions Tab -->
-            <div id="executive-secretary-divisions" class="pro-overview tab-pane fade">
+            <div id="executive-director-divisions" class="pro-overview tab-pane fade">
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Divisions
@@ -62,7 +62,7 @@
                 </div>
             </div>
             <!-- Sections Tab -->
-            <div id="executive-secretary-sections" class="pro-overview tab-pane fade">
+            <div id="executive-director-sections" class="pro-overview tab-pane fade">
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Sections
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <!-- Employees Tab -->
-            <div id="executive-secretary-employees" class="pro-overview tab-pane fade">
+            <div id="executive-director-employees" class="pro-overview tab-pane fade">
                 <div class="card mb-5">
                     <div class="card-body table-responsive">
                         <h3 class="card-title">Employees</h3>
@@ -140,7 +140,7 @@
                 breadcrumbItems: [
                     {href: '#', text: this.title, class: 'active'},
                 ],
-                scope: 'executive-secretary',
+                scope: 'executive-director',
             }
         },
         computed: {

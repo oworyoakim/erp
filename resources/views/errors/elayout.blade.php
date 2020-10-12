@@ -23,8 +23,8 @@
 <div class="main-wrapper">
     <div class="error-box">
         @yield('content')
-        @if(request()->session()->has('service'))
-        <a href="{{route(request()->session()->get('service').'.dashboard')}}" class="btn btn-custom">Back to Home</a>
+        @if(!empty($service))
+        <a href="{{route($service.'.dashboard')}}" class="btn btn-custom">Back to Home</a>
         @else
             <a href="{{route('service')}}" class="btn btn-custom">Select Service</a>
         @endif

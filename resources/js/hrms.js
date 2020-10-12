@@ -41,7 +41,7 @@ import LeavesInfo from "./components/hrms/employees/LeavesInfo";
 import Documents from "./components/hrms/documents/Documents";
 import Divisions from "./components/hrms/divisions/Divisions";
 import DivisionDetails from "./components/hrms/divisions/DivisionDetails";
-import ExecutiveSecretary from "./components/hrms/executive-secretary/ExecutiveSecretary";
+import ExecutiveDirector from "./components/hrms/executive-director/ExecutiveDirector";
 import LeavePolicies from "./components/hrms/leave-types/LeavePolicies";
 import LeavePolicyForm from "./components/hrms/leave-types/LeavePolicyForm";
 import LeaveSettings from "./components/hrms/settings/LeaveSettings";
@@ -88,7 +88,7 @@ Vue.component("app-bank-info", BankInfo);
 Vue.component("app-contacts-info", ContactsInfo);
 Vue.component("app-divisions", Divisions);
 Vue.component("app-division-details", DivisionDetails);
-Vue.component("app-executive-secretary", ExecutiveSecretary);
+Vue.component("app-executive-director", ExecutiveDirector);
 Vue.component("app-leave-policies", LeavePolicies);
 Vue.component("app-leave-policy-form", LeavePolicyForm);
 Vue.component("app-documents-manager", Documents);
@@ -108,7 +108,7 @@ import spmsStore from "./stores/spms";
 
 const app = new Vue({
     el: "#main-app",
-    store: hrmsStore
+    store: hrmsStore,
 });
 
 hrmsStore.dispatch("getUser").then((data) => {

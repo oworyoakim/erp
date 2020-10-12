@@ -7,6 +7,7 @@ class Employee {
         this.firstName = '';
         this.middleName = '';
         this.lastName = '';
+        this.otherNames = '';
         this.username = '';
         this.email = '';
         this.password = '';

@@ -67,6 +67,18 @@ try {
         return str;
     };
 
+    /**
+     * Make a string's first character uppercase
+     */
+    Vue.filter('upperCaseFirst', function (value = '') {
+        if (!value) {
+            return '';
+        }
+        value = value.toString();
+        return value.charAt(0).toUpperCase() + value.slice(1);
+
+    });
+
     window.axios = Vue.prototype.$http = axios;
     // Moment
     window.moment = Vue.prototype.$moment = require('moment');

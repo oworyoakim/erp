@@ -1,7 +1,7 @@
 @extends('hrms.master')
 @section('title','Departments')
 @section('content')
-    <app-departments :return-uri="'{{(isset($scope) && $scope=='executive-secretary') ? '/'.$scope : '/departments'}}'"
+    <app-departments :return-uri="'{{(isset($scope) && $scope=='executive-director') ? '/'.$scope : '/departments'}}'"
                      :title="'@yield('title')'">
     </app-departments>
 @endsection

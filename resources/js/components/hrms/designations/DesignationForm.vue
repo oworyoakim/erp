@@ -8,6 +8,12 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-5">Short Name <span class="text-danger">*</span></label>
+                <div class="col-7">
+                    <input v-model="designation.shortName" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group row">
                 <label class="col-5">Salary Scale <span class="text-danger">*</span></label>
                 <div class="col-7">
                     <select v-model="designation.salaryScaleId" class="form-control">
@@ -79,6 +85,19 @@
                 </div>
             </div>
             <div class="form-group row">
+                <label class="col-5">Is Head Of?</label>
+                <div class="col-7">
+                    <select v-model="designation.heads"
+                            class="form-control select">
+                        <option value="">Select...</option>
+                        <option v-for="structure in structures" :value="structure.value">
+                            {{structure.text}}
+                        </option>
+                    </select>
+                    <span v-if="structureInvalid" class="text-danger">If this designation heads a {{designation.heads}}, you must select the {{designation.heads}} where the designation belongs! </span>
+                </div>
+            </div>
+            <div class="form-group row">
                 <div class="checkbox-inline col-12">
                     <label>Probational?
                         <input v-model="designation.probational" type="checkbox"
@@ -137,8 +156,17 @@
             ...mapGetters({
                 formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
             }),
+            structures(){
+                return [
+                    {text: 'Executive Director Office', value: 'executive-director-office'},
+                    {text: 'Directorate', value: 'directorate'},
+                    {text: 'Department', value: 'department'},
+                    {text: 'Division', value: 'division'},
+                    {text: 'Section', value: 'section'},
+                ]
+            },
             directorates() {
-                return this.formSelectionOptions.directorates;
+                return this.formSelectionOptions.directorates || [];
             },
             departments() {
                 return this.formSelectionOptions.departments.filter((department, index) => {
@@ -173,8 +201,18 @@
             title(){
                 return (!!this.designation.id) ? "Edit Designation" : "New Designation";
             },
+            structureInvalid(){
+                return (this.designation.heads === 'directorate' && !!!this.designation.directorateId) ||
+                    (this.designation.heads === 'department' && !!!this.designation.departmentId) ||
+                    (this.designation.heads === 'division' && !!!this.designation.divisionId) ||
+                    (this.designation.heads === 'section' && !!!this.designation.sectionId);
+            },
             formInvalid(){
-                return this.isSending || !!!this.designation.title || !!!this.designation.salaryScaleId;
+                return this.isSending ||
+                    !!!this.designation.title ||
+                    !!!this.designation.shortName ||
+                    !!!this.designation.salaryScaleId ||
+                    this.structureInvalid
             },
         },
         watch: {

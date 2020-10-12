@@ -15,6 +15,7 @@ import leavesModule from './leaves';
 import documentsModule from './documents';
 import delegationsModule from './delegations';
 import salaryScalesModule from './salary-scales';
+import contactsModule from './contacts';
 import {resolveError} from "../../utils/helpers";
 
 Vue.use(Vuex);
@@ -34,6 +35,7 @@ export default new Vuex.Store({
         documents: documentsModule,
         delegations: delegationsModule,
         salaryScales: salaryScalesModule,
+        contacts: contactsModule,
     },
     state: {
         user: null,
@@ -45,6 +47,7 @@ export default new Vuex.Store({
             designations: [],
             roles: [],
             usernames: [],
+            emails: [],
             titles: [],
             genders: [],
             religions: [],
@@ -70,6 +73,25 @@ export default new Vuex.Store({
                 'toc'
             ],
             toolbar: 'undo redo | insert | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image video code|toc'
+        },
+        dobConfig: {
+            showDropdowns: true,
+            singleDatePicker: true,
+            minDate: moment().subtract(75, 'years'), // 75 years ago
+            maxDate: moment().subtract(18, 'years'), // 18 years ago
+            opens: "center",
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
+        },
+        joinDateConfig: {
+            showDropdowns: true,
+            singleDatePicker: true,
+            maxDate: moment(), // today
+            opens: "center",
+            locale: {
+                format: 'YYYY-MM-DD'
+            }
         },
         months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
     },

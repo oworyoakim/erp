@@ -70,8 +70,8 @@ class RolesTableSeeder extends Seeder
             'permissions' => $permissions,
         ]);
 
-        Role::query()->updateOrCreate(['slug' => 'executive-secretary'], [
-            'name' => 'Executive Secretary',
+        Role::query()->updateOrCreate(['slug' => 'executive-director'], [
+            'name' => 'Executive Director',
             'permissions' => $permissions,
         ]);
 

@@ -22,9 +22,9 @@ class HrmsController extends GatewayController
         return view('hrms.dashboard');
     }
 
-    public function executiveSecretary()
+    public function executiveDirector()
     {
-        return view('hrms.executive-secretary.index');
+        return view('hrms.executive-director.index');
     }
 
     public function directorates()
@@ -148,8 +148,12 @@ class HrmsController extends GatewayController
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/form-selections-options", $params);
-            $responseData['roles'] = Role::query()->whereIn('type',['employee','both'])->get(['id', 'name']);
-            $responseData['usernames'] = User::query()->pluck('username')->all();
+            $responseData['roles'] = Role::query()->whereIn('type', ['employee', 'both'])->get(['id', 'name']);
+            $users = User::all();
+            $responseData['usernames'] = $users->pluck('username')->all();
+            $responseData['emails'] = $users->filter(function ($user) {
+                return !empty($user->email);
+            })->pluck('email')->all();
 
             return response()->json($responseData);
         } catch (Exception $ex)

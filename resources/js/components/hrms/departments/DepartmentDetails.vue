@@ -32,7 +32,17 @@
                             </div>
                             <div class="title row">
                                 <span class="col-sm-3 font-weight-bolder">Headed by :</span>
-                                <span class="col-sm-9"></span>
+                                <span class="col-sm-9">
+                                    <template v-if="!!department.head">
+                                                <span class="small text-muted">
+                                                    <a :href="`/hrms/employees/profile/${department.head.username}`"
+                                                       target="__blank">
+                                                        <span>{{department.head.fullName}}</span>
+                                                    </a>
+                                                    <span class="small" v-if="!!department.head.designation">({{department.head.designation.title}})</span>
+                                                </span>
+                                            </template>
+                                </span>
                             </div>
                             <div class="title row">
                                 <span class="col-sm-3 font-weight-bolder">Directorate :</span>
@@ -138,6 +148,7 @@
                                 :department-id="department.id"
                                 :employees="employees"
                             />
+                            <Pagination :items="employees" @gotoPage="getEmployees" />
                         </div>
                     </div>
                 </div>
@@ -156,9 +167,11 @@
     import SectionForm from "../sections/SectionForm";
     import DivisionsList from "../divisions/DivisionsList";
     import DivisionForm from "../divisions/DivisionForm";
+    import Pagination from "../../shared/Pagination";
 
     export default {
         components: {
+            Pagination,
             DivisionForm,
             DivisionsList,
             SectionForm,
@@ -239,7 +252,7 @@
             async getEmployees() {
                 try {
                     await this.$store.dispatch('GET_EMPLOYEES', {departmentId: this.department.id, scope: this.scope});
-                    $('.employees-datatable').DataTable();
+                    //$('.employees-datatable').DataTable();
                 } catch (error) {
                     console.log(error);
                     toastr.error(error);

@@ -3,7 +3,7 @@
 @section('content')
     <app-division-details
         :division-id="{{$id}}"
-        return-uri="/hrms/{{(!empty($scope) && $scope=='executive-secretary') ? $scope : 'divisions'}}"
+        return-uri="/hrms/{{(!empty($scope) && $scope=='executive-director') ? $scope : 'divisions'}}"
         title="@yield('title')"
         scope="{{$scope}}">
     </app-division-details>

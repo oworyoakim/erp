@@ -14,32 +14,52 @@ export default {
         relatedPersons: relatedPersonsModule,
     },
     state: {
-        employees: [],
+        employees: {
+            currentPage: 1,
+            nextPage: null,
+            previousPage: null,
+            firstPage: 1,
+            lastPage: null,
+            from: null,
+            to: null,
+            perPage: null,
+            hasPages: null,
+            hasMorePages: null,
+            total: 0,
+            data: []
+        },
         activeEmployee: null,
     },
     getters: {
-        EMPLOYEES: (state) => {
+        EMPLOYEES(state) {
             return state.employees;
         },
-        ACTIVE_EMPLOYEE: (state) => {
+        ACTIVE_EMPLOYEE(state) {
             return state.activeEmployee;
         },
     },
     mutations: {
-        SET_EMPLOYEES: (state, payload) => {
+        SET_EMPLOYEES(state, payload) {
             state.employees = payload || [];
         },
-        SET_ACTIVE_EMPLOYEE: (state, payload) => {
+        SET_ACTIVE_EMPLOYEE(state, payload) {
             state.activeEmployee = payload || null;
         },
     },
     actions: {
-        GET_EMPLOYEES: async ({commit}, payload) => {
+        async GET_EMPLOYEES({commit, state}, payload) {
             try {
                 let queryParams = prepareQueryParams(payload);
+                // if (!!state.employees.nextPage) {
+                //     if (!!queryParams) {
+                //         queryParams += '&page' + state.employees.nextPage;
+                //     } else {
+                //         queryParams += '?page' + state.employees.nextPage;
+                //     }
+                // }
                 let response = await axios.get(routes.EMPLOYEES + "/all-json" + queryParams);
                 commit('SET_EMPLOYEES', response.data);
-                return Promise.resolve('Ok');
+                return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);
                 console.error(message);
@@ -98,7 +118,7 @@ export default {
                 return Promise.reject(message);
             }
         },
-        UPDATE_PROFILE: async ({commit}, payload) => {
+        async UPDATE_PROFILE({commit}, payload) {
             try {
                 let response = await axios.patch(routes.EMPLOYEES + '/profile/' + payload.username, payload);
                 return Promise.resolve(response.data);

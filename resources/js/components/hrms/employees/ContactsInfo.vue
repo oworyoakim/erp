@@ -1,99 +1,105 @@
 <template>
     <div class="card profile-box flex-fill">
         <div class="card-body">
-            <h2 class="card-title">Emergency Contact</h2>
-            <h3 class="section-title">Primary</h3>
-            <ul class="personal-info">
-                <li>
-                    <div class="title">Name</div>
-                    <div class="text">John Doe</div>
-                </li>
-                <li>
-                    <div class="title">Relationship</div>
-                    <div class="text">Father</div>
-                </li>
-                <li>
-                    <div class="title">Phone </div>
-                    <div class="text">9876543210, 9876543210</div>
-                </li>
-            </ul>
-            <hr>
-            <h3 class="section-title">Secondary</h3>
-            <ul class="personal-info">
-                <li>
-                    <div class="title">Name</div>
-                    <div class="text">Karen Wills</div>
-                </li>
-                <li>
-                    <div class="title">Relationship</div>
-                    <div class="text">Brother</div>
-                </li>
-                <li>
-                    <div class="title">Phone </div>
-                    <div class="text">9876543210, 9876543210</div>
-                </li>
-            </ul>
-        </div>
-        <div v-if="step === 1">
-            <h2>Contacts Information</h2>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-form-label">Phone </label>
-                        <input v-model="contact.mobile" class="form-control" type="text">
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-form-label">Email <span class="text-danger">*</span></label>
-                        <input v-model="contact.email" class="form-control" type="email">
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-form-label">Fax </label>
-                        <input v-model="contact.fax" class="form-control" type="text">
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-form-label">Type</label>
-                        <select v-model="contact.type" class="form-control select">
-                            <option value="personal">Personal</option>
-                            <option value="home">Home</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="submit-section">
-                <button @click.prevent="saveContactInfo()" class="btn btn-pink"><i class="fa fa-save "></i> Save
-                </button>
-            </div>
+            <h1 class="card-title">
+                Contacts
+                <a @click="editContact()"
+                   class="edit-icon"
+                   href="#">
+                    <i class="fa fa-plus"></i>
+                </a>
+            </h1>
+            <template v-if="personalContacts.length > 0">
+                <h4 class="section-title">Personal</h4>
+                <ul class="personal-info">
+                    <li v-for="contact in personalContacts">
+                        <div class="title">{{ contact.kind | upperCaseFirst }}</div>
+                        <div class="text">
+                            {{ contact.value }}
+                            <a @click="editContact(contact)"
+                               class="edit-icon"
+                               href="javascript:void(0)">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </template>
+            <template v-if="homeContacts.length > 0">
+                <hr>
+                <h4 class="section-title">Home</h4>
+                <ul class="personal-info">
+                    <li v-for="contact in homeContacts">
+                        <div class="title">{{ contact.kind | upperCaseFirst }}</div>
+                        <div class="text">
+                            {{ contact.value }}
+                            <a @click="editContact(contact)"
+                               class="edit-icon"
+                               href="javascript:void(0)">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </template>
+            <template v-if="workContacts.length > 0">
+                <hr>
+                <h4 class="section-title">Work</h4>
+                <ul class="personal-info">
+                    <li v-for="contact in workContacts">
+                        <div class="title">{{ contact.kind | upperCaseFirst }}</div>
+                        <div class="text">
+                            {{ contact.value }}
+                            <a @click="editContact(contact)"
+                               class="edit-icon"
+                               href="javascript:void(0)">
+                                <i class="fa fa-pencil"></i>
+                            </a>
+                        </div>
+                    </li>
+                </ul>
+            </template>
+            <ContactForm :contactable="contactable" :contactable-id="contactableId"/>
         </div>
     </div>
 </template>
 
 <script>
-    import Contact from "../../../models/Contact";
+import ContactForm from "../ContactForm";
+import {EventBus} from "../../../app";
 
-    export default {
-        props:{
-            contacts: Array,
-        },
-        created() {
-        },
-        data(){
-            return {
-                step: 0,
-                contact: new Contact()
-            }
-        },
-        methods:{
-            async saveContactInfo(){
-                console.log(this.contact);
-            }
+export default {
+    components: {ContactForm},
+    props: {
+        contactable: {type: String, default: 'employee'},
+        contactableId: {type: Number, required: true},
+        contacts: {type: Array, default: () => []},
+    },
+    created() {
+    },
+    data() {
+        return {
+            step: 0,
+
         }
+    },
+    computed: {
+        personalContacts() {
+            return this.contacts.filter((contact) => contact.type === 'personal');
+        },
+        homeContacts() {
+            return this.contacts.filter((contact) => contact.type === 'home');
+        },
+        workContacts() {
+            return this.contacts.filter((contact) => contact.type === 'work');
+        },
+    },
+    methods: {
+        editContact(contact = null) {
+            EventBus.$emit('EDIT_CONTACT', contact);
+        },
     }
+}
 </script>
 
 <style scoped>

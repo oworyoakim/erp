@@ -40,6 +40,11 @@ class Errors {
     any() {
         return Object.keys(this).length > 0;
     }
+
+    validEmail(email){
+        let regex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        return regex.test(email);
+    }
 }
 
 export default Errors;

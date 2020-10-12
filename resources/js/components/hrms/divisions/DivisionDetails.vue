@@ -32,7 +32,17 @@
                             </div>
                             <div class="title row">
                                 <span class="col-sm-4 font-weight-bolder">Headed by:</span>
-                                <span class="col-sm-8"></span>
+                                <span class="col-sm-8">
+                                    <template v-if="!!division.head">
+                                                <span class="small text-muted">
+                                                    <a :href="`/hrms/employees/profile/${division.head.username}`"
+                                                       target="__blank">
+                                                        <span>{{division.head.fullName}}</span>
+                                                    </a>
+                                                    <span class="small" v-if="!!division.head.designation">({{division.head.designation.title}})</span>
+                                                </span>
+                                            </template>
+                                </span>
                             </div>
                             <div class="title row" v-if="division.directorate">
                                 <span class="col-sm-4 font-weight-bolder">Directorate:</span>
@@ -120,6 +130,7 @@
                                 :directorate-id="division.directorateId"
                                 :employees="employees"
                             />
+                            <Pagination :items="employees" @gotoPage="getEmployees" />
                         </div>
                     </div>
                 </div>
@@ -136,9 +147,11 @@
     import SectionsList from "../sections/SectionsList";
     import SectionForm from "../sections/SectionForm";
     import EmployeesList from "../employees/EmployeesList";
+    import Pagination from "../../shared/Pagination";
 
     export default {
         components: {
+            Pagination,
             DivisionForm,
             SectionsList,
             SectionForm,

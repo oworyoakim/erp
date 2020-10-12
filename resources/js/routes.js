@@ -37,6 +37,7 @@ const routes = {
     EMPLOYEE_DOCUMENTS: '/hrms/documents',
     APPROVAL_SETTINGS: '/hrms/settings/approvals',
     DELEGATIONS: '/hrms/delegations',
+    CONTACTS: '/hrms/contacts',
 
     // SPMS
     DASHBOARD_STATISTICS_SPMS: '/spms/dashboard/statistics',

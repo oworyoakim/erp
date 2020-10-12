@@ -80,6 +80,7 @@ class GeneralSettingsController extends Controller
             settings()->set('company_phone', $request->get('company_phone'));
             settings()->set('reset_password_email_subject', $request->get('reset_password_email_subject'));
             settings()->set('reset_password_email_template', $request->get('reset_password_email_template'));
+            settings()->set('date_format',$request->get('date_format'));
             // upload logo
 
             if ($request->hasFile('company_logo'))
@@ -89,7 +90,6 @@ class GeneralSettingsController extends Controller
                 $rules = array('company_logo' => 'required|image|mimes:jpeg,jpg,bmp,png');
                 $this->validateData($file, $rules);
                 $fileName = md5($logo->getClientOriginalName() . '_' . Sentinel::getUser()->getUserId() . '_' . now()) . '.png';
-                //$filePath = public_path("/storage/images/{$fileName}");
                 $filePath = "/storage/images/{$fileName}";
                 $image = Image::make($logo->getRealPath());
                 // resize

@@ -200,6 +200,7 @@ class AccountController extends Controller
                 $loggedInUser->permissions = array_merge($loggedInUser->permissions, $role->getPermissions());
             }
             $user->tinymceApiKey = env('TINYMCE_API_KEY', null);
+            $user->dateFormat = settings()->get('date_format') ?: env('APP_DATE_FORMAT', 'd/m/Y');
             return response()->json($loggedInUser);
         } catch (Exception $ex)
         {

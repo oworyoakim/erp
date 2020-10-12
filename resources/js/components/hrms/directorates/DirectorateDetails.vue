@@ -32,7 +32,17 @@
                             </div>
                             <div class="title row">
                                 <span class="col-sm-3 font-weight-bolder">Headed By :</span>
-                                <span class="col-sm-9"></span>
+                                <span class="col-sm-9">
+                                    <template v-if="!!directorate.head">
+                                                <span class="small text-muted">
+                                                    <a :href="`/hrms/employees/profile/${directorate.head.username}`"
+                                                       target="__blank">
+                                                        <span>{{directorate.head.fullName}}</span>
+                                                    </a>
+                                                    <span class="small" v-if="!!directorate.head.designation">({{directorate.head.designation.title}})</span>
+                                                </span>
+                                            </template>
+                                </span>
                             </div>
                         </div>
                         <div class="personal-info col-md-6">
@@ -135,6 +145,7 @@
                         <div class="card-body table-responsive">
                             <h3 class="card-title">Employees</h3>
                             <EmployeesList :employees.sync="employees"/>
+                            <Pagination :items="employees" @gotoPage="getEmployees" />
                         </div>
                     </div>
                 </div>
@@ -155,9 +166,11 @@
     import EmployeesList from "../employees/EmployeesList";
     import SectionsList from "../sections/SectionsList";
     import SectionForm from "../sections/SectionForm";
+    import Pagination from "../../shared/Pagination";
 
     export default {
         components: {
+            Pagination,
             SectionForm,
             SectionsList,
             EmployeesList,
@@ -241,11 +254,11 @@
                     toastr.error(error);
                 }
             },
-            async getEmployees() {
+            async getEmployees(page = 1) {
                 try {
-                    await this.$store.dispatch('GET_EMPLOYEES', {directorateId: this.directorateId});
+                    await this.$store.dispatch('GET_EMPLOYEES', {directorateId: this.directorateId,page: page});
                     setTimeout(() => {
-                        $('.employees-datatable').DataTable();
+                       // $('.employees-datatable').DataTable();
                     }, 100);
                 } catch (error) {
                     console.log(error);

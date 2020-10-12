@@ -4,6 +4,8 @@
         <tr>
             <th style="width: 30px;">#</th>
             <th>Title</th>
+            <th>ShorName</th>
+            <th>Heads</th>
             <th>Holders</th>
             <th>Department</th>
             <th>Directorate</th>
@@ -15,6 +17,12 @@
         <tr v-for="designation in designations">
             <td>{{designation.id}}</td>
             <td>{{designation.title}}</td>
+            <td>{{designation.shortName}}</td>
+            <td>
+                <template v-if="designation.isHeadOf">
+                    {{designation.isHeadOf}}
+                </template>
+            </td>
             <td>{{designation.maxHolders}}</td>
             <td>
                 <template v-if="!!designation.department">

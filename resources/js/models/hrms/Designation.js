@@ -2,12 +2,15 @@ class Designation {
     constructor(data = {}) {
         this.id = null;
         this.title = '';
+        this.shortName = '';
         this.description = '';
         this.summary = '';
         this.maxHolders = 1;
         this.probational = false;
         this.probationPeriod = 6;
         this.supervisorId = '';
+        this.heads = '';
+        this.isHeadOf = '';
         this.directorateId = data.directorateId || null;
         this.departmentId = data.departmentId || null;
         this.divisionId = data.divisionId || null;

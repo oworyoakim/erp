@@ -34,7 +34,7 @@
                             <option value="">Select...</option>
                             <option v-for="employeeStatus in formSelectionOptions.employeeStatuses"
                                     :value="employeeStatus.slug">
-                                {{employeeStatus.title}}
+                                {{ employeeStatus.title }}
                             </option>
                         </select>
                         <label class="focus-label">Status</label>
@@ -46,7 +46,7 @@
                             <option value="">Select...</option>
                             <option v-for="employmentTerm in formSelectionOptions.employmentTerms"
                                     :value="employmentTerm.slug">
-                                {{employmentTerm.title}}
+                                {{ employmentTerm.title }}
                             </option>
                         </select>
                         <label class="focus-label">Term</label>
@@ -58,7 +58,7 @@
                             <option value="">Select...</option>
                             <option v-for="employmentType in formSelectionOptions.employmentTypes"
                                     :value="employmentType.slug">
-                                {{employmentType.title}}
+                                {{ employmentType.title }}
                             </option>
                         </select>
                         <label class="focus-label">Type</label>
@@ -70,7 +70,7 @@
                             <option value="">Select...</option>
                             <option v-for="employmentStatus in formSelectionOptions.employmentStatuses"
                                     :value="employmentStatus.slug">
-                                {{employmentStatus.title}}
+                                {{ employmentStatus.title }}
                             </option>
                         </select>
                         <label class="focus-label">Employment</label>
@@ -120,14 +120,37 @@
             </div>
             <!-- Search Filter -->
             <div class="row staff-grid-row">
-                <template v-if="widgetView">
-                    <div v-for="employee in employees" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                        <EmployeeProfileWidget :employee.sync="employee" :key="Math.random()"/>
+                <template v-if="isEditing">
+                    <div class="col-md-12">
+                        <div class="card profile-box flex-fill">
+                            <div class="card-body">
+                                <h2>
+                                    <a @click="editEmployee()"
+                                       class="edit-icon"
+                                       title="Close"
+                                       href="javascript:void(0)">
+                                        <i class="fa fa-times"></i>
+                                    </a>
+                                </h2>
+                                <EmployeeProfileForm/>
+                                <DesignationForm/>
+                            </div>
+                        </div>
                     </div>
                 </template>
                 <template v-else>
-                    <div class="col-md-12 table-responsive">
-                        <EmployeesList :employees.sync="employees" :key="Math.random()"/>
+                    <template v-if="widgetView">
+                        <div v-for="employee in employees.data" class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                            <EmployeeProfileWidget :employee.sync="employee" :key="Math.random()"/>
+                        </div>
+                    </template>
+                    <template v-else>
+                        <div class="col-md-12 table-responsive">
+                            <EmployeesList :employees.sync="employees" :key="Math.random()"/>
+                        </div>
+                    </template>
+                    <div class="col-md-12">
+                        <Pagination :items="employees" @gotoPage="getEmployees" />
                     </div>
                 </template>
             </div>
@@ -136,123 +159,139 @@
 </template>
 
 <script>
-    import {mapGetters} from "vuex";
-    import EmployeesList from "./EmployeesList";
-    import EmployeeProfileWidget from "./EmployeeProfileWidget";
+import {mapGetters} from "vuex";
+import EmployeesList from "./EmployeesList";
+import EmployeeProfileWidget from "./EmployeeProfileWidget";
+import EmployeeProfileForm from "./EmployeeProfileForm";
+import DesignationForm from "../designations/DesignationForm";
+import {EventBus} from "../../../app";
+import Pagination from "../../shared/Pagination";
 
-    export default {
-        components: {EmployeeProfileWidget, EmployeesList},
-        props: ['title'],
-        created() {
-            this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', this.filters);
-            this.getEmployees();
-        },
-        data() {
-            return {
+export default {
+    components: {Pagination, DesignationForm, EmployeeProfileForm, EmployeeProfileWidget, EmployeesList},
+    props: ['title'],
+    created() {
+        this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', this.filters);
+        this.getEmployees();
+        EventBus.$on([
+            "EDIT_EMPLOYEE",
+            "PROFILE_INFO_SAVED",
+        ], this.editEmployee);
+    },
+    data() {
+        return {
+            directorateId: '',
+            departmentId: '',
+            designationId: '',
+            filters: {
+                name: '',
+                employeeStatus: '',
+                employmentTerm: '',
+                employmentType: '',
+                employmentStatus: '',
                 directorateId: '',
                 departmentId: '',
+                divisionId: '',
+                sectionId: '',
                 designationId: '',
-                filters: {
-                    name: '',
-                    employeeStatus: '',
-                    employmentTerm: '',
-                    employmentType: '',
-                    employmentStatus: '',
-                    directorateId: '',
-                    departmentId: '',
-                    divisionId: '',
-                    sectionId: '',
-                    designationId: '',
-                },
-                breadcrumbItems: [
-                    {href: '#', text: this.title, class: 'active'},
-                ],
-                widgetView: true,
-                isLoading: false,
-            };
+            },
+            breadcrumbItems: [
+                {href: '#', text: this.title, class: 'active'},
+            ],
+            widgetView: true,
+            isEditing: false,
+            isLoading: false,
+        };
+    },
+    computed: {
+        ...mapGetters({
+            employees: 'EMPLOYEES',
+            formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
+        }),
+        directorates() {
+            return this.formSelectionOptions.directorates;
         },
-        computed: {
-            ...mapGetters({
-                employees: 'EMPLOYEES',
-                formSelectionOptions: 'FORM_SELECTIONS_OPTIONS',
-            }),
-            directorates() {
-                return this.formSelectionOptions.directorates;
-            },
-            departments() {
-                if (!!this.filters.directorateId) {
-                    return this.formSelectionOptions.departments.filter((department) => department.directorateId == this.filters.directorateId);
-                }
-                return this.formSelectionOptions.departments;
-            },
+        departments() {
+            if (!!this.filters.directorateId) {
+                return this.formSelectionOptions.departments.filter((department) => department.directorateId == this.filters.directorateId);
+            }
+            return this.formSelectionOptions.departments;
+        },
 
-            designations() {
-                if (!!this.filters.directorateId) {
-                    return this.formSelectionOptions.designations.filter((designation) => designation.directorateId == this.directorateId);
-                }
-                if (!!this.filters.departmentId) {
-                    return this.formSelectionOptions.designations.filter((designation) => designation.departmentId == this.departmentId);
-                }
-                if (!!this.filters.divisionId) {
-                    return this.formSelectionOptions.designations.filter((designation) => designation.divisionId == this.filters.divisionId);
-                }
-                if (!!this.filters.sectionId) {
-                    return this.formSelectionOptions.designations.filter((designation) => designation.sectionId == this.filters.sectionId);
-                }
-                return this.formSelectionOptions.designations;
-            },
+        designations() {
+            if (!!this.filters.directorateId) {
+                return this.formSelectionOptions.designations.filter((designation) => designation.directorateId == this.directorateId);
+            }
+            if (!!this.filters.departmentId) {
+                return this.formSelectionOptions.designations.filter((designation) => designation.departmentId == this.departmentId);
+            }
+            if (!!this.filters.divisionId) {
+                return this.formSelectionOptions.designations.filter((designation) => designation.divisionId == this.filters.divisionId);
+            }
+            if (!!this.filters.sectionId) {
+                return this.formSelectionOptions.designations.filter((designation) => designation.sectionId == this.filters.sectionId);
+            }
+            return this.formSelectionOptions.designations;
+        },
 
-            directoratesOptions() {
-                return this.directorates.map((directorate) => {
-                    return {
-                        text: directorate.title,
-                        value: directorate.id,
-                    }
-                });
-            },
-            departmentsOptions() {
-                return this.departments.map((department) => {
-                    return {
-                        text: department.title,
-                        value: department.id,
-                    }
-                });
-            },
-            designationsOptions() {
-                return this.designations.map((designation) => {
-                    return {
-                        text: designation.title,
-                        value: designation.id,
-                    }
-                });
+        directoratesOptions() {
+            return this.directorates.map((directorate) => {
+                return {
+                    text: directorate.title,
+                    value: directorate.id,
+                }
+            });
+        },
+        departmentsOptions() {
+            return this.departments.map((department) => {
+                return {
+                    text: department.title,
+                    value: department.id,
+                }
+            });
+        },
+        designationsOptions() {
+            return this.designations.map((designation) => {
+                return {
+                    text: designation.title,
+                    value: designation.id,
+                }
+            });
+        }
+    },
+    watch: {
+        directorateId(newVal, oldVal) {
+            this.filters.departmentId = '';
+            this.filters.designationId = '';
+        },
+        departmentId(newVal, oldVal) {
+            this.filters.designationId = '';
+        }
+    },
+    methods: {
+        async getEmployees(page = 1) {
+            try {
+                console.log(page);
+                this.isLoading = true;
+                this.filters.directorateId = this.directorateId;
+                this.filters.departmentId = this.departmentId;
+                this.filters.designationId = this.designationId;
+                await this.$store.dispatch('GET_EMPLOYEES', {...this.filters, page});
+                this.isLoading = false;
+            } catch (error) {
+                console.log(error);
+                toastr.error(error);
+                this.isLoading = false;
             }
         },
-        watch: {
-            directorateId(newVal, oldVal) {
-                this.filters.departmentId = '';
-                this.filters.designationId = '';
-            },
-            departmentId(newVal, oldVal) {
-                this.filters.designationId = '';
-            }
+        editEmployee(employee = null) {
+            this.isEditing = !!employee;
+            this.$nextTick(() => {
+                EventBus.$emit('UPDATE_EMPLOYEE_PROFILE', employee);
+            });
         },
-        methods: {
-            async getEmployees() {
-                try {
-                    this.isLoading = true;
-                    this.filters.directorateId = this.directorateId;
-                    this.filters.departmentId = this.departmentId;
-                    this.filters.designationId = this.designationId;
-                    await this.$store.dispatch('GET_EMPLOYEES', this.filters);
-                    this.isLoading = false;
-                } catch (error) {
-                    console.log(error);
-                    toastr.error(error);
-                    this.isLoading = false;
-                }
-            },
-        },
-    }
+    },
+}
 </script>
 
 <style scoped>
