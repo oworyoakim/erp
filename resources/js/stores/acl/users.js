@@ -1,5 +1,6 @@
 import routes from "../../routes";
 import {resolveError} from "../../utils/helpers";
+import axios from 'axios';
 
 export default {
     state: {
