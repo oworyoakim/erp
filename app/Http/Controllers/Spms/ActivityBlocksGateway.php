@@ -8,18 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class OutputIndicatorsGateway extends GatewayController
+class ActivityBlocksGateway extends GatewayController
 {
+
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/output-indicators';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/activity-blocks';
     }
 
     public function index(Request $request)
     {
         try
         {
-            $params = $request->all();
+            $params = $request->only(['objectiveId', 'outcomeId']);
 
             $responseData = $this->get($this->urlEndpoint, $params);
 
@@ -57,6 +58,23 @@ class OutputIndicatorsGateway extends GatewayController
 
             $responseData = $this->put($this->urlEndpoint, $data);
 
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function show(Request $request)
+    {
+        try
+        {
+            $id = $request->get('activityBlockId');
+            if (empty($id))
+            {
+                throw new Exception("Activity block ID is required!");
+            }
+            $responseData = $this->get("{$this->urlEndpoint}/{$id}");
             return response()->json($responseData);
         } catch (Exception $ex)
         {

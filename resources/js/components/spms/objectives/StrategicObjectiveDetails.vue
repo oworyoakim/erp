@@ -18,13 +18,13 @@
                             <a class="nav-link active" data-toggle="tab" href="#tab_interventions">Interventions</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tab_outputs">Outputs</a>
+                            <a class="nav-link" @click="$emit('loadOutputs')" data-toggle="tab" href="#tab_outputs">Outputs</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tab_indicators">Indicators</a>
+                            <a class="nav-link" @click="$emit('loadOutputIndicators')"  data-toggle="tab" href="#tab_indicators">Indicators</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" data-toggle="tab" href="#tab_targets">Targets</a>
+                            <a class="nav-link"  @click="$emit('loadOutputIndicatorTargets')" data-toggle="tab" href="#tab_targets">Targets</a>
                         </li>
                     </ul>
                     <!-- objective form -->
@@ -218,12 +218,23 @@
             EventBus.$on([
                 'OBJECTIVE_SAVED',
                 'INTERVENTION_SAVED',
-                'OUTPUT_SAVED',
-                'OUTPUT_INDICATOR_SAVED',
                 'OUTPUT_INDICATOR_TARGET_SAVED',
             ], () => {
                 this.$store.dispatch('GET_OBJECTIVE_DETAILS', this.objectiveId);
             });
+            this.$on('loadOutputs', this.getOutputs);
+            EventBus.$on(['OUTPUT_SAVED'], this.getOutputs);
+            this.$on('loadOutputIndicators', () => {
+                this.getOutputs();
+                this.getOutputIndicators();
+            });
+            this.$on('loadOutputIndicatorTargets', () => {
+                this.getOutputs();
+                this.getOutputIndicators();
+                this.getOutputIndicatorTargets();
+            });
+            EventBus.$on(['OUTPUT_INDICATOR_SAVED'], this.getOutputIndicators);
+            EventBus.$on(['OUTPUT_INDICATOR_TARGET_SAVED'], this.getOutputIndicatorTargets);
         },
         data() {
             return {
@@ -245,14 +256,20 @@
         computed: {
             ...mapGetters({
                 objective: 'OBJECTIVE_DETAILS',
+                objectiveOutputs: 'OUTPUTS',
+                outputIndicators: 'OUTPUT_INDICATORS',
+                outputIndicatorTargets: 'OUTPUT_INDICATOR_TARGETS',
             }),
             interventions() {
                 return this.objective.interventions || [];
             },
             outputs() {
-                return this.objective.outputs.filter((output) => {
-                    return output.interventionId === this.interventionId;
-                })
+                if(!!this.interventionId){
+                    return this.objectiveOutputs.filter((output) => {
+                        return output.interventionId === this.interventionId;
+                    });
+                }
+                return this.objectiveOutputs;
             },
             interventionsOptions() {
                 return this.objective.interventions.map((intervention) => {
@@ -271,9 +288,12 @@
                 });
             },
             indicators() {
-                return this.objective.indicators.filter((indicator) => {
-                    return indicator.outputId === this.outputId;
-                });
+                if(!!this.outputId) {
+                    return this.outputIndicators.filter((indicator) => {
+                        return indicator.outputId === this.outputId;
+                    });
+                }
+                return this.outputIndicators;
             },
             indicatorsOptions() {
                 return this.indicators.map((indicator) => {
@@ -284,9 +304,12 @@
                 });
             },
             targets() {
-                return this.objective.targets.filter((target) => {
-                    return target.outputIndicatorId === this.outputIndicatorId;
-                });
+                if(!!this.outputIndicatorId) {
+                    return this.outputIndicatorTargets.filter((target) => {
+                        return target.outputIndicatorId === this.outputIndicatorId;
+                    });
+                }
+                return this.outputIndicatorTargets;
             }
         },
         methods: {
@@ -317,6 +340,34 @@
 
             editOutputIndicatorTarget(target = null) {
                 EventBus.$emit("EDIT_OUTPUT_INDICATOR_TARGET", target);
+            },
+
+            async getOutputs() {
+                try{
+                    await this.$store.dispatch("GET_OUTPUTS", {
+                        objectiveId: this.objective.id,
+                    });
+                }catch (error){
+                    console.log(error);
+                }
+            },
+            async getOutputIndicators() {
+                try{
+                    await this.$store.dispatch("GET_OUTPUT_INDICATORS", {
+                        objectiveId: this.objective.id,
+                    });
+                }catch (error){
+                    console.log(error);
+                }
+            },
+            async getOutputIndicatorTargets() {
+                try{
+                    await this.$store.dispatch("GET_OUTPUT_INDICATOR_TARGETS", {
+                        objectiveId: this.objective.id,
+                    });
+                }catch (error){
+                    console.log(error);
+                }
             },
         }
     }

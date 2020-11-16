@@ -8,18 +8,19 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
 
-class OutputIndicatorsGateway extends GatewayController
+class MainActivitiesGateway extends GatewayController
 {
+
     public function __construct()
     {
-        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/output-indicators';
+        $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/activity-blocks';
     }
 
     public function index(Request $request)
     {
         try
         {
-            $params = $request->all();
+            $params = $request->only(['workPlanId', 'objectiveId','outcomeId']);
 
             $responseData = $this->get($this->urlEndpoint, $params);
 

@@ -16,6 +16,21 @@ class OutputIndicatorTargetsGateway extends GatewayController
         $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/output-indicator-targets';
     }
 
+    public function index(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->get($this->urlEndpoint, $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
     public function store(Request $request)
     {
         try

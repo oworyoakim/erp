@@ -9,7 +9,6 @@
 namespace App\Traits;
 
 
-
 use Exception;
 use Illuminate\Support\Facades\Http;
 
@@ -23,6 +22,7 @@ trait MakesRemoteHttpRequests
     /**
      * @param string $url
      * @param array $query
+     *
      * @return array
      * @throws Exception
      */
@@ -39,6 +39,7 @@ trait MakesRemoteHttpRequests
     /**
      * @param $url
      * @param $data
+     *
      * @return array
      * @throws Exception
      */
@@ -56,6 +57,7 @@ trait MakesRemoteHttpRequests
     /**
      * @param $url
      * @param $data
+     *
      * @return array
      * @throws Exception
      */
@@ -72,6 +74,7 @@ trait MakesRemoteHttpRequests
     /**
      * @param $url
      * @param $data
+     *
      * @return array
      * @throws Exception
      */
@@ -83,5 +86,29 @@ trait MakesRemoteHttpRequests
             throw new Exception($response->body());
         }
         return $response->json();
+    }
+
+    /**
+     * @return array
+     * @throws Exception
+     */
+    protected function getDirectorates()
+    {
+        $directoratesEndpoint = env('HRMS_APP_URL') . '/v1/directorates';
+        return $this->get("{$directoratesEndpoint}/unscoped");
+    }
+    /**
+     * @param $directorateId
+     *
+     * @return array
+     * @throws Exception
+     */
+    protected function getDirectorate($directorateId)
+    {
+        $directoratesEndpoint = env('HRMS_APP_URL') . '/v1/directorates';
+        $params = [
+            'directorateId' => $directorateId,
+        ];
+        return $this->get("{$directoratesEndpoint}/show", $params);
     }
 }

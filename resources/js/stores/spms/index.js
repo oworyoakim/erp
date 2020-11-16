@@ -13,6 +13,7 @@ import objectivesModule from "./objectives";
 import keyResultAreasModule from "./key-result-areas";
 import swotsModule from "./swots";
 import activitiesModule from "./activities";
+import mainActivitiesModule from "./main-activities";
 import outputsModule from "./outputs";
 import workPlansModule from "./work-plans";
 import directivesAndResolutionsModule from "./directives-and-resolutions";
@@ -30,6 +31,7 @@ export default new Vuex.Store({
         keyResultAreas: keyResultAreasModule,
         swots: swotsModule,
         activities: activitiesModule,
+        mainActivities: mainActivitiesModule,
         outputs: outputsModule,
         workPlans: workPlansModule,
         directivesAndResolutions: directivesAndResolutionsModule,
@@ -38,6 +40,7 @@ export default new Vuex.Store({
     },
     state: {
         user: null,
+        isLoading: false,
         formSelections: {
             roles: [],
             usernames: [],
@@ -46,6 +49,7 @@ export default new Vuex.Store({
         },
         directoratesOptions: [],
         departmentsOptions: [],
+        outcomesOptions: [],
         editorConfig: {
             media_live_embeds: true,
             menubar: "insert edit format",
@@ -97,6 +101,9 @@ export default new Vuex.Store({
         DEPARTMENTS_OPTIONS(state) {
             return state.departmentsOptions;
         },
+        OUTCOMES_OPTIONS(state) {
+            return state.outcomesOptions;
+        },
         SINGLE_DATE_CONFIG(state) {
             return state.singleDateConfig;
         },
@@ -109,6 +116,9 @@ export default new Vuex.Store({
             return (permissions = []) => {
                 return !!state.user && permissions.some((permission) => !!state.user.permissions[permission]);
             }
+        },
+        LOADER(state) {
+            return !!state.isLoading;
         },
     },
     mutations: {
@@ -123,6 +133,13 @@ export default new Vuex.Store({
         },
         SET_DEPARTMENTS_OPTIONS(state, payload) {
             state.departmentsOptions = payload;
+        },
+
+        SET_OUTCOMES_OPTIONS(state, payload) {
+            state.outcomesOptions = payload;
+        },
+        SET_LOADER(state, payload) {
+            state.isLoading = payload;
         },
     },
     actions: {
@@ -159,9 +176,8 @@ export default new Vuex.Store({
                 commit('setFormSelections', response.data);
                 return Promise.resolve('Ok');
             } catch (error) {
-                console.error(error.response.data);
-
-                return Promise.reject(error.response.data);
+                let message = resolveError(error);
+                return Promise.reject(message);
             }
         },
         async GET_DIRECTORATES_OPTIONS({commit}) {
@@ -190,6 +206,18 @@ export default new Vuex.Store({
             try {
                 let queryParams = prepareQueryParams(payload);
                 let response = await axios.get('/hrms/employees/unscoped' + queryParams);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+
+        async GET_OUTCOMES_OPTIONS({commit}, payload) {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get('/spms/outcomes' + queryParams);
+                commit('SET_OUTCOMES_OPTIONS', response.data);
                 return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);

@@ -2,12 +2,20 @@
 
 namespace App\Http\Controllers\Spms;
 
+use App\ErpHelper;
 use App\Http\Controllers\GatewayController;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Exception;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
+use Mpdf\Mpdf;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -37,22 +45,241 @@ class SpmsReportsGateway extends GatewayController
         {
             $params = $request->only(['planId', 'reportPeriodId']);
 
-            $responseData = $this->get("{$this->urlEndpoint}/strategy-report", $params);
+            $responseData = $this->generateStrategyReportData($params);
 
-            // the logo
-            $logo = settings()->get('company_logo');
-            if(!empty($logo)){
-                $logo = ltrim($logo,'/');
-            }else{
-                $logo = "storage/images/logo2.png";
-            }
-            $responseData['companyLogo'] = "/{$logo}";
+            //dd($responseData);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            dd($ex);
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function activityReport(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->generateActivityReportData($params);
+
+            //dd($responseData);
 
             return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
+    }
+
+    public function directivesAndResolutionsReport(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->generateDirectivesAndResolutionsReportData($params);
+
+            //dd($responseData);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return \stdClass
+     * @throws Exception
+     */
+    private function generateStrategyReportData(array $params)
+    {
+        $responseData = $this->get("{$this->urlEndpoint}/strategy-report", $params);
+        // the logo
+        $logo = settings()->get('company_logo');
+        if (!empty($logo))
+        {
+            $logo = ltrim($logo, '/');
+        } else
+        {
+            $logo = "storage/images/logo2.png";
+        }
+        $responseData['companyLogo'] = base64_encode(File::get(public_path($logo)));
+        $responseData = ErpHelper::arrayToObject($responseData);
+        //dd($responseData->reportPeriod);
+        $html = View::make('spms.reports.monitor-strategy', [
+            'reportData' => $responseData
+        ])->render();
+
+        $plan = str_replace('/', '-', $responseData->plan);
+        $plan = Str::slug($plan);
+        $fileName = "{$plan}_{$responseData->reportPeriod->startDate}_to_{$responseData->reportPeriod->endDate}.pdf";
+        $filePath = "storage/reports/{$fileName}";
+        /*
+        // generate the pdf using dompdf
+        $options = new Options();
+        $options->set('isRemoteEnabled',true);
+        $dompdf = new Dompdf( $options );
+        $dompdf->setPaper('letter', 'landscape');
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+        // save the pdf
+        //dd($dompdf->output());
+        //Storage::put(public_path($filePath), $dompdf->output());
+        File::put(public_path($filePath), $dompdf->output());
+        */
+        // generate the pdf using mpdf
+        $mpdf = new Mpdf([
+            'orientation' => 'L'
+        ]);
+        $footer = "TABLE HEADER KEYS => MA: Measured As (CT: Count, %: %age), TA: Target, AV: Actual Value, PA: %age of Achievement, VA: Variance";
+        $mpdf->SetFooter($footer);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output(public_path($filePath), 'F');
+
+        $responseData->filePath = "/{$filePath}";
+
+        return $responseData;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return \stdClass
+     * @throws Exception
+     */
+    private function generateActivityReportData(array $params)
+    {
+        $responseData = $this->get("{$this->urlEndpoint}/activity-report", $params);
+        $directorateData = null;
+        if (!empty($responseData['directorateId']))
+        {
+            $directorateData = $this->getDirectorate($responseData['directorateId']);
+        }
+
+        if(!empty($directorateData['title'])){
+            $responseData['responsibilityCenter'] = $directorateData['title'];
+        }else{
+            $responseData['responsibilityCenter'] = null;
+        }
+        // the logo
+        $logo = settings()->get('company_logo');
+        if (!empty($logo))
+        {
+            $logo = ltrim($logo, '/');
+        } else
+        {
+            $logo = "storage/images/logo2.png";
+        }
+        $responseData['companyLogo'] = base64_encode(File::get(public_path($logo)));
+        $responseData = ErpHelper::arrayToObject($responseData);
+        //dd($responseData->reportPeriod);
+        $html = View::make('spms.reports.monitor-activity', [
+            'reportData' => $responseData
+        ])->render();
+
+        $plan = str_replace('/', '-', $responseData->plan);
+        $plan = Str::slug($plan);
+        $dirAndRes = Str::slug('activities-report');
+        $workPlan = str_replace('/', '-', $responseData->workPlan->title);
+        $workPlan = Str::slug($workPlan);
+        $fileName = "{$plan}_{$dirAndRes}_{$workPlan}.pdf";
+
+        $filePath = "storage/reports/{$fileName}";
+
+        // generate the pdf using mpdf
+        $mpdf = new Mpdf([
+            'orientation' => 'L'
+        ]);
+        $footer = "TABLE HEADER KEYS => MA: Measured As (CT: Count, %: %age), TA: Target, AV: Actual Value, PA: %age of Achievement, VA: Variance";
+        $mpdf->SetFooter($footer);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output(public_path($filePath), 'F');
+
+        $responseData->filePath = "/{$filePath}";
+
+        return $responseData;
+    }
+
+    /**
+     * @param array $params
+     *
+     * @return \stdClass
+     * @throws Exception
+     */
+    private function generateDirectivesAndResolutionsReportData(array $params)
+    {
+        $responseData = $this->get("{$this->urlEndpoint}/directives-and-resolutions-report", $params);
+        $directorates = $this->getDirectorates();
+        $directorates = collect($directorates);
+
+        foreach ($responseData['directivesAndResolutions'] as &$directiveAndResolution){
+            $directorateData = null;
+            if (!empty($directiveAndResolution['responsibilityCentreId']))
+            {
+                $directorateData = $directorates->firstWhere('id', $directiveAndResolution['responsibilityCentreId']);
+                if(!empty($directorateData['title'])){
+                    $directiveAndResolution['responsibilityCenter'] = $directorateData['title'];
+                }else{
+                    $directiveAndResolution['responsibilityCenter'] = null;
+                }
+            }
+        }
+
+        // the logo
+        $logo = settings()->get('company_logo');
+        if (!empty($logo))
+        {
+            $logo = ltrim($logo, '/');
+        } else
+        {
+            $logo = "storage/images/logo2.png";
+        }
+        $responseData['companyLogo'] = base64_encode(File::get(public_path($logo)));
+        $responseData = ErpHelper::arrayToObject($responseData);
+        //dd($responseData->reportPeriod);
+        $html = View::make('spms.reports.monitor-directives-and-resolutions', [
+            'reportData' => $responseData
+        ])->render();
+
+        $plan = str_replace('/', '-', $responseData->plan);
+        $plan = Str::slug($plan);
+        $dirAndRes = Str::slug('directives-and-resolutions-report');
+        $workPlan = str_replace('/', '-', $responseData->workPlan->title);
+        $workPlan = Str::slug($workPlan);
+        $fileName = "{$plan}_{$dirAndRes}_{$workPlan}.pdf";
+
+        $filePath = "storage/reports/{$fileName}";
+        /*
+        // generate the pdf using dompdf
+        $options = new Options();
+        $options->set('isRemoteEnabled',true);
+        $dompdf = new Dompdf( $options );
+        $dompdf->setPaper('letter', 'landscape');
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+        // save the pdf
+        //dd($dompdf->output());
+        //Storage::put(public_path($filePath), $dompdf->output());
+        File::put(public_path($filePath), $dompdf->output());
+        */
+        // generate the pdf using mpdf
+        $mpdf = new Mpdf([
+            'orientation' => 'L'
+        ]);
+        $footer = "TABLE HEADER KEYS => MA: Measured As (CT: Count, %: %age), TA: Target, AV: Actual Value, PA: %age of Achievement, VA: Variance";
+        $mpdf->SetFooter($footer);
+        $mpdf->WriteHTML($html);
+        $mpdf->Output(public_path($filePath), 'F');
+
+        $responseData->filePath = "/{$filePath}";
+
+        return $responseData;
     }
 
     public function strategyReportExcel(Request $request)
@@ -73,9 +300,11 @@ class SpmsReportsGateway extends GatewayController
 
             // the logo
             $logo = settings()->get('company_logo');
-            if(!empty($logo)){
-                $logo = ltrim($logo,'/');
-            }else{
+            if (!empty($logo))
+            {
+                $logo = ltrim($logo, '/');
+            } else
+            {
                 $logo = "storage/images/logo2.png";
             }
             $drawing = new Drawing();
@@ -413,27 +642,6 @@ class SpmsReportsGateway extends GatewayController
                 'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
                 'Content-Disposition' => 'attachment; filename="' . $fileName . '.xlsx"'
             ]);
-        } catch (Exception $ex)
-        {
-            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
-        }
-    }
-
-    public function directivesAndResolutionsReport(Request $request)
-    {
-        try
-        {
-            $params = $request->only([
-                'planId',
-                'workPlanId',
-                'directiveAndResolutionId',
-                'startDate',
-                'endDate',
-            ]);
-
-            $responseData = $this->get("{$this->urlEndpoint}/directives-and-resolutions-report", $params);
-
-            return response()->json($responseData);
         } catch (Exception $ex)
         {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);

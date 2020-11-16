@@ -1,69 +1,60 @@
 <template>
     <div class="activity-outputs">
-        <div class="row mb-2">
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <label>Intervention</label>
-                <select class="custom-select" v-model="interventionId">
-                    <option value="">Select...</option>
-                    <option v-for="intervention in interventionsOptions"
-                            :value="intervention.value"
-                            :key="intervention.value">{{intervention.text}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6">
-                <label>Activity</label>
-                <select class="custom-select" v-model="activityId">
-                    <option value="">Select...</option>
-                    <option v-for="activity in activitiesOptions"
-                            :value="activity.value"
-                            :key="activity.value">{{activity.text}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-lg-4 col-md-4 col-sm-6 text-right">
-                <!-- Add Stage Button -->
-                <div class="text-right mb-4 clearfix">
-                    <button @click="editOutput()" class="btn btn-primary add-btn mt-2"
-                            type="button"><i
-                        class="fa fa-plus"></i> Add Output
-                    </button>
+        <Spinner v-if="isLoading" />
+        <template v-else>
+            <div class="card mb-2">
+                <div class="card-header">
+                    <!-- Add Output Button -->
+                    <h4 class="card-title">
+                        <button @click="editOutput()" class="btn btn-primary add-btn float-right mt-2"
+                                type="button"><i
+                            class="fa fa-plus"></i> Add Output
+                        </button>
+                    </h4>
+                    <!-- /Add Output Button -->
                 </div>
-                <!-- /Add Stage Button -->
-            </div>
-        </div>
-        <div class="row payroll-table card">
-            <div class="col-sm-12 table-responsive">
-                <!-- Output -->
-                <table class="table table-hover table-radius">
-                    <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th class="text-right">Action</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <template v-for="output in outputs">
-                        <tr :key="output.id">
-                            <th>{{output.name}}</th>
-                            <td>{{$stringLimit(output.description)}}</td>
-                            <td class="text-right">
-                                <button class="btn btn-info btn-sm" title="Edit" @click="editOutput(output)"><i
-                                    class="fa fa-pencil m-r-5"></i></button>
-                                <button class="btn btn-danger btn-sm" title="Delete" @click="deleteOutput(output)"><i
-                                    class="fa fa-trash-o m-r-5"></i></button>
-                            </td>
+                <div class="card-body table-responsive">
+                    <!-- Output -->
+                    <table class="table table-hover table-radius">
+                        <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th class="text-right">Action</th>
                         </tr>
-                    </template>
-                    </tbody>
-                </table>
-                <!--/Outputs -->
-                <!-- Output form -->
-                <OutputForm :activity="true"/>
-                <!-- /Output form -->
+                        </thead>
+                        <tbody>
+                        <template v-for="output in outputs">
+                            <tr :key="output.id">
+                                <th>{{output.name}}</th>
+                                <td>{{$stringLimit(output.description)}}</td>
+                                <td class="text-right">
+                                    <div class="btn-group">
+                                        <button type="button" class="btn btn-secondary">Actions</button>
+                                        <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span class="sr-only">Actions</span>
+                                        </button>
+                                        <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(72px, -118px, 0px);">
+                                            <a @click="editOutput(output)" class="dropdown-item" href="javascript:void(0)">
+                                                <i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                            <a @click="deleteOutput(output)" class="dropdown-item" href="javascript:void(0)">
+                                                <i class="fa fa-trash-o m-r-5"></i> Delete
+                                            </a>
+                                            <div class="dropdown-divider"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                        </tbody>
+                    </table>
+                    <!--/Outputs -->
+                </div>
             </div>
-        </div>
+            <!-- Output form -->
+            <OutputForm />
+            <!-- /Output form -->
+        </template>
     </div>
 </template>
 
@@ -71,76 +62,42 @@
     import {EventBus} from "../../../app";
     import {mapGetters} from "vuex";
     import OutputForm from "../outputs/OutputForm";
+    import Spinner from "../../shared/Spinner";
 
     export default {
-        components: {OutputForm},
+        components: {Spinner, OutputForm},
         created() {
             EventBus.$on(['OUTPUT_SAVED'], this.getOutputs);
+            this.$parent.$on('loadOutputs', this.getOutputs);
         },
         data() {
             return {
-                interventionId: '',
-                activityId: '',
+                isLoading: false,
             }
         },
         computed: {
             ...mapGetters({
                 activeWorkPlan: "ACTIVE_WORK_PLAN",
-                interventions: "INTERVENTIONS",
+                mainActivity: "ACTIVE_MAIN_ACTIVITY",
+                activity: "ACTIVE_ACTIVITY",
                 outputs: "OUTPUTS",
             }),
-            interventionsOptions() {
-                return this.interventions.map((intervention) => {
-                    return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
-                });
-            },
-            activitiesOptions() {
-                if (!this.activeWorkPlan) {
-                    return [];
-                }
-                return this.activeWorkPlan.activities.filter((activity) => {
-                    return activity.interventionId === this.interventionId;
-                }).map((activity) => {
-                    return {
-                        text: activity.title,
-                        value: activity.id,
-                    }
-                });
-            },
-        },
-        watch: {
-            interventionId(newValue, oldValue) {
-                this.activityId = '';
-            },
-            activityId(newValue, oldValue) {
-                this.getOutputs();
-            },
         },
         methods: {
             async getOutputs() {
-                if (!!this.interventionId && !!this.activityId) {
-                    try {
-                        this.isLoading = true;
-                        await this.$store.dispatch("GET_OUTPUTS", {
-                            interventionId: this.interventionId,
-                            activityId: this.activityId,
-                        });
-                        this.isLoading = false;
-                    } catch (error) {
-                        console.error(error);
-                        this.isLoading = false;
-                    }
+                try {
+                    this.isLoading = true;
+                    await this.$store.dispatch("GET_OUTPUTS", {
+                        activityId: this.activity.id,
+                    });
+                    this.isLoading = false;
+                } catch (error) {
+                    console.error(error);
+                    this.isLoading = false;
                 }
             },
             editOutput(output = null) {
-                EventBus.$emit("EDIT_OUTPUT", {
-                    output,
-                    activityId: this.activityId,
-                    interventionId: this.interventionId,
-                });
+                EventBus.$emit("EDIT_OUTPUT", output);
             },
             deleteOutput(stage) {
 

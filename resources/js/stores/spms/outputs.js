@@ -6,6 +6,7 @@ export default {
     state: {
         outputs: [],
         outputIndicators: [],
+        outputIndicatorTargets: [],
         outputAchievements: [],
     },
     getters: {
@@ -14,6 +15,9 @@ export default {
         },
         OUTPUT_INDICATORS(state) {
             return state.outputIndicators || [];
+        },
+        OUTPUT_INDICATOR_TARGETS(state) {
+            return state.outputIndicatorTargets || [];
         },
         OUTPUT_ACHIEVEMENTS(state) {
             return state.outputAchievements || [];
@@ -25,6 +29,9 @@ export default {
         },
         SET_OUTPUT_INDICATORS(state, payload) {
             state.outputIndicators = payload;
+        },
+        SET_OUTPUT_INDICATOR_TARGETS(state, payload) {
+            state.outputIndicatorTargets = payload;
         },
         SET_OUTPUT_ACHIEVEMENTS(state, payload) {
             state.outputAchievements = payload;
@@ -105,6 +112,19 @@ export default {
                 return Promise.reject(message);
             }
         },
+
+        async GET_OUTPUT_INDICATOR_TARGETS({commit}, payload) {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.OUTPUT_TARGETS + queryParams);
+                commit("SET_OUTPUT_INDICATOR_TARGETS",response.data);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
+
         async GET_OUTPUT_ACHIEVEMENTS({commit}, payload) {
             try {
                 let queryParams = prepareQueryParams(payload);
@@ -125,9 +145,5 @@ export default {
                 return Promise.reject(message);
             }
         },
-
-        SET_OUTPUT_ACHIEVEMENTS({commit}, payload) {
-            commit("SET_OUTPUT_ACHIEVEMENTS", payload);
-        }
     },
 }

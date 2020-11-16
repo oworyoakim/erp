@@ -1,5 +1,5 @@
 <template>
-    <div class="strategic-plan-monitor">
+    <div class="directives-and-resolutions-monitor">
         <div class="row">
             <div class="col-sm-4">
                 <label>Select a strategic plan</label>
@@ -26,18 +26,13 @@
                     </select>
                 </template>
             </div>
-            <div class="col-sm-4">
-                <template v-if="!!filters.workPlanId">
-                    <label>Select a directive/resolution</label>
-                    <select v-model="filters.directiveAndResolutionId" class="form-control">
-                        <option value="">Select...</option>
-                        <option v-for="dirAndRes in directivesAndResolutions"
-                                :value="dirAndRes.id"
-                                :key="dirAndRes.id">
-                            {{dirAndRes.title}}
-                        </option>
-                    </select>
-                </template>
+            <div class="col-sm-4" v-if="!!filters.planId && !!filters.workPlanId">
+                <button class="btn btn-sm btn-secondary mt-4" type="button" @click="printReport()"><i
+                    class="fa fa-print"></i> Print
+                </button>
+                <button class="btn btn-sm btn-primary mt-4" type="button" @click="downloadPdfReport()"><i
+                    class="fa fa-file-pdf-o"></i> PDF
+                </button>
             </div>
         </div>
 
@@ -46,12 +41,12 @@
                 <app-spinner></app-spinner>
             </template>
             <template v-else-if="!!reportData">
-                <div class="row">
+                <div class="row" id="directives-and-resolutions-monitor-report">
                     <div class="col-md-12 table-responsive">
                         <table class="table-bordered table-sm" width="100%">
                             <tr>
                                 <td>
-                                    <img src="/storage/images/logo2.png" class="img-fluid small" alt="UNEB-SPMS"/>
+                                    <img :src="'data:image/png;base64,' + reportData.companyLogo" class="img-fluid small" alt="UNEB-SPMS"/>
                                 </td>
                                 <td colspan="7" class="text-center">
                                     <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
@@ -78,56 +73,54 @@
                                     <span class="pull-right">{{reportData.reportDate}}</span>
                                 </td>
                             </tr>
-                            <tr>
-                                <td colspan="4">
-                                    <span class="text-bold">Responsibility Center</span>
-                                    <template v-if="!!responsibilityCentre">
-                                        <span class="pull-right">{{responsibilityCentre.title}}</span>
-                                    </template>
-                                </td>
-                                <td colspan="4">
-
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" class="text-bold">Directive/Resolution</td>
-                                <td colspan="6">{{reportData.title}}</td>
-                            </tr>
-                            <tr class="text-center">
-                                <th>Activity</th>
-                                <th>Output</th>
-                                <th>Measured As</th>
-                                <th>Target</th>
-                                <th>Actual</th>
-                                <th>Achieved (%)</th>
-                                <th>Variance</th>
-                                <th>Comments</th>
-                            </tr>
-                            <template v-for="activity in reportData.activities">
-                                <template v-if="activity.outputs.length > 0">
-                                    <tr>
-                                        <td :rowspan="activity.outputs.length + 1">{{activity.title}}</td>
-                                    </tr>
-                                    <template v-for="output in activity.outputs">
+                            <template v-for="directiveAndResolution in reportData.directivesAndResolutions">
+                                <tr>
+                                    <td colspan="8" style="height: 30px !important;"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-bold">Directive/Resolution</td>
+                                    <td colspan="6">{{directiveAndResolution.title}}</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" class="text-bold">Responsibility Center</td>
+                                    <td colspan="6">{{responsibilityCentre(directiveAndResolution.responsibilityCentreId)}}</td>
+                                </tr>
+                                <tr class="text-center">
+                                    <th>Activity</th>
+                                    <th>Output</th>
+                                    <th>Measured As</th>
+                                    <th>Target</th>
+                                    <th>Actual</th>
+                                    <th>Achieved (%)</th>
+                                    <th>Variance</th>
+                                    <th>Comments</th>
+                                </tr>
+                                <template v-for="activity in directiveAndResolution.activities">
+                                    <template v-if="activity.outputs.length > 0">
                                         <tr>
-                                            <td>{{output.title}}</td>
-                                            <td class="text-center">
-                                                <span v-if="output.unit === 'percent'">Percentage</span>
-                                                <span v-else>Count</span>
-                                            </td>
-                                            <td class="text-center">{{output.target}}</td>
-                                            <td class="text-center">{{output.actual}}</td>
-                                            <td class="text-center">{{output.achieved}}</td>
-                                            <td class="text-center">{{output.variance}}</td>
-                                            <td>{{output.comments}}</td>
+                                            <td :rowspan="activity.outputs.length + 1">{{activity.title}}</td>
+                                        </tr>
+                                        <template v-for="output in activity.outputs">
+                                            <tr>
+                                                <td>{{output.title}}</td>
+                                                <td class="text-center">
+                                                    <span v-if="output.unit === 'percent'">Percentage</span>
+                                                    <span v-else>Count</span>
+                                                </td>
+                                                <td class="text-center">{{output.target}}</td>
+                                                <td class="text-center">{{output.actual}}</td>
+                                                <td class="text-center">{{output.achieved}}</td>
+                                                <td class="text-center">{{output.variance}}</td>
+                                                <td>{{output.comments}}</td>
+                                            </tr>
+                                        </template>
+                                    </template>
+                                    <template v-else>
+                                        <tr>
+                                            <td>{{activity.title}}</td>
+                                            <td colspan="7">No outputs!</td>
                                         </tr>
                                     </template>
-                                </template>
-                                <template v-else>
-                                    <tr>
-                                        <td>{{activity.title}}</td>
-                                        <td colspan="7">No outputs!</td>
-                                    </tr>
                                 </template>
                             </template>
                         </table>
@@ -143,9 +136,8 @@
 
 <script>
     import {mapGetters} from "vuex";
-    import {EventBus} from "../../../app";
     import SelectBox from "../../shared/SelectBox";
-    import {deepClone} from "../../../utils/helpers";
+    import Printd  from 'printd';
 
     export default {
         components: {
@@ -153,18 +145,17 @@
         },
         created() {
             this.$store.dispatch("GET_PLANS");
+            this.$store.dispatch("GET_DIRECTORATES_OPTIONS");
         },
         mounted() {
 
         },
         data() {
             return {
-                responsibilityCentre: null,
                 isLoading: false,
                 filters: {
                     planId: null,
                     workPlanId: null,
-                    directiveAndResolutionId: null,
                     startDate: null,
                     endDate: null,
                 }
@@ -176,7 +167,7 @@
                 workPlans: "WORK_PLANS",
                 activePlan: "ACTIVE_PLAN",
                 activeWorkPlan: "ACTIVE_WORK_PLAN",
-                directivesAndResolutions: "DIRECTIVES_AND_RESOLUTIONS",
+                directorates: "DIRECTORATES_OPTIONS",
                 reportData: "DIR_AND_RES_REPORT_DATA",
             }),
             reportPeriods() {
@@ -184,9 +175,6 @@
                     return [];
                 }
                 return this.activePlan.reportPeriods || [];
-            },
-            directiveAndResolution() {
-                return this.directivesAndResolutions.find((dirAndRes) => dirAndRes.id === this.filters.directiveAndResolutionId) || null
             },
             startDates() {
                 return this.reportPeriods.map((period) => period.startDate);
@@ -199,21 +187,21 @@
                 return this.isLoading || !(
                     !!this.filters.planId &&
                     !!this.filters.workPlanId &&
-                    !!this.filters.directiveAndResolutionId &&
                     !!this.filters.startDate &&
                     !!this.filters.endDate
                 );
-            }
+            },
+            responsibilityCentre(){
+                return (directorateId) => {
+                    let directorate = this.directorates.find((directorate) => directorate.id === directorateId);
+                    return (!!directorate) ? directorate.title : '';
+                }
+            },
         },
         watch: {
             "filters.workPlanId"(newValue, oldVale) {
                 this.setActiveWorkPlan();
             },
-            "filters.directiveAndResolutionId"(newValue, oldVale) {
-                if (!!this.filters.directiveAndResolutionId) {
-                    this.generateReport();
-                }
-            }
         },
         methods: {
             setActivePlan(planId) {
@@ -237,7 +225,8 @@
                     let workPlan = this.workPlans.find((workPlan) => workPlan.id === this.filters.workPlanId);
                     if (!!workPlan) {
                         this.$store.dispatch("SET_ACTIVE_WORK_PLAN", workPlan);
-                        this.$store.dispatch("GET_DIRECTIVES_AND_RESOLUTIONS", this.filters)
+                        //this.$store.dispatch("GET_DIRECTIVES_AND_RESOLUTIONS", this.filters)
+                        this.generateReport();
                     } else {
                         this.$store.dispatch("SET_ACTIVE_WORK_PLAN", null);
                     }
@@ -248,9 +237,6 @@
                     try {
                         this.isLoading = true;
                         await this.$store.dispatch("LOAD_DIR_AND_RES_REPORT", this.filters);
-                        if (this.directiveAndResolution) {
-                            this.responsibilityCentre = await this.$store.dispatch("GET_RESPONSIBILITY_CENTER", this.directiveAndResolution.responsibilityCentreId);
-                        }
                         this.isLoading = false;
                     } catch (error) {
                         console.log(error);
@@ -258,6 +244,16 @@
                         this.isLoading = false;
                     }
                 }
+            },
+            downloadPdfReport(){
+                if(!!this.reportData.filePath && this.reportData.filePath !== '#'){
+                    window.open(this.reportData.filePath,'_blank');
+                }
+            },
+            printReport(){
+                let reportElement = document.getElementById('directives-and-resolutions-monitor-report');
+                let report = new Printd();
+                report.print(reportElement);
             },
         }
 
@@ -271,5 +267,8 @@
 
     .work-plan {
         margin-top: 25px !important;
+    }
+    .text-bold{
+        font-weight: bolder !important;
     }
 </style>

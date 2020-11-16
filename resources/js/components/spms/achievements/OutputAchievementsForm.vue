@@ -170,12 +170,12 @@
                         objectiveId: this.objectiveId,
                         reportPeriodId: this.reportPeriod
                     });
-                    this.$store.dispatch("SET_OUTPUT_ACHIEVEMENTS", deepClone(this.outputAchievements));
+                    this.$store.commit("SET_OUTPUT_ACHIEVEMENTS", deepClone(this.outputAchievements));
                     this.isFetching = false;
                 } catch (error) {
                     await swal({title: error, icon: 'error'});
                     this.isFetching = false;
-                    this.$store.dispatch("SET_OUTPUT_ACHIEVEMENTS", deepClone(this.outputAchievements));
+                    this.$store.commit("SET_OUTPUT_ACHIEVEMENTS", deepClone(this.outputAchievements));
                 }
             },
             async saveOutputAchievements() {

@@ -77,8 +77,8 @@ export default new Vuex.Store({
         dobConfig: {
             showDropdowns: true,
             singleDatePicker: true,
-            minDate: moment().subtract(75, 'years'), // 75 years ago
-            maxDate: moment().subtract(18, 'years'), // 18 years ago
+            minDate: moment().subtract(90, 'years'), // 90 years ago
+            maxDate: moment().subtract(17, 'years'), // 17 years ago
             opens: "center",
             locale: {
                 format: 'YYYY-MM-DD'

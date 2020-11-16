@@ -227,8 +227,8 @@ Route::middleware('ensure.authenticated')->group(function () {
 
             Route::group(['prefix' => 'plans'], function () {
                 Route::get('', 'SpmsController@plans')->name('spms.plans.plan');
-                Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
                 Route::get('all-json', 'StrategicPlansGateway@index');
+                Route::get('plan', 'SpmsController@plan')->name('spms.plans.plan');
                 Route::post('', 'StrategicPlansGateway@store');
                 Route::put('', 'StrategicPlansGateway@update');
 
@@ -241,12 +241,20 @@ Route::middleware('ensure.authenticated')->group(function () {
 
                 // Monitoring
                 Route::prefix('monitor')->group(function (){
-                    Route::get('strategy', 'SpmsController@monitorStrategy')->name('spms.plans.monitor.strategy');
-                    Route::get('strategy/report', 'SpmsReportsGateway@strategyReport');
-                    Route::get('strategy/excel', 'SpmsReportsGateway@strategyReportExcel');
-                    Route::get('activity', 'SpmsController@monitorActivity')->name('spms.plans.monitor.activity');
-                    Route::get('directives-and-resolutions', 'SpmsController@monitorDirectivesAndResolutions')->name('spms.plans.monitor.directives-and-resolutions');
-                    Route::get('directives-and-resolutions/report', 'SpmsReportsGateway@directivesAndResolutionsReport');
+                    Route::prefix('strategy')->group(function (){
+                        Route::get('', 'SpmsController@monitorStrategy')->name('spms.plans.monitor.strategy');
+                        Route::get('report', 'SpmsReportsGateway@strategyReport');
+                    });
+
+                    Route::prefix('activity')->group(function () {
+                        Route::get('', 'SpmsController@monitorActivity')->name('spms.plans.monitor.activity');
+                        Route::get('report', 'SpmsReportsGateway@activityReport');
+                    });
+
+                    Route::prefix('directives-and-resolutions')->group(function () {
+                        Route::get('', 'SpmsController@monitorDirectivesAndResolutions')->name('spms.plans.monitor.directives-and-resolutions');
+                        Route::get('report', 'SpmsReportsGateway@directivesAndResolutionsReport');
+                    });
                 });
 
             });
@@ -315,6 +323,7 @@ Route::middleware('ensure.authenticated')->group(function () {
             });
 
             Route::group(['prefix' => 'output-indicator-targets'], function () {
+                Route::get('', 'OutputIndicatorTargetsGateway@index');
                 Route::post('', 'OutputIndicatorTargetsGateway@store');
                 Route::put('', 'OutputIndicatorTargetsGateway@update');
             });
@@ -331,6 +340,7 @@ Route::middleware('ensure.authenticated')->group(function () {
             });
 
             Route::group(['prefix' => 'outcomes'], function () {
+                Route::get('', 'OutcomesGateway@index');
                 Route::post('', 'OutcomesGateway@store');
                 Route::put('', 'OutcomesGateway@update');
             });
@@ -349,6 +359,12 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('', 'WorkPlansGateway@index');
                 Route::post('', 'WorkPlansGateway@store');
                 Route::put('', 'WorkPlansGateway@update');
+            });
+
+            Route::group(['prefix' => 'main-activities'], function () {
+                Route::get('', 'MainActivitiesGateway@index');
+                Route::post('', 'MainActivitiesGateway@store');
+                Route::put('', 'MainActivitiesGateway@update');
             });
 
             Route::group(['prefix' => 'activities'], function () {

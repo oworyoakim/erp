@@ -20,12 +20,7 @@ class OutputsGateway extends GatewayController
     {
         try
         {
-            $params = $request->only(['interventionId','activityId']);
-
-            if (empty($params['interventionId']))
-            {
-                throw new Exception("Strategic intervention id required!");
-            }
+            $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
 

@@ -102,7 +102,7 @@ Vue.component('app-tasks', Tasks);
 Vue.component('app-task-form', TaskForm);
 
 Vue.component('app-plan-monitor-strategy', MonitorStrategicPlan);
-Vue.component('app-plan-monitor-activity', MonitorActivity);
+Vue.component('app-monitor-activity', MonitorActivity);
 Vue.component('app-plan-monitor-directives-and-resolutions', MonitorDirectivesAndResolutions);
 
 /**

@@ -1,36 +1,10 @@
 <template>
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
         <form @submit.prevent="saveTask" autocomplete="off">
-            <div class="form-group row" v-if="!task.id">
-                <label class="col-sm-4">Intervention <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="interventionId" :disabled="!!task.id" required>
-                        <option value="">Select...</option>
-                        <option v-for="intervention in interventionsOptions"
-                                :value="intervention.value"
-                                :key="intervention.value">
-                            {{intervention.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="!task.id">
-                <label class="col-sm-4">Activity <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="task.activityId" :disabled="!!task.id" required>
-                        <option value="">Select...</option>
-                        <option v-for="activity in activitiesOptions"
-                                :value="activity.value"
-                                :key="activity.value">
-                            {{activity.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="!task.id">
+            <div class="form-group row">
                 <label class="col-sm-4">Stage <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <select class="form-control" v-model="task.stageId" :disabled="!!task.id" required>
+                    <select class="form-control" v-model="task.stageId" required>
                         <option value="">Select...</option>
                         <option v-for="stage in stagesOptions"
                                 :value="stage.value"
@@ -49,7 +23,7 @@
             <div class="form-group row">
                 <label class="col-sm-4">Due Date <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
-                    <app-date-range-picker
+                    <DateRangePicker
                         v-model="task.dueDate"
                         :value="task.dueDate"
                         :config="$store.getters.SINGLE_DATE_CONFIG"
@@ -58,9 +32,8 @@
                 </div>
             </div>
             <div class="form-group row">
-                <label class="col-sm-4">Description</label>
-                <div class="col-sm-8">
-<!--                    <textarea v-model="task.description" class="form-control" rows="5"></textarea>-->
+                <div class="col-sm-12">
+                    <label>Description</label>
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
                         :init="$store.getters.EDITOR_CONFIG"
@@ -83,9 +56,11 @@
     import Task from "../../../models/smps/Task";
     import {mapGetters} from "vuex";
     import {deepClone} from "../../../utils/helpers";
+    import DateRangePicker from "../../shared/DateRangePicker";
 
     export default {
         components: {
+            DateRangePicker,
             TinymceEditor: require('@tinymce/tinymce-vue').default,
         },
         created() {
@@ -96,42 +71,19 @@
                 task: new Task(),
                 isEditing: false,
                 isSending: false,
-                interventionId: '',
             }
         },
         computed: {
             ...mapGetters({
                 workPlan: "ACTIVE_WORK_PLAN",
-                interventions: "INTERVENTIONS",
+                mainActivity: "ACTIVE_MAIN_ACTIVITY",
+                activity: "ACTIVE_ACTIVITY",
             }),
-            interventionsOptions() {
-                return this.interventions.map((intervention) => {
-                    return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
-                });
-            },
-            activitiesOptions() {
-                if (!this.workPlan) {
-                    return [];
-                }
-                return this.workPlan.activities.filter((activity) => {
-                    return activity.interventionId === this.interventionId;
-                }).map((activity) => {
-                    return {
-                        text: activity.title,
-                        value: activity.id,
-                    }
-                });
-            },
             stagesOptions() {
-                if (!this.workPlan) {
+                if (!this.activity) {
                     return [];
                 }
-                return this.workPlan.stages.filter((stage) => {
-                    return stage.activityId === this.task.activityId;
-                }).map((stage) => {
+                return this.activity.stages.map((stage) => {
                     return {
                         text: stage.title,
                         value: stage.id,
@@ -142,13 +94,14 @@
                 return (!!this.task.id) ? "Edit Task" : "Add Task";
             },
             formInvalid() {
-                return this.isSending || !(!!this.task.activityId && !!this.task.stageId && !!this.task.title && !!this.task.dueDate);
+                return this.isSending || !(!!this.task.stageId && !!this.task.title && !!this.task.dueDate);
             },
             selectedStage() {
-                if (!this.workPlan) {
+                if (!this.activity) {
                     return null;
                 }
-                return this.workPlan.stages.find((stage) => stage.id === this.task.stageId) || null;
+                let stage = this.activity.stages.find((stage) => stage.id === this.task.stageId);
+                return stage  || null;
             },
         },
         watch: {
@@ -174,6 +127,9 @@
                     if (!this.task.workPlanId) {
                         this.task.workPlanId = this.workPlan.id;
                     }
+                    if (!this.task.activityId) {
+                        this.task.activityId = this.activity.id;
+                    }
                     let response = await this.$store.dispatch('SAVE_TASK', this.task);
                     toastr.success(response);
                     this.isSending = false;
@@ -189,7 +145,6 @@
             },
             resetForm() {
                 this.task = new Task();
-                this.interventionId = '';
                 this.isEditing = false;
                 $('.modal-backdrop').remove();
             }

@@ -2,29 +2,9 @@
     <div class="activity-output-indicator-targets-and-achievements">
         <!--   Filters     -->
         <div class="row mb-2">
-            <div class="col-md-4 col-sm-6">
-                <label>Intervention</label>
-                <select class="custom-select" v-model="interventionId">
-                    <option value="">Select...</option>
-                    <option v-for="intervention in interventionsOptions"
-                            :value="intervention.value"
-                            :key="intervention.value">{{intervention.text}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-4 col-sm-6">
-                <label>Activity</label>
-                <select class="custom-select" v-model="activityId">
-                    <option value="">Select...</option>
-                    <option v-for="activity in activitiesOptions"
-                            :value="activity.value"
-                            :key="activity.value">{{activity.text}}
-                    </option>
-                </select>
-            </div>
-            <div class="col-md-4 col-sm-6">
+            <div class="col-sm-12">
                 <label>Report Period</label>
-                <select v-model="reportPeriodId" class="form-control">
+                <select v-model="reportPeriodId" class="custom-select">
                     <option value="">....Select....</option>
                     <option v-for="period in reportPeriods"
                             :value="period.id"
@@ -141,8 +121,6 @@
         components: {Spinner},
         data() {
             return {
-                interventionId: '',
-                activityId: '',
                 reportPeriodId: '',
                 activityPerformance: [],
                 isFetching: false,
@@ -154,8 +132,8 @@
             ...mapGetters({
                 activePlan: 'ACTIVE_PLAN',
                 activeWorkPlan: "ACTIVE_WORK_PLAN",
-                interventions: "INTERVENTIONS",
                 oldActivityPerformance: "ACTIVITY_PERFORMANCE",
+                activity: "ACTIVE_ACTIVITY",
             }),
             reportPeriods() {
                 if (!this.activePlan || !this.activeWorkPlan) {
@@ -164,14 +142,6 @@
                 return this.activePlan.reportPeriods.filter((period) => {
                     return this.$moment(period.startDate).isSameOrAfter(this.activeWorkPlan.startDate) &&
                         this.$moment(period.endDate).isSameOrBefore(this.activeWorkPlan.endDate);
-                });
-            },
-            interventionsOptions() {
-                return this.interventions.map((intervention) => {
-                    return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
                 });
             },
             activitiesOptions() {
@@ -192,12 +162,6 @@
             },
         },
         watch: {
-            interventionId(newValue, oldValue) {
-                this.activityId = '';
-            },
-            activityId(newValue, oldValue) {
-                this.getActivityPerformance();
-            },
             reportPeriodId(newValue, oldValue) {
                 this.getActivityPerformance();
             },
@@ -205,9 +169,9 @@
         methods: {
             async getActivityPerformance() {
                 try {
-                    if (!!this.activityId && !!this.reportPeriodId) {
+                    if (!!this.reportPeriodId) {
                         this.activityPerformance = await this.$store.dispatch("GET_ACTIVITY_PERFORMANCE", {
-                            activityId: this.activityId,
+                            activityId: this.activity.id,
                             reportPeriodId: this.reportPeriodId,
                         });
                     }

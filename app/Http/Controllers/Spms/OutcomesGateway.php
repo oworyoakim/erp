@@ -16,6 +16,19 @@ class OutcomesGateway extends GatewayController
         $this->urlEndpoint = env('SPMS_APP_URL') . '/v1/outcomes';
     }
 
+    public function index(Request $request)
+    {
+        try
+        {
+            $data = $request->all();
+            $responseData = $this->get($this->urlEndpoint, $data);
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
     public function store(Request $request)
     {
         try

@@ -2,33 +2,19 @@
     <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
         <form @submit.prevent="saveOutputIndicatorTarget" autocomplete="off">
             <div class="form-group row" v-if="!!!target.id">
-                <label class="col-sm-4">Intervention <span class="text-danger">*</span></label>
-                <div class="col-sm-8">
-                    <select class="form-control" v-model="interventionId" :disabled="!!target.id">
-                        <option value="">Select...</option>
-                        <option v-for="intervention in interventionsOptions"
-                                :value="intervention.value"
-                                :key="intervention.value"
-                        >
-                            {{intervention.text}}
-                        </option>
-                    </select>
-                </div>
-            </div>
-            <div class="form-group row" v-if="!!!target.id">
                 <label class="col-sm-4">Output <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
                     <select class="form-control" v-model="outputId" :disabled="!!target.id">
                         <option value="">Select...</option>
                         <option v-for="output in outputsOptions"
                                 :value="output.value"
-                                :key="output.value"
-                        >
+                                :key="output.value">
                             {{output.text}}
                         </option>
                     </select>
                 </div>
             </div>
+
             <div class="form-group row" v-if="!!!target.id">
                 <label class="col-sm-4">Indicator <span class="text-danger">*</span></label>
                 <div class="col-sm-8">
@@ -36,8 +22,7 @@
                         <option value="">Select...</option>
                         <option v-for="indicator in indicatorsOptions"
                                 :value="indicator.value"
-                                :key="indicator.value"
-                        >
+                                :key="indicator.value">
                             {{indicator.text}}
                         </option>
                     </select>
@@ -88,7 +73,6 @@
         data() {
             return {
                 target: new OutputIndicatorTarget(),
-                interventionId: '',
                 outputId: '',
                 outputIndicatorId: '',
                 isEditing: false,
@@ -98,17 +82,11 @@
         computed: {
             ...mapGetters({
                 objective: "OBJECTIVE_DETAILS",
+                activity: "ACTIVE_ACTIVITY",
+                outputs: "OUTPUTS",
             }),
-            interventionsOptions() {
-                return this.objective.interventions.map((intervention) => {
-                    return {
-                        text: intervention.name,
-                        value: intervention.id,
-                    }
-                });
-            },
             outputsOptions() {
-                return this.objective.outputs.filter((output) => {
+                return this.outputs.filter((output) => {
                     return output.interventionId === this.interventionId;
                 }).map((output) => {
                     return {

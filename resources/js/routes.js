@@ -58,6 +58,7 @@ const routes = {
     OUTCOME_TARGETS: '/spms/outcome-indicator-targets',
     OUTCOME_ACHIEVEMENTS: '/spms/key-result-areas/achievements',
     WORK_PLANS: '/spms/work-plans',
+    MAIN_ACTIVITIES: '/spms/main-activities',
     ACTIVITIES: '/spms/activities',
     STAGES: '/spms/stages',
     TASKS: '/spms/tasks',

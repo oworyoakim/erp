@@ -19,10 +19,20 @@
                     </th>
                     <td>{{$stringLimit(indicator.description)}}</td>
                     <td class="text-right">
-                        <button class="btn btn-info btn-sm" title="Edit" @click="editOutputIndicator(indicator)"><i
-                            class="fa fa-pencil m-r-5"></i></button>
-                        <button class="btn btn-danger btn-sm" title="Delete" @click="deleteOutputIndicator(indicator)"><i
-                            class="fa fa-trash-o m-r-5"></i></button>
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-secondary">Actions</button>
+                            <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <span class="sr-only">Actions</span>
+                            </button>
+                            <div class="dropdown-menu" x-placement="top-start" style="position: absolute; will-change: transform; top: 0px; left: 0px; transform: translate3d(72px, -118px, 0px);">
+                                <a @click="editOutputIndicator(indicator)" class="dropdown-item" href="javascript:void(0)">
+                                    <i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                <a @click="deleteOutputIndicator(indicator)" class="dropdown-item" href="javascript:void(0)">
+                                    <i class="fa fa-trash-o m-r-5"></i> Delete
+                                </a>
+                                <div class="dropdown-divider"></div>
+                            </div>
+                        </div>
                     </td>
                 </tr>
                 </tbody>
@@ -44,9 +54,7 @@
         methods: {
             editOutputIndicator(indicator = null){
 
-                EventBus.$emit("EDIT_OUTPUT_INDICATOR", {
-                    indicator: indicator
-                });
+                EventBus.$emit("EDIT_OUTPUT_INDICATOR", indicator);
             },
             deleteOutputIndicator(indicator){
 

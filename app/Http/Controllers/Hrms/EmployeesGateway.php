@@ -60,10 +60,10 @@ class EmployeesGateway extends GatewayController
         try
         {
             $rules = [
-                'username' => 'required|unique:users',
                 'firstName' => 'required',
                 'lastName' => 'required',
                 'password' => 'required',
+                'email' => 'required|email|unique:users,email',
                 'roleId' => 'required',
             ];
             // get all the form data
@@ -83,12 +83,14 @@ class EmployeesGateway extends GatewayController
             }
 
             $credentials = [
-                'username' => $data['username'],
+                'email' => strtolower($data['email']),
+                'username' => strtolower($data['email']),
                 'password' => $data['password'],
                 'first_name' => $data['firstName'],
                 'last_name' => $data['lastName'],
                 'avatar' => '/storage/images/avatar.png',
             ];
+
             DB::beginTransaction();
             // create the employee
             $user = Sentinel::registerAndActivate($credentials);
@@ -131,7 +133,7 @@ class EmployeesGateway extends GatewayController
                 'firstName' => 'required',
                 'lastName' => 'required',
             ];
-            if ($employeeUser->email != $data['email'])
+            if (strtolower($employeeUser->email) !== strtolower($data['email']))
             {
                 $rules['email'] = 'required|email|unique:users';
             }
@@ -140,6 +142,7 @@ class EmployeesGateway extends GatewayController
                 $rules['password'] = 'min:6';
             }
             $this->validateData($data, $rules);
+            //dd($data);
             if ($employeeUser)
             {
                 $credentials = [];
@@ -157,9 +160,10 @@ class EmployeesGateway extends GatewayController
                     $credentials['last_name'] = $data['lastName'];
                 }
 
-                if ($data['email'] != $employeeUser->email)
+                if (strtolower($data['email']) != strtolower($employeeUser->email))
                 {
-                    $credentials['email'] = $data['email'];
+                    $credentials['email'] = strtolower($data['email']);
+                    $credentials['username'] = strtolower($data['email']);
                 }
 
                 Sentinel::update($employeeUser, $credentials);
@@ -181,6 +185,21 @@ class EmployeesGateway extends GatewayController
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/profile", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function show(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->get("{$this->urlEndpoint}/show", $params);
 
             return response()->json($responseData);
         } catch (Exception $ex)

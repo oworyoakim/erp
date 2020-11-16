@@ -20,7 +20,7 @@ class ActivitiesGateway extends GatewayController
     {
         try
         {
-            $params = $request->only(['workPlanId', 'interventionId']);
+            $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
 

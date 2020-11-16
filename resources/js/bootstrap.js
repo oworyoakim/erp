@@ -27,6 +27,20 @@ try {
     require('../../public/plugins/bootstrap-daterangepicker/daterangepicker');
     // bootstrap-datepicker
     require('../../public/plugins/bootstrap-datepicker/js/bootstrap-datepicker.min');
+
+    window.axios = Vue.prototype.$http = axios;
+    // Moment
+    window.moment = Vue.prototype.$moment = require('moment');
+    // Numeral
+    window.numeral = Vue.prototype.$numeral = require('numeral');
+    // Morris Chart
+    require('morris.js/morris.min');
+    // Morris Requires Raphael
+    window.Raphael = require('raphael');
+    // Custom JS
+    require('../../public/smarthr/maroon/js/app');
+    // Summernote JS
+    //require('../../public/smarthr/maroon/plugins/summernote/dist/summernote-bs4');
     // Toastr
     window.toastr = require('toastr');
     // Select2
@@ -79,19 +93,12 @@ try {
 
     });
 
-    window.axios = Vue.prototype.$http = axios;
-    // Moment
-    window.moment = Vue.prototype.$moment = require('moment');
-    // Numeral
-    window.numeral = Vue.prototype.$numeral = require('numeral');
-    // Morris Chart
-    require('morris.js/morris.min');
-    // Morris Requires Raphael
-    window.Raphael = require('raphael');
-    // Custom JS
-    require('../../public/smarthr/maroon/js/app');
-    // Summernote JS
-    //require('../../public/smarthr/maroon/plugins/summernote/dist/summernote-bs4');
+    /**
+     * Format a number into currency (comman seperated)
+     */
+    Vue.filter('currency', function (value = '') {
+        return numeral(value).format("0,0");
+    });
 
     function isEqual(value, other) {
 

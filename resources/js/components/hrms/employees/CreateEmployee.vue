@@ -294,14 +294,14 @@
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group row">
-                                    <label class="col-form-label col-sm-4">Username <span
+                                    <label class="col-form-label col-sm-4">Work Email <span
                                         class="text-danger">*</span></label>
                                     <div class="col-sm-8">
-                                        <input v-model="employee.username"
-                                               v-bind:class="{'is-invalid': !!errors.username}"
-                                               class="form-control" type="text" autocomplete="off">
-                                        <span v-if="!!errors.username" class="invalid-feedback"
-                                              v-text="errors.username"></span>
+                                        <input v-model="employee.email"
+                                               v-bind:class="{'is-invalid': !!errors.email}"
+                                               class="form-control" type="email" autocomplete="off">
+                                        <span v-if="!!errors.email" class="invalid-feedback"
+                                              v-text="errors.email"></span>
                                     </div>
                                 </div>
                             </div>
@@ -430,7 +430,7 @@ export default {
         prev() {
             this.step--;
         },
-        validateBasicInfo() {
+        validateBasicInfo(nextStep = true) {
             if (!!!this.employee.firstName) {
                 this.errors.set('firstName', 'First name is required');
             } else if (String(this.employee.firstName).trim().length < 3) {
@@ -522,16 +522,19 @@ export default {
                 this.errors.has('dob') ||
                 this.errors.has('gender');
             if (formInvalid) {
-                return;
+                return false;
             }
-            if(!this.employee.employeeNumber){
+            if (!this.employee.employeeNumber) {
                 let initials = this.employee.lastName[0] + this.employee.firstName[0];
                 initials = initials.toUpperCase();
                 this.employee.employeeNumber = `PF/${initials}/${this.formSelectionOptions.nextEmployeeId}`;
             }
-            this.step++;
+            if (nextStep) {
+                this.step++;
+            }
+            return true;
         },
-        validateEmploymentInfo() {
+        validateEmploymentInfo(nextStep = true) {
             /*
             let partern = /^[A-Z0-9]+$/;
             let empNum = String(this.employee.employee_number).trim();
@@ -578,23 +581,32 @@ export default {
                 this.errors.clear('joinDate');
             }
             localStorage.setItem('employee', JSON.stringify(this.employee));
-            if (this.errors.has('employeeNumber') || this.errors.has('designationId') || this.errors.has('employmentTerm') || this.errors.has('employmentType') || this.errors.has('joinDate')) {
-                return;
+            let invalidData = this.errors.has('employeeNumber') ||
+                this.errors.has('designationId') ||
+                this.errors.has('employmentTerm') ||
+                this.errors.has('employmentType') ||
+                this.errors.has('joinDate');
+            if (invalidData) {
+                return false;
             }
-            this.step++;
+            if (nextStep) {
+                this.step++;
+            }
+            return true;
         },
-        isInvalidLoginInfo() {
+        validateLoginInfo() {
             if (String(this.employee.roleId).trim().length === 0) {
                 this.errors.set('roleId', 'Please select a user group');
             } else if (this.errors.has('roleId')) {
                 this.errors.clear('roleId');
             }
-            if (String(this.employee.username).trim().length === 0) {
-                this.errors.set('username', 'Username is required');
-            } else if (this.formSelectionOptions.usernames.includes(this.employee.username)) {
-                this.errors.set('username', 'Username already taken');
-            } else if (this.errors.has('username')) {
-                this.errors.clear('username');
+
+            if (String(this.employee.email).trim().length === 0) {
+                this.errors.set('email', 'Work email is required');
+            } else if (this.formSelectionOptions.usernames.includes(this.employee.email.toLowerCase())) {
+                this.errors.set('email', 'Work email already taken');
+            } else if (this.errors.has('email')) {
+                this.errors.clear('email');
             }
 
             if (String(this.employee.password).trim().length === 0) {
@@ -605,16 +617,28 @@ export default {
                 this.errors.clear('password');
             }
             localStorage.setItem('employee', JSON.stringify(this.employee));
-            return this.errors.has('username') || this.errors.has('password') || this.errors.has('roleId');
+            let invalidData = this.errors.has('email') ||
+                this.errors.has('password') ||
+                this.errors.has('roleId');
+            return !invalidData;
         },
 
         async saveEmployee() {
             try {
-                this.isSending = true;
-                if (this.isInvalidLoginInfo()) {
-                    this.isSending = false;
+                if (!this.validateBasicInfo(false) || !this.validateEmploymentInfo(false) || !this.validateLoginInfo()) {
+                    let errors = 'There were validation errors on your form <br/>';
+                    for (let field in this.errors) {
+                        if (this.errors.has(field)) {
+                            errors += `${field}: ${this.errors.get(field)}<br/>`;
+                        }
+                    }
+                    let message = document.createElement('div');
+                    //message.innerHTML = error.trim('"');
+                    message.innerHTML = errors;
+                    await swal({content: message, icon: 'error'});
                     return;
                 }
+                this.isSending = true;
                 let response = await this.$store.dispatch('SAVE_EMPLOYEE', this.employee);
                 localStorage.removeItem('employee');
                 this.isSending = false;

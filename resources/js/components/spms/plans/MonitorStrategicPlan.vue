@@ -1,7 +1,7 @@
 <template>
     <div class="strategic-plan-monitor">
         <div class="row">
-            <div class="col-sm-5">
+            <div class="col-sm-4">
                 <label>Select a strategic plan to continue</label>
                 <select v-model="filters.planId" class="form-control">
                     <option value="">Select...</option>
@@ -13,7 +13,7 @@
                     </option>
                 </select>
             </div>
-            <div class="col-sm-5" v-if="!!filters.planId">
+            <div class="col-sm-4" v-if="!!filters.planId">
                 <label>Select a report period</label>
                 <select class="form-control" v-model="filters.reportPeriodId">
                     <option value="">Select...</option>
@@ -24,9 +24,12 @@
                     </option>
                 </select>
             </div>
-            <div class="col-sm-2" v-if="!!filters.planId && !!filters.reportPeriodId">
-                <button class="btn btn-sm btn-primary mt-4" type="button" @click="downloadReport()"><i
-                    class="fa fa-file-excel-o"></i> Excel
+            <div class="col-sm-4" v-if="!!filters.planId && !!filters.reportPeriodId">
+                <button class="btn btn-sm btn-secondary mt-4" type="button" @click="printReport()"><i
+                    class="fa fa-print"></i> Print
+                </button>
+                <button class="btn btn-sm btn-primary mt-4" type="button" @click="downloadPdfReport()"><i
+                    class="fa fa-file-pdf-o"></i> PDF
                 </button>
             </div>
         </div>
@@ -35,106 +38,106 @@
                 <app-spinner></app-spinner>
             </template>
             <template v-else-if="!!reportData">
-                <div class="row">
-                    <div class="col-md-12 table-responsive">
-                        <table class="table-bordered table-sm" width="100%">
+                <div class="row" id="strategic-plan-monitor-report">
+                    <div class="col-md-12 table-responsive" style="display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                        <table class="table-bordered table-sm" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
                             <tr>
-                                <td>
-                                    <img :src="reportData.companyLogo" class="img-fluid small" alt="UNEB-SPMS"/>
+                                <td style="border: 0">
+                                    <img :src="'data:image/png;base64,' + reportData.companyLogo" class="img-fluid small" alt="UNEB-SPMS"/>
                                 </td>
-                                <td colspan="7" class="text-center">
+                                <td colspan="7" style="border: 0; text-align: center" class="text-center">
                                     <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
-                                    <h4 class="text-bold text-uppercase">
+                                    <h4 style="font-weight: bold;  text-transform: capitalize;">
                                         PERFORMANCE REPORT FOR THE UNEB {{reportData.plan}}
                                     </h4>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="2">
-                                    <span class="text-bold">Report End Period</span>
-                                    <span class="pull-right">
+                                <td colspan="2" style="border: 0;">
+                                    <span style="font-weight: bold;">Report End Period</span>
+                                    <span style="float: right;">
                                         {{reportData.dateParams.currentQuarter.name}} {{reportData.dateParams.financialYear}}
                                     </span>
                                 </td>
-                                <td></td>
-                                <td colspan="2">
-                                    <span class="text-bold">Report Frequency</span>
-                                    <span class="pull-right">{{reportData.reportFrequency}}</span>
+                                <td style="border: 0;"></td>
+                                <td colspan="2" style="border: 0;">
+                                    <span style="font-weight: bold;">Report Frequency</span>
+                                    <span style="float: right;">{{reportData.reportFrequency}}</span>
                                 </td>
-                                <td></td>
-                                <td colspan="2">
-                                    <span class="text-bold">Report Date</span>
-                                    <span class="pull-right">{{reportData.reportDate}}</span>
+                                <td style="border: 0"></td>
+                                <td colspan="2" style="border: 0">
+                                    <span style="font-weight: bold;">Report Date</span>
+                                    <span style="float: right">{{reportData.reportDate}}</span>
                                 </td>
                             </tr>
                             <tr>
-                                <td colspan="8"></td>
+                                <td colspan="8" style="border: 0; height: 10px;"></td>
                             </tr>
                             <template v-for="objective in reportData.objectives">
                                 <tr>
-                                    <th colspan="8">
-                                        <span class="mr-5">Strategic Objective:</span>
+                                    <th colspan="8" style="border: 1px solid #dee2e6">
+                                        <span style="margin-right: 3rem; float: left;">Strategic Objective:</span>
                                         <span>{{objective.name}}</span>
                                     </th>
                                 </tr>
                                 <template v-if="objective.interventions.length > 0">
                                     <template v-for="intervention in objective.interventions">
                                         <tr>
-                                            <th colspan="8">
-                                                <span class="mr-4">Strategic Intervention:</span>
+                                            <th colspan="8" style="border: 1px solid #dee2e6">
+                                                <span style="margin-right: 1.5rem; float: left;">Strategic Intervention:</span>
                                                 <span>{{intervention.name}}</span>
                                             </th>
                                         </tr>
                                         <template v-if="intervention.outputs.length > 0">
-                                            <tr class="text-center">
-                                                <th>Output</th>
-                                                <th>Indicator</th>
-                                                <th>Measured As</th>
-                                                <th>Target</th>
-                                                <th>Actual</th>
-                                                <th>Achieved (%)</th>
-                                                <th>Variance</th>
-                                                <th>Comments</th>
+                                            <tr style="text-align: center;">
+                                                <th style="border: 1px solid #dee2e6">Output</th>
+                                                <th style="border: 1px solid #dee2e6">Indicator</th>
+                                                <th style="border: 1px solid #dee2e6">Measured As</th>
+                                                <th style="border: 1px solid #dee2e6">Target</th>
+                                                <th style="border: 1px solid #dee2e6">Actual</th>
+                                                <th style="border: 1px solid #dee2e6">Achieved (%)</th>
+                                                <th style="border: 1px solid #dee2e6">Variance</th>
+                                                <th style="border: 1px solid #dee2e6">Comments</th>
                                             </tr>
                                             <template v-for="output in intervention.outputs">
                                                 <template v-if="output.indicators.length > 0">
                                                     <tr>
-                                                        <td :rowspan="output.indicators.length + 1">{{output.name}}</td>
+                                                        <td :rowspan="output.indicators.length + 1"  style="border: 1px solid #dee2e6; font-weight: bold;">{{output.name}}</td>
                                                     </tr>
                                                     <template v-for="indicator in output.indicators">
                                                         <tr>
-                                                            <td>{{indicator.name}}</td>
-                                                            <td class="text-center">
+                                                            <td style="border: 1px solid #dee2e6">{{indicator.name}}</td>
+                                                            <td class="text-center" style="border: 1px solid #dee2e6; text-align: center;">
                                                                 <span
                                                                     v-if="indicator.unit === 'percent'">Percentage</span>
                                                                 <span v-else>Count</span>
                                                             </td>
-                                                            <td class="text-center">{{indicator.target}}</td>
-                                                            <td class="text-center">{{indicator.actual}}</td>
-                                                            <td class="text-center">{{indicator.achieved}}</td>
-                                                            <td class="text-center">{{indicator.variance}}</td>
-                                                            <td>{{indicator.comments}}</td>
+                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.target}}</td>
+                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.actual}}</td>
+                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.achieved}}</td>
+                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.variance}}</td>
+                                                            <td style="border: 1px solid #dee2e6; width: 25%;">{{indicator.comments}}</td>
                                                         </tr>
                                                     </template>
                                                 </template>
                                                 <template v-else>
                                                     <tr>
-                                                        <td>{{output.name}}</td>
-                                                        <td colspan="7">No indicators!</td>
+                                                        <td style="border: 1px solid #dee2e6;">{{output.name}}</td>
+                                                        <td colspan="7"  style="border: 1px solid #dee2e6;">No indicators!</td>
                                                     </tr>
                                                 </template>
                                             </template>
                                         </template>
                                         <template v-else>
                                             <tr>
-                                                <td colspan="8">No outputs!</td>
+                                                <td colspan="8"  style="border: 1px solid #dee2e6;">No outputs!</td>
                                             </tr>
                                         </template>
                                     </template>
                                 </template>
                                 <template v-else>
                                     <tr>
-                                        <td colspan="8">No interventions!</td>
+                                        <td colspan="8"  style="border: 1px solid #dee2e6;">No interventions!</td>
                                     </tr>
                                 </template>
                             </template>
@@ -153,6 +156,7 @@
     import {mapGetters} from "vuex";
     import SelectBox from "../../shared/SelectBox";
     import {prepareQueryParams} from "../../../utils/helpers";
+    import Printd  from 'printd';
 
     export default {
         components: {
@@ -216,10 +220,20 @@
                     }
                 }
             },
-            downloadReport() {
+            downloadExcelReport() {
                 let queryParams = prepareQueryParams(this.filters);
                 window.open('/spms/plans/monitor/strategy/excel'+ queryParams,'_blank');
-            }
+            },
+            downloadPdfReport(){
+                if(!!this.reportData.filePath && this.reportData.filePath !== '#'){
+                    window.open(this.reportData.filePath,'_blank');
+                }
+            },
+            printReport(){
+                let reportElement = document.getElementById('strategic-plan-monitor-report');
+                let report = new Printd();
+                report.print(reportElement);
+            },
         }
 
     }
