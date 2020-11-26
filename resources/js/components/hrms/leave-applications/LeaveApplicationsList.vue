@@ -47,7 +47,7 @@
                 <template v-if="leaveApplication.nextActor">
                     <app-employee-widget :key="leaveApplication.nextActor.username"
                                          :username="leaveApplication.nextActor.username"
-                                         :name="leaveApplication.nextActor.name"
+                                         :name="leaveApplication.nextActor.fullName"
                                          :avatar="leaveApplication.nextActor.avatar"
                                          :position="leaveApplication.nextActor.designation.title">
                     </app-employee-widget>
@@ -58,29 +58,29 @@
                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a v-if="leaveApplication.canBeEdited"
+                        <a v-if="canBeEdited(leaveApplication)"
                            @click="editLeaveApplication(leaveApplication)" class="dropdown-item" href="#"
                            data-toggle="modal" data-target="#leaveApplicationModal"><i
                             class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a v-if="leaveApplication.canBeVerified" @click="verify(leaveApplication.id)"
+                        <a v-if="canBeVerified(leaveApplication)" @click="verify(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-thumbs-up m-r-5"></i> Verify</a>
-                        <a v-if="leaveApplication.canBeReturned" @click="returnApplication(leaveApplication.id)"
+                        <a v-if="canBeReturned(leaveApplication)" @click="returnApplication(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-thumbs-down m-r-5"></i> Return</a>
-                        <a v-if="leaveApplication.canBeApproved" @click="approve(leaveApplication.id)"
+                        <a v-if="canBeApproved(leaveApplication)" @click="approve(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-thumbs-up m-r-5"></i> Approve</a>
-                        <a v-if="leaveApplication.canBeDeclined" @click="decline(leaveApplication.id)"
+                        <a v-if="canBeDeclined(leaveApplication)" @click="decline(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-thumbs-down m-r-5"></i> Decline</a>
-                        <a v-if="leaveApplication.canBeGranted" @click="grant(leaveApplication.id)"
+                        <a v-if="canBeGranted(leaveApplication)" @click="grant(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-check m-r-5"></i> Grant</a>
-                        <a v-if="leaveApplication.canBeRejected" @click="reject(leaveApplication.id)"
+                        <a v-if="canBeRejected(leaveApplication)" @click="reject(leaveApplication.id)"
                            class="dropdown-item" href="#" data-toggle="modal"><i
                             class="fa fa-times m-r-5"></i> Reject</a>
-                        <a v-if="leaveApplication.canBeDeleted" @click="deleteLeaveApplication(leaveApplication)"
+                        <a v-if="canBeDeleted(leaveApplication)" @click="deleteLeaveApplication(leaveApplication)"
                            class="dropdown-item" href="#"
                            data-toggle="modal"
                            data-target="#delete_leaveapplication"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
@@ -94,6 +94,7 @@
 
 <script>
     import {EventBus} from "../../../app";
+    import {mapGetters} from "vuex";
 
     export default {
         props: {
@@ -104,6 +105,113 @@
             this.$nextTick(() => {
                 $(this.$refs.leaveApplicationsDataTable).DataTable();
             });
+        },
+        computed: {
+            ...mapGetters({
+                loggedInUser: 'getUser',
+            }),
+            canBeVerified(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isVerifier = employeeData.verifiableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasVerifyPermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.verify']);
+                    return leaveApplication.canBeVerified && isVerifier && hasVerifyPermission;
+                }
+            },
+            canBeReturned(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isVerifier = employeeData.verifiableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasReturnPermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.return']);
+                    return leaveApplication.canBeReturned && isVerifier && hasReturnPermission;
+                }
+            },
+            canBeApproved(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isApprover = employeeData.approvableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasApprovePermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.approve']);
+                    return leaveApplication.canBeApproved && isApprover && hasApprovePermission;
+                }
+            },
+            canBeDeclined(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isApprover = employeeData.approvableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasDeclinePermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.decline']);
+                    return leaveApplication.canBeDeclined && isApprover && hasDeclinePermission;
+                }
+            },
+            canBeGranted(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isGrantor = employeeData.grantableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasGrantPermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.grant']);
+                    return leaveApplication.canBeGranted && isGrantor && hasGrantPermission;
+                }
+            },
+            canBeRejected(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let employeeData = (this.loggedInUser) ? this.loggedInUser.employeeData : null;
+                    if(!employeeData || !leaveApplication.employee){
+                        return false;
+                    }
+                    let isGrantor = employeeData.grantableLeaveApplicants.includes(leaveApplication.employee.designationId);
+                    let hasRejectPermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.reject']);
+                    return leaveApplication.canBeRejected && isGrantor && hasRejectPermission;
+                }
+            },
+            canBeEdited(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let hasEditPermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.edit']);
+                    return leaveApplication.canBeEdited && hasEditPermission;
+                }
+            },
+            canBeDeleted(){
+                return (leaveApplication) => {
+                    if(!leaveApplication){
+                        return false;
+                    }
+                    let hasDeletePermission = this.$store.getters.HAS_ANY_ACCESS(['leaves.applications.delete']);
+                    return leaveApplication.canBeDeleted && hasDeletePermission;
+                }
+            },
         },
         methods: {
             editLeaveApplication(leaveApplication = null) {

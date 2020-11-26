@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ErpHelper;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
@@ -199,8 +200,10 @@ class AccountController extends Controller
                 $loggedInUser->role->slug = $role->slug;
                 $loggedInUser->permissions = array_merge($loggedInUser->permissions, $role->getPermissions());
             }
-            $user->tinymceApiKey = env('TINYMCE_API_KEY', null);
-            $user->dateFormat = settings()->get('date_format') ?: env('APP_DATE_FORMAT', 'd/m/Y');
+            $loggedInUser->tinymceApiKey = env('TINYMCE_API_KEY', null);
+            $loggedInUser->dateFormat = settings()->get('date_format') ?: env('APP_DATE_FORMAT', 'd/m/Y');
+            $employeeData = $this->get("{$this->urlEndpoint}/v1/employees/show-for-user/{$user->getUserId()}");
+            $loggedInUser->employeeData = ErpHelper::arrayToObject($employeeData);
             return response()->json($loggedInUser);
         } catch (Exception $ex)
         {

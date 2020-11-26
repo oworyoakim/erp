@@ -9,6 +9,9 @@ use stdClass;
 class ErpHelper
 {
     public static function arrayToObject(array $arr) {
+        if(count($arr) == 0){
+            return null;
+        }
         return json_decode(json_encode($arr), FALSE);
     }
     public static function arrayToObjectRecursive(array $arr) {
