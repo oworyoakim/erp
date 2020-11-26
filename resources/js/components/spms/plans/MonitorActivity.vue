@@ -1,6 +1,6 @@
 <template>
     <div class="activity-monitor">
-        <div class="row">
+        <div class="page-header row">
             <div class="col-sm-3">
                 <label>Select a strategic plan to continue</label>
                 <select v-model="filters.planId" class="custom-select" @change="setActivePlan()">
@@ -65,20 +65,20 @@
                 <div class="row" id="activity-monitor-report">
                     <div class="col-md-12 table-responsive"
                          style="display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table class="table-bordered table-sm"
-                               style="width: 100%; border-collapse: collapse; border-spacing: 0;">
-                            <tr>
-                                <td style="border: 0">
-                                    <img :src="'data:image/png;base64,' + reportData.companyLogo"
-                                         class="img-fluid small" alt="UNEB-SPMS"/>
-                                </td>
-                                <td colspan="2" style="border: 0; text-align: center" class="text-center">
-                                    <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
-                                    <h4 style="font-weight: bold;  text-transform: capitalize;">
-                                        PERFORMANCE REPORT FOR THE UNEB {{ reportData.plan }}
-                                    </h4>
-                                </td>
-                            </tr>
+                        <div style="border: 0; text-align: center" class="text-center">
+                            <img :src="'data:image/png;base64,' + reportData.companyLogo" class="img-fluid" height="120px" width="120px" alt="UNEB-SPMS"/>
+                            <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
+                            <h4 style="font-weight: bold;  text-transform: capitalize;">
+                                PERFORMANCE REPORT FOR THE {{reportData.plan}}
+                            </h4>
+                        </div>
+                        <hr style="height:10px; background-color: #0b2e13; margin-bottom:1px">
+                        <span style="text-align: center; font-style:italic; font-weight: bold; font-family:Times New Romans; font-size:12px;">
+                            TABLE HEADER KEYS => MA: Measured As (CT: Count, %: %age), TA: Target, AV: Actual Value, PA: %age of Achievement, VA: Variance
+                        </span>
+                        <hr style="height:4px; background-color: #0b2e13; margin-top: 0">
+
+                        <table class="table-bordered table-sm" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
                             <tr>
                                 <td style="border: 0;">
                                     <span style="margin-right: 1.5rem; float: left; font-weight: bold;">Report End Period</span>
@@ -137,11 +137,11 @@
                                             <tr style="text-align: center;">
                                                 <th style="border: 1px solid #dee2e6">Output</th>
                                                 <th style="border: 1px solid #dee2e6">Indicator</th>
-                                                <th style="border: 1px solid #dee2e6">Measured As</th>
-                                                <th style="border: 1px solid #dee2e6">Target</th>
-                                                <th style="border: 1px solid #dee2e6">Actual</th>
-                                                <th style="border: 1px solid #dee2e6">Achieved (%)</th>
-                                                <th style="border: 1px solid #dee2e6">Variance</th>
+                                                <th style="border: 1px solid #dee2e6">MA</th>
+                                                <th style="border: 1px solid #dee2e6">TA</th>
+                                                <th style="border: 1px solid #dee2e6">AV</th>
+                                                <th style="border: 1px solid #dee2e6">PA%</th>
+                                                <th style="border: 1px solid #dee2e6">VA</th>
                                                 <th style="border: 1px solid #dee2e6">Comments</th>
                                             </tr>
                                             <template v-for="output in activity.outputs">
@@ -174,7 +174,7 @@
                                                             <td style="border: 1px solid #dee2e6; text-align: center;">
                                                                 {{ indicator.variance }}
                                                             </td>
-                                                            <td style="border: 1px solid #dee2e6; width: 25%;">
+                                                            <td style="border: 1px solid #dee2e6;font-size: 10px; width: 25%;">
                                                                 {{ indicator.comments }}
                                                             </td>
                                                         </tr>

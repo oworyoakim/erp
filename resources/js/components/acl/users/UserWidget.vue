@@ -1,7 +1,7 @@
 <template>
     <h2 class="table-avatar">
         <a :href="`/acl/users/profile/${username}`" class="avatar">
-            <img alt="" :src="avatar">
+            <img alt="" :src="storage/images/avatar.png">
         </a>
         <a :href="`/acl/users/profile/${username}`">
             <span class="employee-name">{{name}} <span v-if="!!position">{{position}}</span></span>

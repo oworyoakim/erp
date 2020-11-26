@@ -27,7 +27,7 @@
                                 <span class="col-sm-9">{{department.title}}</span>
                             </div>
                             <div class="title row">
-                                <span class="col-sm-3 font-weight-bolder">Description:</span>
+                                <span class="col-sm-3 font-weight-bolder">Mandate:</span>
                                 <span class="col-sm-9">{{department.description}}</span>
                             </div>
                             <div class="title row">

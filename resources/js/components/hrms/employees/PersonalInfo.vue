@@ -9,7 +9,7 @@
                     <i class="fa fa-times"></i>
                 </a>
             </h2>
-            <h2 class="h1" v-else>
+            <h3 class="mb-2 border-bottom" v-else>
                 Particulars
                 <a @click="editProfileInfo(true)"
                    class="edit-icon"
@@ -17,7 +17,7 @@
                    href="javascript:void(0)">
                     <i class="fa fa-pencil"></i>
                 </a>
-            </h2>
+            </h3>
             <template v-if="isEditing">
                 <EmployeeProfileForm/>
                 <DesignationForm />

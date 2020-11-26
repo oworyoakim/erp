@@ -7,11 +7,11 @@
         <template v-else>
             <div class="card profile-box flex-fill">
                 <div class="card-body text-lg">
-                    <h3 class="card-title">
+                    <h4 class="card-title">
                         Bank Details
                         <button v-if="banks.length === 0" @click="editBank()" class="edit-icon">
                             <i class="fa fa-plus"></i></button>
-                    </h3>
+                    </h4>
                     <BankList :employee-id="employeeId" :banks="banks"/>
                     <BankForm :employee-id="employeeId" v-on:BANK_INFO_SAVED="getBankInfo()"/>
                 </div>

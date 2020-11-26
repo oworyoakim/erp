@@ -5,23 +5,23 @@
                    @click="editBank(bank)"><i class="fa fa-pencil"></i></a></li>
             <li>
                 <div class="title">Bank Name:</div>
-                <div class="text">{{bank.bankName}}</div>
+                <div class="small text-muted-light">{{bank.bankName}}</div>
             </li>
             <li>
                 <div class="title">Bank Branch:</div>
-                <div class="text">{{bank.bankBranch}}</div>
+                <div class="small text-muted-light">{{bank.bankBranch}}</div>
             </li>
             <li>
                 <div class="title">Account Name:</div>
-                <div class="text">{{bank.accountName}}</div>
+                <div class="small text-muted-light">{{bank.accountName}}</div>
             </li>
             <li>
                 <div class="title">Account No.</div>
-                <div class="text">{{bank.accountNumber}}</div>
+                <div class="small text-muted-light">{{bank.accountNumber}}</div>
             </li>
             <li>
                 <div class="title">Swift Code:</div>
-                <div class="text">{{bank.swiftCode}}</div>
+                <div class="small text-muted">{{bank.swiftCode}}</div>
             </li>
         </ul>
     </div>

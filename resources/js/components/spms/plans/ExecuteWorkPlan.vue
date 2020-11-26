@@ -1,6 +1,6 @@
 <template>
     <div class="strategic-plan-execution">
-        <div class="row" v-if="!activeWorkPlan">
+        <div class="-header pagerow" v-if="!activeWorkPlan">
             <div class="col-sm-12 table-responsive">
                 <h5>Select a strategic plan to continue</h5>
                 <select class="form-control" @change="setActivePlan($event.target.value)">
