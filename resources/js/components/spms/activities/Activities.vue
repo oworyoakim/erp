@@ -18,8 +18,7 @@
                     </div>
                 </div>
             </div>
-            <div class="row payroll-table card">
-                <div class="col-sm-12 table-responsive">
+                <div class="col-sm-12">
                     <table class="table table-hover table-radius">
                         <thead>
                         <tr>
@@ -77,7 +76,6 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
         </template>
     </div>
 </template>

@@ -73,50 +73,53 @@
                             <tr>
                                 <td colspan="8" style="border: 0; height: 10px;"></td>
                             </tr>
+
+
+
                             <template v-for="objective in reportData.objectives">
                                 <tr>
-                                    <th colspan="8" style="border: 1px solid #dee2e6">
-                                        <span style="margin-right: 3rem; float: left;">Strategic Objective:</span>
-                                        <span>{{objective.name}}</span>
+                                    <th colspan="8" style="border: 1px solid #dee2e6; background-color:#d1d1d1;">
+                                        <span style="margin-right: 3rem; float: left;">Strategic Objective: </span>
+                                        <span style="font-weight: normal;">{{objective.name}}</span>
                                     </th>
                                 </tr>
                                 <template v-if="objective.interventions.length > 0">
                                     <template v-for="intervention in objective.interventions">
-                                        <tr>
-                                            <th colspan="8" style="border: 1px solid #dee2e6">
-                                                <span style="margin-right: 1.5rem; float: left;">Strategic Intervention:</span>
-                                                <span>{{intervention.name}}</span>
-                                            </th>
-                                        </tr>
+<!--                                        <tr>-->
+<!--                                            <th colspan="8" style="border: 1px solid #dee2e6">-->
+<!--                                                <span style="margin-right: 1.5rem; float: left;">Strategic Intervention:</span>-->
+<!--                                                <span>{{intervention.name}}</span>-->
+<!--                                            </th>-->
+<!--                                        </tr>-->
                                         <template v-if="intervention.outputs.length > 0">
-                                            <tr style="text-align: center;">
+                                            <tr style="padding:5px;background-color: #f2f2f2;text-align: left;padding-top:5px">
                                                 <th style="border: 1px solid #dee2e6">Output</th>
                                                 <th style="border: 1px solid #dee2e6">Indicator</th>
-                                                <th style="border: 1px solid #dee2e6">Measured As</th>
-                                                <th style="border: 1px solid #dee2e6">Target</th>
-                                                <th style="border: 1px solid #dee2e6">Actual</th>
-                                                <th style="border: 1px solid #dee2e6">Achieved (%)</th>
-                                                <th style="border: 1px solid #dee2e6">Variance</th>
+                                                <th style="border: 1px solid #dee2e6">MA</th>
+                                                <th style="border: 1px solid #dee2e6">TA</th>
+                                                <th style="border: 1px solid #dee2e6">AV</th>
+                                                <th style="border: 1px solid #dee2e6">PA%</th>
+                                                <th style="border: 1px solid #dee2e6">VA</th>
                                                 <th style="border: 1px solid #dee2e6">Comments</th>
                                             </tr>
                                             <template v-for="output in intervention.outputs">
                                                 <template v-if="output.indicators.length > 0">
                                                     <tr>
-                                                        <td :rowspan="output.indicators.length + 1"  style="border: 1px solid #dee2e6; font-weight: bold;">{{output.name}}</td>
+                                                        <td :rowspan="output.indicators.length + 1"  style="padding:5px;border: 1px solid #dee2e6; font-weight: bold;">{{output.name}}</td>
                                                     </tr>
                                                     <template v-for="indicator in output.indicators">
                                                         <tr>
-                                                            <td style="border: 1px solid #dee2e6">{{indicator.name}}</td>
+                                                            <td style="padding:5px;font-size: 12px;border: 1px solid #dee2e6">{{indicator.name}}</td>
                                                             <td class="text-center" style="border: 1px solid #dee2e6; text-align: center;">
                                                                 <span
-                                                                    v-if="indicator.unit === 'percent'">Percentage</span>
-                                                                <span v-else>Count</span>
+                                                                    v-if="indicator.unit === 'percent'">%age</span>
+                                                                <span v-else>CT</span>
                                                             </td>
-                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.target}}</td>
-                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.actual}}</td>
-                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.achieved}}</td>
-                                                            <td style="border: 1px solid #dee2e6; text-align: center;">{{indicator.variance}}</td>
-                                                            <td style="border: 1px solid #dee2e6; width: 25%;">{{indicator.comments}}</td>
+                                                            <td style="padding:5px;border: 1px solid #dee2e6; text-align: right;">{{indicator.target}}</td>
+                                                            <td style="padding:5px;border: 1px solid #dee2e6; text-align: right;">{{indicator.actual}}</td>
+                                                            <td style="padding:5px;border: 1px solid #dee2e6; text-align: right;">{{indicator.achieved}}</td>
+                                                            <td style="padding:5px;border: 1px solid #dee2e6; text-align: right;">{{indicator.variance}}</td>
+                                                            <td style="padding:5px;font-size: 12px;border: 1px solid #dee2e6; width: 25%;">{{indicator.comments}}</td>
                                                         </tr>
                                                     </template>
                                                 </template>
