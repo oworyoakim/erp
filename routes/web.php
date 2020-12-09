@@ -163,6 +163,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 // leaves
                 Route::get('', 'HrmsController@leaves')->name('hrms.leaves.list');
                 Route::get('all-json', 'LeavesGateway@index');
+                Route::get('history', 'LeavesGateway@history');
 
                 // leaves/types
                 Route::prefix('types')->group( function () {
@@ -191,8 +192,8 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('all-json', 'LeaveApplicationsGateway@index');
                 Route::post('', 'LeaveApplicationsGateway@store');
                 Route::put('', 'LeaveApplicationsGateway@update');
-                //Route::patch('verify', 'LeaveApplicationsGateway@verify');
-                //Route::patch('return', 'LeaveApplicationsGateway@returnApplication');
+                Route::patch('verify', 'LeaveApplicationsGateway@verify');
+                Route::patch('return', 'LeaveApplicationsGateway@returnApplication');
                 //Route::patch('approve', 'LeaveApplicationsGateway@approve');
                 //Route::patch('decline', 'LeaveApplicationsGateway@decline');
                 //Route::patch('grant', 'LeaveApplicationsGateway@grant');

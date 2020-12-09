@@ -112,8 +112,6 @@
             EventBus.$on(['LEAVE_TYPE_SAVED','LEAVE_TYPE_DELETED'], this.getLeaveTypes);
             EventBus.$on([
                 'LEAVE_POLICY_SAVED',
-                'LEAVE_POLICY_SAVED',
-                'LEAVE_POLICY_SAVED',
                 'LEAVE_POLICY_DELETED'
             ], this.getLeavePolicies);
         },

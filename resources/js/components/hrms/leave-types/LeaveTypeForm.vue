@@ -7,6 +7,14 @@
                 <input v-model="leaveType.title" class="form-control" type="text" autofocus>
             </div>
             <div class="form-group">
+                <div class="checkbox-inline">
+                    <label>
+                        <input v-model="leaveType.earnedLeave" type="checkbox">
+                        Earned leave?
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
                 <label>Description<span class="text-danger">*</span></label>
                 <textarea v-model="leaveType.description" class="form-control"></textarea>
             </div>

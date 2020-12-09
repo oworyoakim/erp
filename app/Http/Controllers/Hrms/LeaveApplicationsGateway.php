@@ -63,4 +63,36 @@ class LeaveApplicationsGateway extends GatewayController
         }
     }
 
+    public function verify(Request $request)
+    {
+        try
+        {
+
+            $data = $request->all();
+            $loggedInUser = Sentinel::getUser();
+            $data['userId'] = $loggedInUser->getUserId();
+            $responseData = $this->patch("{$this->urlEndpoint}/verify", $data);
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function returnApplication(Request $request)
+    {
+        try
+        {
+
+            $data = $request->all();
+            $loggedInUser = Sentinel::getUser();
+            $data['userId'] = $loggedInUser->getUserId();
+            $responseData = $this->patch("{$this->urlEndpoint}/return", $data);
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
 }

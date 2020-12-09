@@ -1,6 +1,6 @@
 <template>
     <div class="strategic-plan-execution">
-        <div class="-header pagerow" v-if="!activeWorkPlan">
+        <div class="row" v-if="!activeWorkPlan">
             <div class="col-sm-12 table-responsive">
                 <h5>Select a strategic plan to continue</h5>
                 <select class="form-control" @change="setActivePlan($event.target.value)">
@@ -220,7 +220,9 @@ export default {
             'ACTIVITY_SAVED',
             'STAGE_SAVED',
             'TASK_SAVED',
-        ], this.refreshData);
+        ],() => {
+            this.getWorkPlans();
+        });
         EventBus.$on(['MAIN_ACTIVITY_SAVED',], () => {
             this.$store.dispatch('GET_MAIN_ACTIVITIES', {workPlanId: this.activeWorkPlan.id}).then(() => {
                 //TODO: we need to update the state with the updated active main activity
@@ -359,9 +361,6 @@ export default {
         },
         getInterventions() {
             return this.$store.dispatch("GET_INTERVENTIONS", {planId: this.activePlan.id});
-        },
-        refreshData() {
-            this.$store.dispatch("GET_WORK_PLANS", this.activePlan.id);
         },
         editWorkPlan(workPlan = null) {
             EventBus.$emit("EDIT_WORK_PLAN", workPlan);

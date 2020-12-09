@@ -6,7 +6,6 @@
                 <th>Name</th>
                 <th>Gender</th>
                 <th>Days</th>
-                <th>Earned?</th>
                 <th>Weekend?</th>
                 <th>C/F?</th>
                 <th>Active</th>
@@ -18,10 +17,6 @@
                 <td>{{leavePolicy.title}}</td>
                 <td>{{leavePolicy.gender}}</td>
                 <td>{{leavePolicy.duration}}</td>
-                <td>
-                    <span v-if="leavePolicy.earnedLeave">Yes</span>
-                    <span v-else>No</span>
-                </td>
                 <td>
                     <span v-if="leavePolicy.withWeekend">Yes</span>
                     <span v-else>No</span>

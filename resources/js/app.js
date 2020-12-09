@@ -24,5 +24,25 @@ Vue.component('app-main-modal', MainModal);
 import Datepicker from "vuejs-datepicker";
 
 
-
 Vue.use(Datepicker);
+
+Vue.mixin({
+    methods: {
+        trimLeft(str, charlist) {
+            if (charlist === undefined) {
+                charlist = "\s";
+            }
+            return String(str).replace(new RegExp("^[" + charlist + "]+"), "");
+        },
+        trimRight(str, charlist) {
+            if (charlist === undefined) {
+                charlist = "\s";
+            }
+            return String(str).replace(new RegExp("[" + charlist + "]+$"), "");
+        },
+        trim(str, charlist) {
+            let output = this.trimLeft(str, charlist);
+            return this.trimRight(output, charlist);
+        },
+    }
+});

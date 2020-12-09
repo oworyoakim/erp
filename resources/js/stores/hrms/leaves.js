@@ -182,5 +182,16 @@ export default {
                 return Promise.reject(message);
             }
         },
+        async GET_LEAVE_HISTORY({commit}, payload) {
+            try {
+                let params = prepareQueryParams(payload);
+                let response = await axios.get(routes.LEAVES + '/history' + params);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
     }
 };

@@ -33,4 +33,19 @@ class LeavesGateway extends GatewayController
         }
     }
 
+    public function history(Request $request)
+    {
+        try
+        {
+            $params = $request->all();
+
+            $responseData = $this->get("{$this->urlEndpoint}/history", $params);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 <template>
-    <div id="mainModal" ref="mainModal" class="modal custom-modal fade" role="dialog"
+    <div :id="`mainModal-` + Math.random()" ref="mainModal" class="modal custom-modal fade" role="dialog"
          tabindex="-1" data-backdrop="static" data-keyboard="false">
         <div class="modal-dialog modal-dialog-centered" v-bind:class="'modal-' + (size || 'lg')" role="document">
             <div class="modal-content">
