@@ -16,7 +16,7 @@ class EnsureAuthenticated
      * @param Closure $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         if($user = Sentinel::check()){
             return $next($request);

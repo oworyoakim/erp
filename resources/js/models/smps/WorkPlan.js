@@ -14,6 +14,7 @@ export default class WorkPlan {
         this.activities = [];
         this.stages = [];
         this.tasks = [];
+        this.reportPeriods = [];
         this.createdBy = null;
         this.updatedBy = null;
         this.createdAt = '';

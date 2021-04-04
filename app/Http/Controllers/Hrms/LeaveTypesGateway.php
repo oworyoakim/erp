@@ -22,6 +22,10 @@ class LeaveTypesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.types','leaves.types.view','leaves.types.create','leaves.types.update','leaves.types.activate','leaves.types.deactivate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -37,6 +41,10 @@ class LeaveTypesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.types.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -52,6 +60,10 @@ class LeaveTypesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.types.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -67,6 +79,10 @@ class LeaveTypesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.types.activate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -82,6 +98,10 @@ class LeaveTypesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.types.deactivate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

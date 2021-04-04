@@ -18,39 +18,57 @@
                             href="{{route('hrms.directorates.list')}}"><span>Directorates</span></a></li>
                     <li class="@if(Request::is('hrms/departments*')) active @endif"><a
                             href="{{route('hrms.departments.list')}}"><span>Departments</span></a></li>
-                    <li class="@if(Request::is('hrms/divisions*')) active @endif"><a
-                            href="{{route('hrms.divisions.list')}}"><span>Divisions</span></a></li>
-                    <li class="@if(Request::is('hrms/sections*')) active @endif"><a href="{{route('hrms.sections.list')}}"><span>Sections</span></a>
-                    </li>
+                    @if(Sentinel::hasAnyAccess(['divisions','divisions.create','divisions.update','divisions.view','divisions.delete']))
+                        <li class="@if(Request::is('hrms/divisions*')) active @endif"><a
+                                href="{{route('hrms.divisions.list')}}"><span>Divisions</span></a></li>
+                    @endif
+                    @if(Sentinel::hasAnyAccess(['sections','sections.create','sections.update','sections.view','sections.delete']))
+                        <li class="@if(Request::is('hrms/sections*')) active @endif"><a
+                                href="{{route('hrms.sections.list')}}"><span>Sections</span></a>
+                        </li>
+                    @endif
                 </ul>
             </li>
 
-            {{--            Designations     --}}
-            <li class="submenu @if(Request::is('hrms/designations*')) active @endif">
-                <a href="#"><i class="la la-tasks"></i> <span> DESIGNATIONS</span> <span
-                        class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is('hrms/designations*')) block  @else none @endif;">
-                    <li><a href="{{route('hrms.designations.list')}}">Manage Designations</a></li>
-                    <li><a href="{{route('hrms.salary-scales.list')}}">Manage Salary Scales</a></li>
-                </ul>
-            </li>
+            @if(Sentinel::hasAnyAccess(['designations','designations.create','designations.update','designations.view','designations.delete','salary_scales','salary_scales.view','salary_scales.create','salary_scales.update','salary_scales.delete']))
+                {{--            Designations     --}}
+                <li class="submenu @if(Request::is('hrms/designations*')) active @endif">
+                    <a href="#"><i class="la la-tasks"></i> <span> DESIGNATIONS</span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: @if(Request::is('hrms/designations*')) block  @else none @endif;">
+                        @if(Sentinel::hasAnyAccess(['designations','designations.create','designations.update','designations.view','designations.delete']))
+                            <li><a href="{{route('hrms.designations.list')}}">Manage Designations</a></li>
+                        @endif
+                        @if(Sentinel::hasAnyAccess(['salary_scales','salary_scales.view','salary_scales.create','salary_scales.update','salary_scales.delete']))
+                            <li><a href="{{route('hrms.salary-scales.list')}}">Manage Salary Scales</a></li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
+            @if(Sentinel::hasAnyAccess(['employees','employees.view','employees.create','employees.update','employees.delete']))
+                {{--            Employees     --}}
+                <li class="@if(Request::is('hrms/employees*')) active @endif">
+                    <a href="{{route('hrms.employees.list')}}"><i
+                            class="la la-users"></i><span>MANAGE EMPLOYEES</span>
+                    </a>
+                </li>
+            @endif
 
-            {{--            Employees     --}}
-            <li class="@if(Request::is('hrms/employees*')) active @endif">
-                <a href="{{route('hrms.employees.list')}}"><i
-                        class="la la-users"></i><span>MANAGE EMPLOYEES</span>
-                </a>
-            </li>
-            {{--            Leaves     --}}
-            <li class="submenu @if(Request::is('hrms/leaves*')) active @endif">
-                <a href="#"><i class="la la-leaf"></i> <span> LEAVE</span> <span
-                        class="menu-arrow"></span></a>
-                <ul style="display: @if(Request::is('hrms/leaves*')) block  @else none @endif;">
-                    <li><a href="{{route('hrms.leaves.list')}}">All Leaves</a></li>
-                    <li><a href="{{route('hrms.leaves.applications')}}">Leave Applications</a></li>
-                </ul>
-            </li>
-
+            @if(Sentinel::hasAnyAccess(['leaves','leaves.recall','leaves.applications','leaves.applications.apply','leaves.applications.verify','leaves.applications.approve','leaves.applications.decline','leaves.applications.return','leaves.applications.grant','leaves.applications.reject']))
+                {{--            Leaves     --}}
+                <li class="submenu @if(Request::is('hrms/leaves*')) active @endif">
+                    <a href="#"><i class="la la-leaf"></i> <span> LEAVE</span> <span
+                            class="menu-arrow"></span></a>
+                    <ul style="display: @if(Request::is('hrms/leaves*')) block  @else none @endif;">
+                        @if(Sentinel::hasAnyAccess(['leaves','leaves.recall']))
+                            <li><a href="{{route('hrms.leaves.list')}}">All Leaves</a></li>
+                        @endif
+                        @if(Sentinel::hasAnyAccess(['leaves.applications','leaves.applications.apply','leaves.applications.verify','leaves.applications.approve','leaves.applications.decline','leaves.applications.return','leaves.applications.grant','leaves.applications.reject']))
+                            <li><a href="{{route('hrms.leaves.applications')}}">Leave Applications</a></li>
+                        @endif
+                    </ul>
+                </li>
+            @endif
             {{--            Document Management     --}}
             <li class="@if(Request::is('hrms/documents*')) active @endif">
                 <a href="{{route('hrms.documents')}}"><i

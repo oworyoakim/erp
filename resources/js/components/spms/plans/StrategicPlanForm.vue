@@ -24,7 +24,7 @@
             <div class="form-group row">
                 <label class="col-sm-4">Monitor Frequency</label>
                 <div class="col-sm-8">
-                    <select v-model="plan.frequency" class="form-control" disabled>
+                    <select v-model="plan.frequency" class="form-control">
                         <option value="">Select...</option>
                         <option value="monthly">Monthly</option>
                         <option value="quarterly">Quarterly</option>

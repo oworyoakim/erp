@@ -15,18 +15,21 @@
             <td>{{department.title}}</td>
             <td v-if="!!!directorateId">
                 <template v-if="!!department.directorate">
-                    <a :href="'/hrms/directorates/view/' + department.directorateId">{{department.directorate.title}}</a>
+                    <a v-if="$store.getters.HAS_ANY_ACCESS(['directorates.view','directorates.show'])" :href="'/hrms/directorates/view/' + department.directorateId">{{department.directorate.title}}</a>
+                    <template v-else>{{department.directorate.title}}</template>
                 </template>
             </td>
             <td>{{department.description}}</td>
             <td class="text-right">
-                <a v-if="!!scope" class="btn btn-info btn-sm" title="View Details" :href="'/hrms/departments/view/' + department.id +'?scope='+scope"><i
-                    class="fa fa-eye m-r-5"></i></a>
-                <a v-else class="btn btn-info btn-sm" title="View Details" :href="'/hrms/departments/view/' + department.id"><i
-                    class="fa fa-eye m-r-5"></i></a>
-                <a @click="editDepartment(department)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
+                <template v-if="$store.getters.HAS_ANY_ACCESS(['departments.view','departments.show'])">
+                    <a v-if="!!scope" class="btn btn-info btn-sm" title="View Details" :href="'/hrms/departments/view/' + department.id +'?scope='+scope"><i
+                        class="fa fa-eye m-r-5"></i></a>
+                    <a v-else class="btn btn-info btn-sm" title="View Details" :href="'/hrms/departments/view/' + department.id"><i
+                        class="fa fa-eye m-r-5"></i></a>
+                </template>
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['departments.update'])" @click="editDepartment(department)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
                     class="fa fa-pencil m-r-5"></i></a>
-                <a @click="deleteDepartment(department)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['departments.delete'])" @click="deleteDepartment(department)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
                     class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>

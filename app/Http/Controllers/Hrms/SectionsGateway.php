@@ -19,6 +19,10 @@ class SectionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['sections','sections.view','sections.create','sections.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -34,6 +38,10 @@ class SectionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['sections.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -49,6 +57,10 @@ class SectionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['sections.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

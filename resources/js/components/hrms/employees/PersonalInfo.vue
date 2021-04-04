@@ -1,6 +1,6 @@
 <template>
     <div class="card profile-box flex-fill">
-        <div class="card-body">
+        <div class="card-body" :class="isEditing && 'form-card'">
             <h2 v-if="isEditing">
                 <a @click="editProfileInfo(false)"
                    class="edit-icon"

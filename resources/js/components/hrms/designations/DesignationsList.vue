@@ -40,9 +40,9 @@
                     <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="false"><i class="material-icons">more_vert</i></a>
                     <div class="dropdown-menu dropdown-menu-right">
-                        <a @click="editDesignation(designation)" class="dropdown-item" href="#"><i
+                        <a v-if="$store.getters.HAS_ANY_ACCESS(['designations.update'])"  @click="editDesignation(designation)" class="dropdown-item" href="#"><i
                             class="fa fa-pencil m-r-5"></i> Edit</a>
-                        <a @click="deleteDesignation(designation)" class="dropdown-item" href="#"><i
+                        <a v-if="$store.getters.HAS_ANY_ACCESS(['designations.delete'])"  @click="deleteDesignation(designation)" class="dropdown-item" href="#"><i
                             class="fa fa-trash-o m-r-5"></i> Delete</a>
                     </div>
                 </div>

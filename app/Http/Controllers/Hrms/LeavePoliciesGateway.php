@@ -22,6 +22,10 @@ class LeavePoliciesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.policies','leaves.policies.view','leaves.policies.create','leaves.policies.update','leaves.policies.activate','leaves.policies.deactivate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -37,6 +41,10 @@ class LeavePoliciesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.policies.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -52,6 +60,10 @@ class LeavePoliciesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.policies.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -67,6 +79,10 @@ class LeavePoliciesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.policies.activate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -82,6 +98,10 @@ class LeavePoliciesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.policies.deactivate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

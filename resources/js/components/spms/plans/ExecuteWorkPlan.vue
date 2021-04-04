@@ -58,6 +58,14 @@
                                 </span>
                                     </li>
                                     <li class="list-group-item">
+                                        <span class="pull-left">Report Periods:</span>
+                                        <span class="pull-right">
+                                            <span class="mr-2" v-for="reportPeriod in activeWorkPlan.reportPeriods">
+                                                {{reportPeriod.name}},
+                                            </span>
+                                        </span>
+                                    </li>
+                                    <li class="list-group-item">
                                         Action:
                                         <div class="status-toggle">
                                             <button class="btn btn-outline-info btn-sm">
@@ -152,6 +160,7 @@
                                         <th>FinancialYear</th>
                                         <th>StartDate</th>
                                         <th>EndDate</th>
+                                        <th>Report Periods</th>
                                         <th>Actions</th>
                                     </tr>
                                     </thead>
@@ -161,6 +170,7 @@
                                         <td>{{ workPlan.financialYear }}</td>
                                         <td>{{ $moment(workPlan.startDate).format('MMM DD, YYYY') }}</td>
                                         <td>{{ $moment(workPlan.endDate).format('MMM DD, YYYY') }}</td>
+                                        <td>{{ workPlan.reportPeriods.length }}</td>
                                         <td>
                                             <button type="button"
                                                     @click="setActiveWorkPlan(workPlan)"

@@ -344,7 +344,7 @@ export default {
             employee: "ACTIVE_EMPLOYEE",
             leaveApplications: "LEAVE_APPLICATIONS",
             formSelectionOptions: "FORM_SELECTIONS_OPTIONS"
-        })
+        }),
     },
     data() {
         return {

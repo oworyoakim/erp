@@ -1,23 +1,34 @@
 import routes from "../../routes";
-import {resolveError} from "../../utils/helpers";
+import {deepClone, resolveError} from "../../utils/helpers";
 import axios from 'axios';
 
 export default {
     state: {
         users: [],
+        modules: [],
+        modulesAccessSettings: null,
     },
     getters: {
-        USERS: (state) => {
+        USERS(state) {
             return state.users;
+        },
+        MODULES(state) {
+            return state.modules;
+        },
+        MODULES_ACCESS_SETTINGS(state) {
+            return state.modulesAccessSettings;
         },
     },
     mutations: {
-        SET_USERS: (state, payload) => {
+        SET_USERS(state, payload) {
             state.users = payload;
+        },
+        SET_MODULES_ACCESS_SETTINGS(state, payload) {
+            state.modulesAccessSettings = payload;
         },
     },
     actions: {
-        GET_USERS: async ({commit}) => {
+        async GET_USERS({commit})  {
             try {
                 let response = await axios.get(routes.USERS + '/all-json');
                 commit("SET_USERS", response.data);
@@ -28,8 +39,7 @@ export default {
                 return Promise.reject(message);
             }
         },
-
-        SAVE_USER: async ({commit}, payload) => {
+        async SAVE_USER({commit}, payload) {
             try {
                 let response;
                 if (!!payload.id) {
@@ -57,6 +67,27 @@ export default {
         async DEACTIVATE_USER({commit}, payload){
             try {
                 let response = await axios.patch(routes.USERS + '/deactivate', payload);
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+        async GET_MODULES_ACCESS_SETTINGS ({commit}) {
+            try {
+                let response = await axios.get(routes.MODULES_SETTINGS + '/list');
+                commit("SET_MODULES_ACCESS_SETTINGS", deepClone(response.data));
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                return Promise.reject(message);
+            }
+        },
+        async UPDATE_MODULES_ACCESS_SETTINGS({commit}, payload){
+            try {
+                let response = await axios.patch(routes.MODULES_SETTINGS, payload);
                 return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);

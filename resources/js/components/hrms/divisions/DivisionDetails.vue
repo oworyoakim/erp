@@ -57,11 +57,11 @@
                             <div class="row">
                                 <div class="col-6"></div>
                                 <div class="col-6">
-                                    <button @click="editDivision(division)" type="button"
+                                    <button v-if="$store.getters.HAS_ANY_ACCESS(['divisions.update'])" @click="editDivision(division)" type="button"
                                             class="btn btn-outline-info btn-sm mr-5">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
-                                    <button @click="deleteDivision(division)" type="button"
+                                    <button v-if="$store.getters.HAS_ANY_ACCESS(['divisions.delete'])" @click="deleteDivision(division)" type="button"
                                             class="btn btn-outline-danger btn-sm">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
@@ -80,10 +80,10 @@
                 <div class="row user-tabs">
                     <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                         <ul class="nav nav-tabs nav-tabs-bottom">
-                            <li class="nav-item"><a href="#department-sections" @click="getSections()" data-toggle="tab"
+                            <li v-if="$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.view','sections.delete'])" class="nav-item"><a href="#department-sections" @click="getSections()" data-toggle="tab"
                                                     class="nav-link active">Sections</a>
                             </li>
-                            <li class="nav-item"><a href="#department-employees" @click="getEmployees()"
+                            <li v-if="$store.getters.HAS_ANY_ACCESS(['employees','employees.create','employees.update','employees.view','employees.delete'])" class="nav-item"><a href="#department-employees" @click="getEmployees()"
                                                     data-toggle="tab" class="nav-link">Employees</a>
                             </li>
                         </ul>
@@ -92,7 +92,7 @@
             </div>
             <div class="tab-content">
                 <!-- Sections Tab -->
-                <div id="department-sections" class="pro-overview tab-pane fade active show">
+                <div v-if="$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.view','sections.delete'])" id="department-sections" class="pro-overview tab-pane fade active show">
                     <div class="card mb-5">
                         <div class="card-header">
                             <h3 class="card-title">Sections</h3>
@@ -118,7 +118,7 @@
                     </div>
                 </div>
                 <!-- Employees Tab -->
-                <div id="department-employees" class="pro-overview tab-pane fade">
+                <div v-if="$store.getters.HAS_ANY_ACCESS(['employees','employees.create','employees.update','employees.view','employees.delete'])" id="department-employees" class="pro-overview tab-pane fade">
                     <div class="card mb-5">
                         <div class="card-header">
                             <h3 class="card-title">Employees</h3>
@@ -174,16 +174,23 @@
         },
         created() {
             this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', {divisionId: this.divisionId});
-            this.getDivision().then(() => {
-                this.getSections();
-                //this.getEmployees();
-            });
-            this.getSections();
+            this.getDivision();
             EventBus.$on([
                 'DIVISION_SAVED',
                 'SECTION_SAVED',
                 'SECTION_DELETED',
-            ], this.getSections);
+            ], () => {
+                if(this.$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.view','sections.delete'])) {
+                    this.getSections();
+                }
+            });
+        },
+        mounted() {
+            setTimeout(() => {
+                if(this.$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.view','sections.delete'])) {
+                    this.getSections();
+                }
+            }, 2000);
         },
         computed: {
             ...mapGetters({

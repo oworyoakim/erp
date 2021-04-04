@@ -19,6 +19,9 @@ class ContactsGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.contact'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -34,6 +37,9 @@ class ContactsGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.contact'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

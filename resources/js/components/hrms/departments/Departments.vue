@@ -7,7 +7,7 @@
                     <app-breadcrumb :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <button type="button" class="btn add-btn" @click="editDepartment()"><i class="fa fa-plus"></i> New Department</button>
+                    <button v-if="$store.getters.HAS_ANY_ACCESS(['departments.create'])" type="button" class="btn add-btn" @click="editDepartment()"><i class="fa fa-plus"></i> New Department</button>
                 </div>
             </div>
         </div>

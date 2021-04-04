@@ -20,6 +20,7 @@ import Roles from "./components/acl/roles/Roles";
 import RoleForm from "./components/acl/roles/RoleForm";
 import UserWidget from "./components/acl/users/UserWidget";
 import GeneralSettings from "./components/acl/settings/GeneralSettings";
+import ModulesSettings from "./components/acl/settings/ModulesSettings";
 
 
 Vue.component("app-login", Login);
@@ -29,6 +30,7 @@ Vue.component("app-roles", Roles);
 Vue.component("app-role-form", RoleForm);
 Vue.component("app-users-widget", UserWidget);
 Vue.component("app-general-settings", GeneralSettings);
+Vue.component("app-modules-settings", ModulesSettings);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to

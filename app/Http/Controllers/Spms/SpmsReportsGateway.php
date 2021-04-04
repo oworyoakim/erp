@@ -39,11 +39,12 @@ class SpmsReportsGateway extends GatewayController
         $this->files = $files;
     }
 
-    public function strategyReport(Request $request)
+    public function summaryStrategyReport(Request $request)
     {
         try
         {
-            $params = $request->only(['planId', 'reportPeriodId']);
+            $params = $request->only(['planId']);
+            $params['reportType'] = 'summary';
 
             $responseData = $this->generateStrategyReportData($params);
 
@@ -52,7 +53,24 @@ class SpmsReportsGateway extends GatewayController
             return response()->json($responseData);
         } catch (Exception $ex)
         {
-            dd($ex);
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
+        }
+    }
+
+    public function detailedStrategyReport(Request $request)
+    {
+        try
+        {
+            $params = $request->only(['planId', 'reportPeriodId']);
+            $params['reportType'] = 'detailed';
+
+            $responseData = $this->generateStrategyReportData($params);
+
+            //dd($responseData);
+
+            return response()->json($responseData);
+        } catch (Exception $ex)
+        {
             return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
@@ -111,14 +129,24 @@ class SpmsReportsGateway extends GatewayController
         }
         $responseData['companyLogo'] = base64_encode(File::get(public_path($logo)));
         $responseData = ErpHelper::arrayToObject($responseData);
-        //dd($responseData->reportPeriod);
-        $html = View::make('spms.reports.monitor-strategy', [
-            'reportData' => $responseData
-        ])->render();
+        if (!empty($params['reportType']) && $params['reportType'] == 'summary')
+        {
+            $html = View::make('spms.reports.monitor-strategy-summary', [
+                'reportData' => $responseData
+            ])->render();
+            $plan = str_replace('/', '-', $responseData->plan);
+            $plan = Str::slug($plan);
+            $fileName = "{$plan}_summary_report.pdf";
+        } else
+        {
+            $html = View::make('spms.reports.monitor-strategy', [
+                'reportData' => $responseData
+            ])->render();
+            $plan = str_replace('/', '-', $responseData->plan);
+            $plan = Str::slug($plan);
+            $fileName = "{$plan}_{$responseData->reportPeriod->startDate}_to_{$responseData->reportPeriod->endDate}.pdf";
+        }
 
-        $plan = str_replace('/', '-', $responseData->plan);
-        $plan = Str::slug($plan);
-        $fileName = "{$plan}_{$responseData->reportPeriod->startDate}_to_{$responseData->reportPeriod->endDate}.pdf";
         $filePath = "storage/reports/{$fileName}";
         /*
         // generate the pdf using dompdf
@@ -162,9 +190,11 @@ class SpmsReportsGateway extends GatewayController
             $directorateData = $this->getDirectorate($responseData['directorateId']);
         }
 
-        if(!empty($directorateData['title'])){
+        if (!empty($directorateData['title']))
+        {
             $responseData['responsibilityCenter'] = $directorateData['title'];
-        }else{
+        } else
+        {
             $responseData['responsibilityCenter'] = null;
         }
         // the logo
@@ -218,14 +248,17 @@ class SpmsReportsGateway extends GatewayController
         $directorates = $this->getDirectorates();
         $directorates = collect($directorates);
 
-        foreach ($responseData['directivesAndResolutions'] as &$directiveAndResolution){
+        foreach ($responseData['directivesAndResolutions'] as &$directiveAndResolution)
+        {
             $directorateData = null;
             if (!empty($directiveAndResolution['responsibilityCentreId']))
             {
                 $directorateData = $directorates->firstWhere('id', $directiveAndResolution['responsibilityCentreId']);
-                if(!empty($directorateData['title'])){
+                if (!empty($directorateData['title']))
+                {
                     $directiveAndResolution['responsibilityCenter'] = $directorateData['title'];
-                }else{
+                } else
+                {
                     $directiveAndResolution['responsibilityCenter'] = null;
                 }
             }

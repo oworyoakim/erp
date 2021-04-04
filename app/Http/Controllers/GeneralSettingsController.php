@@ -134,4 +134,25 @@ class GeneralSettingsController extends Controller
         }
     }
 
+    public function modules(Request $request)
+    {
+        try
+        {
+            if (!Sentinel::hasAnyAccess(['settings']))
+            {
+                throw  new UnauthorizedAccessException('Permission Denied!');
+            }
+            return view('acl.settings.module');
+        } catch (UnauthorizedAccessException $ex)
+        {
+            $error = $ex->getMessage();
+            return view('errors.401', ['error' => $error]);
+        } catch (Exception $ex)
+        {
+            Log::error("Settings: {$ex->getMessage()}");
+            $error = $ex->getMessage();
+            return view('errors.500', ['error' => $error]);
+        }
+    }
+
 }
