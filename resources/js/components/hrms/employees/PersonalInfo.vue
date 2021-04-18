@@ -11,7 +11,7 @@
             </h2>
             <h3 class="mb-2 border-bottom" v-else>
                 Particulars
-                <a @click="editProfileInfo(true)"
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['employees.manage_profile'])" @click="editProfileInfo(true)"
                    class="edit-icon"
                    title="Edit"
                    href="javascript:void(0)">

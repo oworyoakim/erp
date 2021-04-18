@@ -9,7 +9,7 @@
                 <div class="card-body table-responsive">
                     <h3 class="card-title mb-5">
                         {{title}}
-                        <button v-if="!!showAddButton" class="edit-icon" @click="uploadEmployeeDocument()"
+                        <button v-if="!!showAddButton && $store.getters.HAS_ANY_ACCESS(['employees.manage_documents'])" class="edit-icon" @click="uploadEmployeeDocument()"
                                 title="Add Document">
                             <i class="fa fa-plus"></i>
                         </button>

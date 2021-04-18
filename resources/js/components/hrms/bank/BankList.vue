@@ -1,7 +1,8 @@
 <template>
     <div class="bank-list">
         <ul class="personal-info" v-for="bank in banks">
-            <li><a href="javascript:void(0)" class="edit-icon pull-right" data-toggle="modal"
+            <li>
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['employees.manage_bank_info'])" href="javascript:void(0)" class="edit-icon pull-right" data-toggle="modal"
                    @click="editBank(bank)"><i class="fa fa-pencil"></i></a></li>
             <li>
                 <div class="title">Bank Name:</div>

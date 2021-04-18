@@ -519,9 +519,42 @@ class PermissionsTableSeeder extends Seeder
             ]);
             Permission::query()->create([
                 'parent_id' => $perm->id,
-                'name' => 'Manage other employees profile',
-                'slug' => 'employees.manage_others_profile',
-                'description' => 'Manage other employees profile',
+                'name' => 'Manage employees profile',
+                'slug' => 'employees.manage_profile',
+                'description' => 'Manage employees profile',
+            ]);
+
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Manage employees work experience',
+                'slug' => 'employees.manage_work_experience',
+                'description' => 'Manage employees work experience',
+            ]);
+
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Manage employees education info',
+                'slug' => 'employees.manage_education_info',
+                'description' => 'Manage employees education info',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Manage employees bank info',
+                'slug' => 'employees.manage_bank_info',
+                'description' => 'Manage employees bank info',
+            ]);
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Manage employees related persons info',
+                'slug' => 'employees.manage_related_persons_info',
+                'description' => 'Manage employees related persons info',
+            ]);
+
+            Permission::query()->create([
+                'parent_id' => $perm->id,
+                'name' => 'Manage employees documents',
+                'slug' => 'employees.manage_documents',
+                'description' => 'Manage employees documents',
             ]);
         }
 

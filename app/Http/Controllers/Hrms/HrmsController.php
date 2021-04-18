@@ -111,6 +111,10 @@ class HrmsController extends GatewayController
 
     public function employees()
     {
+        if(!Sentinel::hasAnyAccess(['employees'])){
+            session()->flash('error', 'Permission Denied!');
+            return redirect()->to('/');
+        }
         return view('hrms.employees.index');
     }
 
