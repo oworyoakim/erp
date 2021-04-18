@@ -1,5 +1,5 @@
 <template>
-    <div class="strategic-plan-monitor">
+    <div class="strategic-plan-monitor-detailed">
         <div class="row">
             <div class="col-sm-4">
                 <label>Select a strategic plan to continue</label>

@@ -55,4 +55,9 @@
     border-radius: 1px;
     height: 46px;
 }
+@media (max-width: 575px) {
+    .m-sm-1 {
+        margin: 0.25rem !important;
+    }
+}
 

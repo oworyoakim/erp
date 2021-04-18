@@ -37,6 +37,10 @@ class DelegationsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['employees.delegate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -52,6 +56,10 @@ class DelegationsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['employees.delegate']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

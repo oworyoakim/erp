@@ -1,5 +1,5 @@
 @extends('spms.master')
 @section('title','Strategic Plan Monitoring')
 @section('content')
-    <app-plan-monitor-strategy></app-plan-monitor-strategy>
+    <app-plan-monitor-strategyp-detailed></app-plan-monitor-strategyp-detailed>
 @endsection

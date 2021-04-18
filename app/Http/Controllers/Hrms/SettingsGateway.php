@@ -22,6 +22,9 @@ class SettingsGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['settings.leaves.applications.approvals'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

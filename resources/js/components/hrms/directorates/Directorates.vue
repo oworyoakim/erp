@@ -7,7 +7,7 @@
                     <app-breadcrumb dashboard-link="/hrms" :list-items="breadcrumbItems"/>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <button type="button" class="btn add-btn" @click="editDirectorate()">
+                    <button v-if="$store.getters.HAS_ANY_ACCESS(['directorates.create'])"  type="button" class="btn add-btn" @click="editDirectorate()">
                         <i class="fa fa-plus"></i>
                         New Directorate
                     </button>

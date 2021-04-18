@@ -48,7 +48,8 @@
                                 <span class="col-sm-3 font-weight-bolder">Directorate :</span>
                                 <span class="col-sm-9">
                                     <template v-if="!!department.directorate">
-                                        <a :href="'/hrms/directorates/view/' + department.directorateId">{{department.directorate.title}}</a>
+                                        <a v-if="$store.getters.HAS_ANY_ACCESS(['directorates.show','directorates.view'])" :href="'/hrms/directorates/view/' + department.directorateId">{{department.directorate.title}}</a>
+                                        <template v-else>{{department.directorate.title}}</template>
                                     </template>
                                 </span>
                             </div>
@@ -57,11 +58,11 @@
                             <div class="row">
                                 <div class="col-6"></div>
                                 <div class="col-6">
-                                    <button @click="editDepartment(department)" type="button"
+                                    <button v-if="$store.getters.HAS_ANY_ACCESS(['departments.update'])" @click="editDepartment(department)" type="button"
                                             class="btn btn-outline-info btn-sm mr-5">
                                         <i class="fa fa-edit"></i> Edit
                                     </button>
-                                    <button @click="deleteDepartment(department)" type="button"
+                                    <button v-if="$store.getters.HAS_ANY_ACCESS(['departments.delete'])" @click="deleteDepartment(department)" type="button"
                                             class="btn btn-outline-danger btn-sm">
                                         <i class="fa fa-trash"></i> Delete
                                     </button>
@@ -76,13 +77,13 @@
                 <div class="row user-tabs">
                     <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
                         <ul class="nav nav-tabs nav-tabs-bottom">
-                            <li class="nav-item"><a href="#department-divisions" @click="getDivisions()"
+                            <li v-if="$store.getters.HAS_ANY_ACCESS(['divisions','divisions.create','divisions.update','divisions.view','divisions.delete'])" class="nav-item"><a href="#department-divisions" @click="getDivisions()"
                                                     data-toggle="tab" class="nav-link active">Divisions</a>
                             </li>
-                            <li class="nav-item"><a href="#department-sections" @click="getSections()" data-toggle="tab"
+                            <li v-if="$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.delete'])" class="nav-item"><a href="#department-sections" @click="getSections()" data-toggle="tab"
                                                     class="nav-link">Sections</a>
                             </li>
-                            <li class="nav-item"><a href="#department-employees" @click="getEmployees()"
+                            <li v-if="$store.getters.HAS_ANY_ACCESS(['employees','employees.create','employees.update','employees.delete','employees.view', 'employees.show'])" class="nav-item"><a href="#department-employees" @click="getEmployees()"
                                                     data-toggle="tab" class="nav-link">Employees</a>
                             </li>
                         </ul>
@@ -91,7 +92,7 @@
             </div>
             <div class="tab-content">
                 <!-- Divisions Tab -->
-                <div id="department-divisions" class="pro-overview tab-pane fade active show">
+                <div v-if="$store.getters.HAS_ANY_ACCESS(['divisions','divisions.create','divisions.update','divisions.view','divisions.delete'])" id="department-divisions" class="pro-overview tab-pane fade active show">
                     <div class="card mb-5">
                         <div class="card-body table-responsive">
                             <h3 class="card-title">Divisions
@@ -115,7 +116,7 @@
                 </div>
 
                 <!-- Sections Tab -->
-                <div id="department-sections" class="pro-overview tab-pane fade">
+                <div  v-if="$store.getters.HAS_ANY_ACCESS(['sections','sections.create','sections.update','sections.delete'])" id="department-sections" class="pro-overview tab-pane fade">
                     <div class="card mb-5">
                         <div class="card-body table-responsive">
                             <h3 class="card-title">Sections
@@ -139,7 +140,7 @@
                 </div>
 
                 <!-- Employees Tab -->
-                <div id="department-employees" class="pro-overview tab-pane fade">
+                <div v-if="$store.getters.HAS_ANY_ACCESS(['employees','employees.create','employees.update','employees.delete','employees.view', 'employees.show'])" id="department-employees" class="pro-overview tab-pane fade">
                     <div class="card mb-5">
                         <div class="card-body table-responsive">
                             <h3 class="card-title">Employees</h3>
@@ -189,9 +190,7 @@
         },
         created() {
             this.$store.dispatch('GET_FORM_SELECTIONS_OPTIONS', {scope: this.scope, departmentId: this.departmentId});
-            this.getDepartment().then(() => {
-                this.getDivisions();
-            });
+            this.getDepartment();
             EventBus.$on([
                 'DEPARTMENT_SAVED',
             ], this.getDepartment);
@@ -215,6 +214,13 @@
                     departmentId: this.departmentId
                 });
             });
+        },
+        mounted() {
+            setTimeout(() => {
+                if(this.$store.getters.HAS_ANY_ACCESS(['divisions','divisions.create','divisions.update','divisions.view','divisions.delete'])) {
+                    this.getDivisions();
+                }
+            }, 2000);
         },
         data() {
             return {

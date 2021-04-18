@@ -53,7 +53,8 @@ import StageForm from "./components/spms/stages/StageForm";
 import Tasks from "./components/spms/tasks/Tasks";
 import TaskForm from "./components/spms/tasks/TaskForm";
 
-import MonitorStrategicPlan from "./components/spms/plans/MonitorStrategicPlan";
+import MonitorStrategicPlanDetailed from "./components/spms/plans/MonitorStrategicPlanDetailed";
+import MonitorStrategicPlanSummary from "./components/spms/plans/MonitorStrategicPlanSummary";
 import MonitorActivity from "./components/spms/plans/MonitorActivity";
 import MonitorDirectivesAndResolutions from "./components/spms/plans/MonitorDirectivesAndResolutions";
 
@@ -101,7 +102,8 @@ Vue.component('app-stage-form', StageForm);
 Vue.component('app-tasks', Tasks);
 Vue.component('app-task-form', TaskForm);
 
-Vue.component('app-plan-monitor-strategy', MonitorStrategicPlan);
+Vue.component('app-plan-monitor-strategy-summary', MonitorStrategicPlanSummary);
+Vue.component('app-plan-monitor-strategy-detailed', MonitorStrategicPlanDetailed);
 Vue.component('app-monitor-activity', MonitorActivity);
 Vue.component('app-plan-monitor-directives-and-resolutions', MonitorDirectivesAndResolutions);
 

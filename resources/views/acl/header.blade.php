@@ -28,6 +28,20 @@
 @if($user = Sentinel::check())
     <!-- Header Menu -->
     <ul class="nav user-menu">
+        <li class="nav-item dropdown has-arrow flag-nav">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button">
+                <i class="fa fa-arrow-right"></i> Switch To
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                @foreach($modules as $module)
+                    @if($module->slug != session()->get('service'))
+                        <a href="javascript:void(0);" @click="$store.dispatch('CHANGE_SERVICE','{{$module->slug}}')" class="dropdown-item">
+                            <i class="fa fa-tasks"></i> {{$module->name}}
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+        </li>
         <li class="nav-item dropdown has-arrow main-drop">
             <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
 							<span class="user-img"><img src="{{$user->avatar}}" alt="">
@@ -36,8 +50,14 @@
             </a>
             <ul class="dropdown-menu">
                 <li class="dropdown-item"><a href="/acl/user/profile/{{$user->username}}">My Profile</a></li>
-                <li class="dropdown-item"><a href="{{route('settings.general')}}">Settings</a></li>
-                <a class="dropdown-item" href="{{route('service.change')}}">Exit ACL</a>
+                @foreach($modules as $module)
+                    @if($module->slug != session()->get('service'))
+                        <li class="dropdown-item">
+                            <a href="javascript:void(0);" @click="$store.dispatch('CHANGE_SERVICE','{{$module->slug}}')">Switch
+                                To {{$module->name}}</a>
+                        </li>
+                    @endif
+                @endforeach
                 <li class="dropdown-item">
                     <form method="post" action="{{route('logout')}}" id="sign-out-form" style="visibility: hidden">
                         {{csrf_field()}}
@@ -54,8 +74,14 @@
         <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i
                 class="fa fa-ellipsis-v"></i></a>
         <div class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="#">My Profile</a>
-            <a class="dropdown-item" href="{{route('settings.general')}}">Settings</a>
+            <a class="dropdown-item" href="{{route('hrms.employee-profile-view')}}">My Profile</a>
+            @foreach($modules as $module)
+                @if($module->slug != session()->get('service'))
+                    <a class="dropdown-item" href="javascript:void(0);"
+                       @click="$store.dispatch('CHANGE_SERVICE','{{$module->slug}}')">Switch
+                        To {{$module->name}}</a>
+                @endif
+            @endforeach
             <a class="dropdown-item" href="#" onclick="document.getElementById('sign-out-form').submit()">Logout</a>
         </div>
     </div>

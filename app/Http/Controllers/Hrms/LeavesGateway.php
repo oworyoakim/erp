@@ -22,6 +22,10 @@ class LeavesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves','leaves.view','leaves.recall']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -37,6 +41,10 @@ class LeavesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['leaves.history']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/history", $params);

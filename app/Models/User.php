@@ -34,6 +34,11 @@ class User extends EloquentUser
 
     protected static $rolesModel = Role::class;
 
+    public function modules()
+    {
+        return $this->belongsToMany(Module::class, 'module_users');
+    }
+
     public function fullName()
     {
         return "{$this->first_name}  {$this->last_name}";
@@ -102,6 +107,16 @@ class User extends EloquentUser
             $reminder = Reminder::create($this);
         }
         return $reminder->code;
+    }
+
+    /**
+     * @param string $module
+     *
+     * @return bool
+     */
+    public function canAccessModule(string $module)
+    {
+        return $this->modules()->where(['slug' => $module])->count() > 0;
     }
 
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Hrms;
 use App\Http\Controllers\GatewayController;
 use App\Models\Role;
 use App\Models\User;
+use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,6 +20,12 @@ class HrmsController extends GatewayController
 
     public function indexHrms()
     {
+        request()->session()->put('service', 'hrms');
+        $user = Sentinel::getUser();
+        if ($user->user_type == 'employee')
+        {
+            return redirect()->route('hrms.employee-profile-view');
+        }
         return view('hrms.dashboard');
     }
 
@@ -104,6 +111,10 @@ class HrmsController extends GatewayController
 
     public function employees()
     {
+        if(!Sentinel::hasAnyAccess(['employees'])){
+            session()->flash('error', 'Permission Denied!');
+            return redirect()->to('/');
+        }
         return view('hrms.employees.index');
     }
 
@@ -177,5 +188,9 @@ class HrmsController extends GatewayController
         }
     }
 
+    public function employeeProfileView(){
+        $user = Sentinel::getUser();
+        return view("hrms.employee-profile", ['username' => $user->username]);
+    }
 
 }

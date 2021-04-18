@@ -22,6 +22,10 @@ class SalaryScalesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['salary_scales','salary_scales.view','salary_scales.create','salary_scales.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -37,6 +41,10 @@ class SalaryScalesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['salary_scales.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -52,6 +60,10 @@ class SalaryScalesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['salary_scales.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

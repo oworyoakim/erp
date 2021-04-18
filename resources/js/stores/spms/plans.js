@@ -73,10 +73,20 @@ export default {
         async SET_ACTIVE_PLAN ({commit}, payload) {
             commit("SET_ACTIVE_PLAN", payload);
         },
+        async LOAD_STRATEGIC_PLAN_SUMMARY_REPORT({commit}, payload) {
+            try {
+                let queryParams = prepareQueryParams(payload);
+                let response = await axios.get(routes.PLANS + '/monitor/strategy/summary-report' + queryParams);
+                commit("SET_STRATEGIC_PLAN_REPORT_DATA", response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                return Promise.reject(message);
+            }
+        },
         async LOAD_STRATEGIC_PLAN_REPORT({commit}, payload) {
             try {
                 let queryParams = prepareQueryParams(payload);
-                let response = await axios.get(routes.PLANS + '/monitor/strategy/report' + queryParams);
+                let response = await axios.get(routes.PLANS + '/monitor/strategy/detailed-report' + queryParams);
                 commit("SET_STRATEGIC_PLAN_REPORT_DATA", response.data);
             } catch (error) {
                 let message = resolveError(error);

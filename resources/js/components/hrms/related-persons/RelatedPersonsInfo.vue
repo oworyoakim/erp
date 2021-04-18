@@ -8,7 +8,7 @@
             <div class="card profile-box flex-fill">
                 <div class="card-body">
                     <h3 class="card-title">Family Members
-                        <button class="edit-icon" @click="editRelatedPersonInfo()"><i class="fa fa-plus"></i></button>
+                        <button v-if="$store.getters.HAS_ANY_ACCESS(['employees.manage_related_persons_info'])" class="edit-icon" @click="editRelatedPersonInfo()"><i class="fa fa-plus"></i></button>
                     </h3>
                     <div class="table-responsive">
                         <RelatedPersonsInfoList

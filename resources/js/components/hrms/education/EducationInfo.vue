@@ -9,7 +9,7 @@
                 <div class="card-body table-responsive">
                     <h3 class="card-title">
                         Education Background
-                        <button class="edit-icon" @click="editEducation()" title="Add Education">
+                        <button v-if="$store.getters.HAS_ANY_ACCESS(['employees.manage_education_info'])" class="edit-icon" @click="editEducation()" title="Add Education">
                             <i class="fa fa-plus"></i>
                         </button>
                     </h3>

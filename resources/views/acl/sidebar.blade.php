@@ -24,6 +24,7 @@
                             class="menu-arrow"></span></a>
                     <ul style="display: @if(Request::is('acl/settings*')) block  @else none @endif;">
                         <li><a href="{{route('settings.general')}}"> General Settings</a></li>
+                        <li><a href="{{route('settings.modules')}}"> Module Access</a></li>
                     </ul>
                 </li>
             @endif
