@@ -125,7 +125,7 @@
                 plan: new Plan(),
                 dateConfig: {
                     showDropdowns: true,
-                    minDate: this.$moment(), // now
+                   // minDate: this.$moment(), // now
                     ranges: {
                         'Next Financial Year': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days')],
                         'Next 2 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(24, 'months').subtract(1, 'days')],

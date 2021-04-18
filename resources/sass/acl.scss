@@ -26,6 +26,35 @@
 // Template CSS
 @import "../../public/smarthr/maroon/css/style.css";
 
+.account-page {
+    //background-color: #172a56;
+    background-image: url("https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/827ced4c-062a-4dce-b568-40e8ebe9f87d/d25w0pz-7c81c8c0-17e5-4de3-94b4-e6e7bac5c043.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3sicGF0aCI6IlwvZlwvODI3Y2VkNGMtMDYyYS00ZGNlLWI1NjgtNDBlOGViZTlmODdkXC9kMjV3MHB6LTdjODFjOGMwLTE3ZTUtNGRlMy05NGI0LWU2ZTdiYWM1YzA0My5qcGcifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6ZmlsZS5kb3dubG9hZCJdfQ.4RL5GhGG-eraNrJmh4XL8SSGilbHXN5NgkaZZwLIl68");
+}
+
+.account-box{
+  background-color: antiquewhite;
+}
+
+.account-logo img {
+    width: 100px;
+    border-radius:10px;
+    padding:2px;
+    border: solid thin #f43b48 ;
+}
+.account-box form{
+    border: solid 1px #f43b48 ;
+    border-radius: 10px;
+    background-color:ivory;
+    padding:40px;
+}
+
+.account-box .form-control {
+    background-color: #ffffff;
+    font-size:26px;
+    border: 1px solid black;
+    border-radius: 1px;
+    height: 46px;
+}
 @media (max-width: 575px) {
     .m-sm-1 {
         margin: 0.25rem !important;

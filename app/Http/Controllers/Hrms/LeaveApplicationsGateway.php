@@ -94,10 +94,6 @@ class LeaveApplicationsGateway extends GatewayController
     {
         try
         {
-            if (!Sentinel::hasAnyAccess(['leaves.applications.return']))
-            {
-                throw new Exception('Permission Denied!');
-            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
