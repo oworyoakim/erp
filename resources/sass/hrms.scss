@@ -47,10 +47,6 @@ body {
     color: black;
 }
 
-    //background-color: #f0f0f1;
-    background-color: rgb(240, 240, 252);
-}
-
 .tab-content {
     padding-top: 0;
 }
@@ -331,7 +327,7 @@ body {
 }
 
 .form-control {
-    border-color:solid blue thin;
+    border: solid blue thin;
     font-size: 14px;
     height: 32px;
 }
@@ -340,9 +336,10 @@ body {
     border-radius:30px;
 }
 
-.header-left{
+.header-left {
     border-radius: 30px;
     border: double 1px red;
+}
 
 .form-card {
 

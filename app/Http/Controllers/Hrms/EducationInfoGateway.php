@@ -22,7 +22,7 @@ class EducationInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.education'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_education_info'])){
                 throw new Exception("Permission Denied!");
             }
             $params = $request->all();
@@ -40,7 +40,7 @@ class EducationInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.education'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_education_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();
@@ -58,7 +58,7 @@ class EducationInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.education'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_education_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();

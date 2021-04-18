@@ -22,7 +22,7 @@ class BankInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.bank'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_bank_info'])){
                 throw new Exception("Permission Denied!");
             }
             $params = $request->all();
@@ -40,7 +40,7 @@ class BankInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.bank'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_bank_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();
@@ -58,7 +58,7 @@ class BankInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.bank'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_bank_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();

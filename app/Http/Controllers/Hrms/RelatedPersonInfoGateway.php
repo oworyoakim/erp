@@ -22,7 +22,7 @@ class RelatedPersonInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.related-persons'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_related_persons_info'])){
                 throw new Exception("Permission Denied!");
             }
             $params = $request->all();
@@ -40,7 +40,7 @@ class RelatedPersonInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.related-persons'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_related_persons_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();
@@ -58,7 +58,7 @@ class RelatedPersonInfoGateway extends GatewayController
     {
         try
         {
-            if(!Sentinel::hasAnyAccess(['employees.related-persons'])){
+            if(!Sentinel::hasAnyAccess(['employees.manage_related_persons_info'])){
                 throw new Exception("Permission Denied!");
             }
             $data = $request->all();
