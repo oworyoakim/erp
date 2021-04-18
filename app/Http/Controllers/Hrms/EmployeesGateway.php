@@ -270,7 +270,7 @@ class EmployeesGateway extends GatewayController
                 throw new Exception("Allowed file types: jpeg,jpg,bmp,png!");
             }
             $fileName = str_replace('/', '_', $employee['employeeNumber']) . '.png';
-            $filePath = '/storage/images/profiles/' . $fileName;
+            $filePath = 'storage\\images\\profiles\\' . $fileName;
             $image = Image::make($avatar->getRealPath());
             // resize
             if ($image->width() > 215 || $image->height() > 215)

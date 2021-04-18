@@ -24,7 +24,7 @@
             <div class="form-group row">
                 <label class="col-sm-4">Monitor Frequency</label>
                 <div class="col-sm-8">
-                    <select v-model="plan.frequency" class="form-control" disabled>
+                    <select v-model="plan.frequency" class="form-control" >
                         <option value="">Select...</option>
                         <option value="monthly">Monthly</option>
                         <option value="quarterly">Quarterly</option>
@@ -125,7 +125,7 @@
                 plan: new Plan(),
                 dateConfig: {
                     showDropdowns: true,
-                    minDate: this.$moment(), // now
+                   // minDate: this.$moment(), // now
                     ranges: {
                         'Next Financial Year': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(12, 'months').subtract(1, 'days')],
                         'Next 2 Financial Years': [this.$moment(this.startOfNextFinancialYear), this.$moment(this.startOfNextFinancialYear).add(24, 'months').subtract(1, 'days')],

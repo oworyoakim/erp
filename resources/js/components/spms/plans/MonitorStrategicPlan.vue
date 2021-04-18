@@ -26,7 +26,7 @@
             </div>
             <div class="col-sm-4" v-if="!!filters.planId && !!filters.reportPeriodId">
                 <button class="btn btn-sm btn-secondary mt-4" type="button" @click="printReport()"><i
-                    class="fa fa-print"></i> Print
+                    class="fa fa-print"></i> ACTIVITY PDF
                 </button>
                 <button class="btn btn-sm btn-primary mt-4" type="button" @click="downloadPdfReport()"><i
                     class="fa fa-file-pdf-o"></i> PDF
@@ -39,20 +39,24 @@
             </template>
             <template v-else-if="!!reportData">
                 <div class="row" id="strategic-plan-monitor-report">
-                    <div class="col-md-12 table-responsive" style="display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table class="table-bordered table-sm" style="width: 100%; border-collapse: collapse; border-spacing: 0;">
-                            <tr>
-                                <td style="border: 0">
-                                    <img :src="'data:image/png;base64,' + reportData.companyLogo" class="img-fluid small" alt="UNEB-SPMS"/>
-                                </td>
-                                <td colspan="7" style="border: 0; text-align: center" class="text-center">
-                                    <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
-                                    <h4 style="font-weight: bold;  text-transform: capitalize;">
-                                        PERFORMANCE REPORT FOR THE UNEB {{reportData.plan}}
-                                    </h4>
-                                </td>
-                            </tr>
-                            <tr>
+                    <div class="col-md-12 table-responsive"
+                         style="display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                        <div style="border: 0; text-align: center" class="text-center">
+                            <img :src="'data:image/png;base64,' + reportData.companyLogo" class="img-fluid" height="120px" width="120px" alt="UNEB-SPMS"/>
+                            <h3>UGANDA NATIONAL EXAMINATIONS BOARD</h3>
+                            <h4 style="font-weight: bold;  text-transform: capitalize;">
+                                PERFORMANCE REPORT FOR THE {{reportData.plan}}
+                                <br/>
+                            </h4>
+                        </div>
+                        <div style="background-color:#a1a1a1;color:white;font-size:30px;text-align: center">STRATEGY LEVEL REPORT</div>
+                        <hr style="height:10px; background-color:#0b2e13; margin-bottom:1px">
+                        <span style="text-align: center; font-weight: bold;font-style:italic; font-size:12px;">
+                            TABLE HEADER KEYS => MA: Measured As (CT: Count, %: %age), TA: Target, AV: Actual Value, PA: %age of Achievement, VA: Variance
+                        </span>
+                        <hr style="height:4px; background-color: #0b2e13; margin-top: 0">
+                    <table>
+                        <tr>
                                 <td colspan="2" style="border: 0;">
                                     <span style="font-weight: bold;">Report End Period</span>
                                     <span style="float: right;">
@@ -233,9 +237,7 @@
                 }
             },
             printReport(){
-                let reportElement = document.getElementById('strategic-plan-monitor-report');
-                let report = new Printd();
-                report.print(reportElement);
+                window.open('/storage/reports/the-ict-strategic-plan-2020-2025_main_activities-report_2021-2022.pdf','_blank');
             },
         }
 

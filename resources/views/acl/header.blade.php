@@ -2,9 +2,9 @@
 <div class="header-left">
     <a href="{{route('users.list')}}" class="logo">
         @if($logo = settings()->get('company_logo'))
-            <img src="{{$logo}}" width="40" height="40" alt="">
+            <img src="{{$logo}}" width="60" height="60" alt="">
         @else
-            <img src="{{asset('smarthr/maroon/img/logo.png')}}" width="40" height="40" alt="">
+            <img src="{{asset('smarthr/maroon/img/logo.png')}}" width="60" height="60" alt="">
         @endif
     </a>
 </div>

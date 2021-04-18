@@ -24,62 +24,171 @@
 // Template CSS
 @import "../../public/smarthr/maroon/css/style.css";
 
-body{
-    //background-color: #f0f0f1;
-    background-color:rgb(240, 240, 252);
+body {
+    background-color: #f1f1f1;
+    padding-top: 10px;
+    //background-color: white;
+    //background-color: #ffffff;
+    font-family: Calibri, monospace;
 }
 
-.tab-content
-{padding-top: 0;}
+.filter-row {
+    background-color: aqua;
+    padding: 20px 5px 5px 5px;
+    border-top: solid 3px orangered;
+    border-top-right-radius: 5px;
+    border-top-left-radius: 5px;
+    margin: 0 5px 20px 5px;
+}
 
-.card{
-    background:ivory;
+.table.table-condensed.table-striped.table-sm {
+    background-color: ivory;
+    border: solid #a1a1a1 thin;
+    color: black;
+}
+
+.tab-content {
+    padding-top: 0;
+}
+
+.card {
+    background-color:white;
+    border-top: solid thin lightskyblue;
+    border-left: solid thin lightskyblue;
+    border-right: solid thin lightskyblue;
+    border-top: solid 10px lightskyblue;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
+.card .profile-box .flex-fill{
+    background-color: lightskyblue;
+
+}
+
+.row.staff-grid-row{
+    background-color: white;
+    background-size: cover;
+    border-left: #2e6da4  1px solid;
+    border-right: #2e6da4  1px solid;
+    border-top: #2e6da4  1px solid;
+    border-bottom: #2e6da4  10px solid;
+    padding:20px;
+    margin: -20px 5px 5px 5px;
+}
+
+.header {
+    background: linear-gradient(to right, #f43b48 30%, #172a48 80%);
+    height: 80px;
+    box-shadow: 0 0 0 3px black, 0 0 0 6px yellow,  0 0 0 9px red;
+    //background-image: linear-gradient(to bottom, whitesmoke 95%, black 3%);
+}
+.logo{
+    margin-top: 8px;
+    height:80px;
+    width:80px;
+    border-radius: 5px;
+}
+
+#toggle_btn
+{
+    background: #f43b48;
+}
+
+.page-title-box h3{
+    color: white;
+}
+
 #sidebar {
-    background-color: #172a56;;
-    color: #000001;
+    background-color: #172a48;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-.sidebar-menu
-{
-  color: #ff2a56;
+.sidebar-menu ul {
+    color: yellow;
 }
 
-.form-control{
-    line-height:1.5;
-    border-color:#000000;
-    font-size:13px;
+.sidebar-menu > ul > li > a {
+    font-weight: 500;
+    color: ghostwhite;
 }
 
-.filter-row
-{
+.sidebar-menu > ul > li {
+    border-bottom: solid 0.001em #2e6da4;
+    padding-bottom: 5px;
+
+}
+
+.sidebar-menu ul {
+    color: #ffffcc;
+    padding-top: 20px;
+
+}
+
+.form-control {
+    line-height: 1.5;
+    border-color: #000000;
+    font-size: 13px;
+}
+
+.filter-row {
     margin-top: 15px
 }
-#DataTables_Table_0_wrapper{
-    padding: 15px;
+
+#DataTables_Table_0_wrapper {
+    padding: 15px 15px 15px 15px;
     background-color: white;
+    border: solid #a1a1a1 thin;
+
+}
+.page-wrapper > .content {
+    padding: 40px;
 }
 
-.user-name
-{
+.sidebar-menu ul li a i {
+    font-size: 18px;
+}
+
+.table tbody {
+
+    border: solid #a1a1a1 thin;
+}
+
+.table thead th {
+    font-weight: 900;
+    font-size: 16px;
+}
+
+.btn-sm, .btn-group-sm > .btn {
+    padding: 0.15rem 0.15rem 0.15rem 0.15rem;
+    font-size: 0.775rem;
+    line-height: 1.2;
+    border-radius: 0.2rem;
+}
+
+.user-name {
     font-weight: bold;
     font-size: 20px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
+.page-header .breadcrumb a {
+    color: white;
+}
 
-.title
-{
+.breadcrumb-item.active {
+    color: #ffffcc;
+}
+
+.title {
     font-weight: bold;
     color: #000001;
     font-size: 16px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
-.col-form-label
-{
+.col-form-label {
     font-weight: bold;
     font-size: 14px;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
@@ -90,41 +199,61 @@ body{
     margin-bottom: 0;
     color: #2e6da4;
     padding: 0;
-    font-family: "CircularStd", sans-serif;
+    font-family: Calibri, monospace;
 }
 
 
-
-.nav-tabs
-{
-    background-color: #ffffcc;
-    border-bottom: 5px black;
-    margin-bottom: 0;
+.nav-tabs {
+    background-color: #172a48;
+    //border-bottom: solid 5px red;
+    margin-bottom: 0px;
     font-weight: bold;
     color: #5969d7;
     font-size: 14px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+    font-family: Calibri, monospace
+    //font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
+}
+
+.table.custom-table > tbody > tr > td, .table.custom-table > tbody > tr > th, .table.custom-table > tfoot > tr > td, .table.custom-table > tfoot > tr > th, .table.custom-table > thead > tr > td, .table.custom-table > thead > tr > th {
+    padding: 1px 1px;
+    vertical-align: middle;
+}
+
+.nav-tabs > li > a {
+    margin-right: 0;
+    color: #ffffff;
+    border-radius: 0;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+    color: #ffffcc;
+    //background-color: white;
+    border-color: #dee2e6 #dee2e6 #fff;
+}
+
+.table th {
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 
-
-#printArea
-{
+#printArea {
     background-color: white;
 }
 
-#download-employee-profile
-{
+#download-employee-profile {
     background: ivory;
     border: #000000;
     padding: 40px 70px;
 }
 
-.modal-body
-{background-color: ivory;}
+.modal-body {
+    background-color: ivory;
+}
 
-.modal-header
-{
+.modal-header {
     background-color: ivory;
     font-weight: bold;
     font-size: 14px;
@@ -133,56 +262,71 @@ body{
 
 
 .profile-widget {
-    background-color: ivory;
-    border: 1px solid #ededed;
+    border: 1px solid blue;
     border-radius: 4px;
     margin-bottom: 30px;
-    height:175px;
+    height: 175px;
     padding: 20px;
     text-align: center;
     position: relative;
     box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.2);
     overflow: hidden;
+    background-image: url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrqgEJCkZ9WboSZbJdRf9Zdfky1vdHThpcJA&usqp=CAU);
+    //background: url("https://i.pinimg.com/736x/5a/6e/7b/5a6e7bdadd02505f6bb580675a7da511.jpg");
+    background-size: cover;
 }
 
-.page-header
-{
-    background-color: #ffffcc;
-    margin-bottom: 0;
+.page-header {
+    background-color: #172a48;
+    margin: 1px 1px 15px 1px;
     font-family: 'Alegreya Sans', sans-serif;
     font-style: italic;
-    border-bottom: lightskyblue;
-    border-bottom-width: thick;
+    border-bottom: solid thick red;
     padding: 20px;
     font-weight: bold;
     font-size: 9px;
+    color: white;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
 }
 
-.employee-name
-{
+.profile-action .material-icons{
+    color: white;
+}
+
+.employee-name {
     font-weight: bold;
-    font-size: 38px;
+    font-size: 34px;
 
 }
 
-#submenu{
+#submenu {
     border-bottom-color: yellow;
 
 }
-.user-name{
+
+.user-name {
 
     color: #0056b3;
 
 }
+
 .profile-widget .user-name > a {
     color: #0056b3;
     font-size: 14px;
 }
 
 .form-control {
-    border-color: #000000;
-    box-shadow: none;
-    font-size: 15px;
+    border-color:solid blue thin;
+    font-size: 14px;
     height: 32px;
+}
+
+.logo{
+    border-radius:30px;
+}
+
+.header-left{
+    border-radius: 30px;
+    border: double 1px red;
+
 }
