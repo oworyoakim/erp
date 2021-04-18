@@ -19,6 +19,7 @@ import LeaveApplicationsList from "./components/hrms/leave-applications/LeaveApp
 import LeaveApplicationForm from "./components/hrms/leave-applications/LeaveApplicationForm";
 import Employees from "./components/hrms/employees/Employees";
 import EmployeeProfile from "./components/hrms/employees/EmployeeProfile";
+import EmployeeProfileView from "./components/hrms/employees/EmployeeProfileView";
 import DownloandEmployeeProfile from "./components/hrms/employees/DownloandEmployeeProfile";
 import EmployeeProfileForm from "./components/hrms/employees/EmployeeProfileForm";
 import EmployeeProfileWidget from "./components/hrms/employees/EmployeeProfileWidget";
@@ -67,6 +68,7 @@ Vue.component("app-leave-application-form", LeaveApplicationForm);
 Vue.component("app-leave-statistics", LeaveStatistics);
 Vue.component("app-employees", Employees);
 Vue.component("app-employee-profile", EmployeeProfile);
+Vue.component("app-employee-profile-view", EmployeeProfileView);
 Vue.component("app-download-employee-profile", DownloandEmployeeProfile);
 Vue.component("app-employee-profile-form", EmployeeProfileForm);
 Vue.component("app-employee-profile-widget", EmployeeProfileWidget);

@@ -14,7 +14,7 @@
         <!-- /Page Header -->
         <app-spinner v-if="isLoading"></app-spinner>
         <template v-else>
-            <div class="row">
+            <div class="row mt-2">
                 <div class="col-sm-4 col-md-4 col-lg-3 col-xl-3">
                     <button class="btn btn-primary btn-block" @click="editLeaveType()"><i
                         class="fa fa-plus"></i> Add Leave Type
@@ -111,8 +111,6 @@
             });
             EventBus.$on(['LEAVE_TYPE_SAVED','LEAVE_TYPE_DELETED'], this.getLeaveTypes);
             EventBus.$on([
-                'LEAVE_POLICY_SAVED',
-                'LEAVE_POLICY_SAVED',
                 'LEAVE_POLICY_SAVED',
                 'LEAVE_POLICY_DELETED'
             ], this.getLeavePolicies);

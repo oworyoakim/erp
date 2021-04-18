@@ -4,6 +4,7 @@ const routes = {
     ROLES: '/acl/roles',
     SETTINGS: '/settings',
     GENERAL_SETTINGS: '/acl/settings/general',
+    MODULES_SETTINGS: '/acl/settings/modules',
     GENERAL_SETTINGS_JSON: '/acl/settings/general/all-json',
     ACL_FROM_SELECTIONS_OPTIONS: '/acl/form-selections-options',
     // hrms

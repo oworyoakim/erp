@@ -19,6 +19,10 @@ class DivisionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['divisions','divisions.view','divisions.create','divisions.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -34,6 +38,10 @@ class DivisionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['divisions.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -49,6 +57,10 @@ class DivisionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['divisions.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -64,6 +76,10 @@ class DivisionsGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['divisions.view']))
+            {
+                throw new Exception('Permission Denied!');
+            }
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/show", $params);

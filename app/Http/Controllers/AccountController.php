@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ErpHelper;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
@@ -34,14 +35,14 @@ class AccountController extends Controller
 
     public function login(Request $request)
     {
-        if (Sentinel::check())
+        if ($user = Sentinel::check())
         {
-            $service = $request->attributes->get('service');
+            $service = $user->current_module;
             if ($service)
             {
                 return redirect()->intended(route("{$service}.dashboard"));
             }
-            return redirect()->route("service");
+            return redirect()->intended(route("hrms.dashboard"));
         }
         $logo = settings()->get('company_logo');
         if (empty($logo))
@@ -66,8 +67,8 @@ class AccountController extends Controller
                 'login_name' => 'required',
                 'password' => 'required',
             ]);
-
-            $user = User::query()->where('email', $request->get('login_name'))->first();
+            $loginName = $request->get('login_name');
+            $user = User::query()->where('email', $loginName)->first();
             if (!$user)
             {
                 throw new Exception('Invalid Credentials!');
@@ -92,6 +93,16 @@ class AccountController extends Controller
             ];
             if ($user = Sentinel::authenticate($credentials))
             {
+                $modules = [];
+                foreach ($user->modules()->get() as $module)
+                {
+                    $modules[$module->slug] = $user->canAccessModule($module->slug);
+                }
+                User::where(['id' => $user->id])->update(['current_module' => 'hrms']);
+                $request->session()->put([
+                    'service' => 'hrms',
+                    'modules' => $modules,
+                ]);
                 return response()->json('Login Successful!');
             }
             throw new Exception('Invalid Credentials!');
@@ -103,9 +114,14 @@ class AccountController extends Controller
 
     public function selectService(Request $request)
     {
+        $user = Sentinel::getUser();
         $service = $request->session()->get('service');
         if ($service)
         {
+            if ($user->user_type == 'employee' && $service == 'hrms')
+            {
+                return redirect()->route('hrms.employee-profile-view');
+            }
             return redirect()->route("{$service}.dashboard");
         }
         return view('account.service');
@@ -115,9 +131,14 @@ class AccountController extends Controller
     {
         try
         {
+            $user = Sentinel::getUser();
             $service = $request->session()->get('service');
             if ($service)
             {
+                if ($user->user_type == 'employee' && $service == 'hrms')
+                {
+                    return redirect()->route('hrms.employee-profile-view');
+                }
                 return redirect()->intended(route("{$service}.dashboard"));
             }
             $service = $request->get('service');
@@ -126,6 +147,10 @@ class AccountController extends Controller
                 return redirect()->route('service');
             }
             $request->session()->put('service', $service);
+            if ($user->user_type == 'employee' && $service == 'hrms')
+            {
+                return redirect()->route('hrms.employee-profile-view');
+            }
             return redirect()->intended(route("{$service}.dashboard"));
         } catch (Exception $ex)
         {
@@ -144,6 +169,39 @@ class AccountController extends Controller
         {
             session()->flash('error', $ex->getMessage());
             return redirect()->route('service')->withInput();
+        }
+    }
+
+    public function removeService(Request $request)
+    {
+        $service  = $request->session()->get('service');
+        $request->session()->forget('service');
+        $request->session()->save();
+        return response()->json("Service {$service} removed!" . $request->session()->get('service'));
+    }
+
+    public function goToService(Request $request)
+    {
+        try
+        {
+            $user = Sentinel::getUser();
+            $oldService  = $user->current_module;
+            $newService = $request->get('service');
+            if (!$newService)
+            {
+                throw new Exception('No service set!');
+            }
+            if (!$user->canAccessModule($newService))
+            {
+                throw new Exception("You are not authorized to access {$newService} module!");
+            }
+            User::where(['id' => $user->id])->update(['current_module' => $newService]);
+            $request->session()->put('service', $newService);
+            $request->session()->save();
+            return response()->json("Service changed from {$oldService} to {$newService}!");
+        } catch (Exception $ex)
+        {
+            return response()->json($ex->getMessage(), Response::HTTP_FORBIDDEN);
         }
     }
 
@@ -171,8 +229,10 @@ class AccountController extends Controller
     public function logout(Request $request)
     {
         $user = Sentinel::getUser();
+        User::where(['id' => $user->id])->update(['current_module' => null]);
         Sentinel::logout($user);
         $request->session()->remove('service');
+        $request->session()->remove('modules');
         return redirect()->route('login');
     }
 
@@ -199,8 +259,10 @@ class AccountController extends Controller
                 $loggedInUser->role->slug = $role->slug;
                 $loggedInUser->permissions = array_merge($loggedInUser->permissions, $role->getPermissions());
             }
-            $user->tinymceApiKey = env('TINYMCE_API_KEY', null);
-            $user->dateFormat = settings()->get('date_format') ?: env('APP_DATE_FORMAT', 'd/m/Y');
+            $loggedInUser->tinymceApiKey = env('TINYMCE_API_KEY', null);
+            $loggedInUser->dateFormat = settings()->get('date_format') ?: env('APP_DATE_FORMAT', 'd/m/Y');
+            $employeeData = $this->get("{$this->urlEndpoint}/v1/employees/show-for-user/{$user->getUserId()}");
+            $loggedInUser->employeeData = ErpHelper::arrayToObject($employeeData);
             return response()->json($loggedInUser);
         } catch (Exception $ex)
         {

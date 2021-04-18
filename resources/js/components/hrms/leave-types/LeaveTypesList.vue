@@ -8,6 +8,7 @@
                     <tr>
                         <th>#</th>
                         <th>Title</th>
+                        <th>Earned?</th>
                         <th>Description</th>
                         <th>Status</th>
                         <th class="text-right">Action</th>
@@ -17,6 +18,10 @@
                     <tr v-for="ltype in leaveTypes">
                         <td>{{ltype.id}}</td>
                         <td>{{ltype.title}}</td>
+                        <td>
+                            <span v-if="leaveType.earnedLeave">Yes</span>
+                            <span v-else>No</span>
+                        </td>
                         <td>{{ltype.description}}</td>
                         <td>
                             <div class="dropdown action-label">

@@ -5,26 +5,24 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group row">
-                        <label class="col-sm-4">Policy Name<span class="text-danger">*</span></label>
+                        <label class="col-sm-4">Policy Number<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <input v-model="leavePolicy.title"
                                    class="form-control"
-                                   type="text"
-                                   :disabled="!!leavePolicy.id"
-                            >
+                                   type="text">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-sm-4">Duration (in days)<span class="text-danger">*</span></label>
                         <div class="col-sm-8">
                             <input v-model="leavePolicy.duration"
-                                   class="form-control" type="number" min="1">
+                                   class="form-control" type="number" min="1" :disabled="!!leavePolicy.id">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-form-label col-sm-4">Gender</label>
                         <div class="col-sm-8">
-                            <select v-model="leavePolicy.gender" class="form-control">
+                            <select v-model="leavePolicy.gender" class="form-control" :disabled="!!leavePolicy.id">
                                 <option value="both">Both</option>
                                 <option v-for="gender in formSelectionOptions.genders" :value="gender.slug">
                                     {{gender.title}}
@@ -33,18 +31,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-md-4">Earned leave?</label>
-                        <div class="col-md-8">
-                            <div class="checkbox-inline">
-                                <input v-model="leavePolicy.earnedLeave" type="checkbox">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group row">
                         <label class="col-md-4">With weekend?</label>
                         <div class="col-md-8">
                             <div class="checkbox-inline">
-                                <input v-model="leavePolicy.withWeekend" type="checkbox">
+                                <input v-model="leavePolicy.withWeekend" type="checkbox" :disabled="!!leavePolicy.id">
                             </div>
                         </div>
                     </div>
@@ -52,7 +42,7 @@
                         <label class="col-md-4">Carry forward?</label>
                         <div class="col-md-8">
                             <div class="checkbox-inline">
-                                <input v-model="leavePolicy.carryForward" type="checkbox">
+                                <input v-model="leavePolicy.carryForward" type="checkbox" :disabled="!!leavePolicy.id">
                             </div>
                         </div>
                     </div>
@@ -61,14 +51,14 @@
                         <div class="col-md-8">
                             <input v-model="leavePolicy.maxCarryForwardDuration"
                                    type="number" :max="leavePolicy.duration"
-                                   class="form-control" min="1">
+                                   class="form-control" min="1" :disabled="!!leavePolicy.id">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label class="col-md-4">Is Active?</label>
                         <div class="col-md-8">
                             <div class="checkbox-inline">
-                                <input v-model="leavePolicy.active" type="checkbox">
+                                <input v-model="leavePolicy.active" type="checkbox" :disabled="!!leavePolicy.id">
                             </div>
                         </div>
                     </div>
@@ -90,6 +80,7 @@
                                         multiple
                                 >
                                     <option v-for="salaryScale in salaryScales" :key="salaryScale.id"
+                                            :selected="leavePolicy.salaryScaleIds.includes(salaryScale.id)"
                                             :value="salaryScale.id"
                                             v-text="salaryScale.scale"></option>
                                 </select>
@@ -163,18 +154,18 @@
                 return !!this.leavePolicy.id ? "Edit Leave Policy" : "New Leave Policy";
             },
             formInvalid() {
-                return this.isSending || !(!!this.leavePolicy.title && !!this.leavePolicy.duration  && this.leavePolicy.selectedSalaryScaleIds.length > 0);
+                return this.isSending || !(!!this.leavePolicy.title && !!this.leavePolicy.duration  && this.leavePolicy.salaryScaleIds.length > 0);
             },
         },
         methods: {
             editLeavePolicy(leavePolicy = null) {
                 if (!!leavePolicy) {
                     this.leavePolicy = deepClone(leavePolicy);
-                    this.leavePolicy.selectedSalaryScaleIds = this.leavePolicy.salaryScaleIds || [];
                 } else {
                     this.leaveType = new LeaveType();
                 }
                 this.isEditing = true;
+                this.$nextTick(this.addSelected);
             },
             cloneSalaryScales() {
                 this.salaryScales = this.scales.map((scale) => {
@@ -183,12 +174,14 @@
             },
             setSelectedScales() {
                 if (!!this.$refs.selectedScaleIds) {
-                    this.leavePolicy.selectedSalaryScaleIds = [];
+                    // this.leavePolicy.salaryScaleIds = [];
                     let selectedOptions = this.$refs.selectedScaleIds.children;
                     for (let i = 0; i < selectedOptions.length; i++) {
                         let value = selectedOptions.item(i).value;
                         //console.log(value);
-                        this.leavePolicy.selectedSalaryScaleIds.push(value);
+                        if(!this.leavePolicy.salaryScaleIds.includes(value)) {
+                            this.leavePolicy.salaryScaleIds.push(value);
+                        }
                     }
                 }
             },
@@ -235,7 +228,7 @@
                     }
                     this.isSending = true;
                     let response = await this.$store.dispatch('SAVE_LEAVE_POLICY', this.leavePolicy);
-                    EventBus.$emit('leavePolicySaved');
+                    EventBus.$emit('LEAVE_POLICY_SAVED');
                     let wrapper = document.createElement('div');
                     wrapper.innerHTML = response;
                     await swal({content: wrapper});
@@ -243,7 +236,9 @@
                     this.isSending = false;
                 } catch (error) {
                     console.log(error);
-                    swal({title: error, icon: 'error'});
+                    let wrapper = document.createElement('div');
+                    wrapper.innerHTML = this.trim(error,'"');
+                    await swal({content: wrapper});
                     this.isSending = false;
                 }
             },
@@ -251,7 +246,6 @@
                 this.leavePolicy = new LeavePolicy();
                 this.leavePolicy.leaveTypeId = this.leaveTypeId;
                 this.cloneSalaryScales();
-                this.leavePolicy.selectedSalaryScaleIds = [];
                 this.removeSelected();
                 this.isEditing = false;
                 $('.modal-backdrop').remove();

@@ -20,6 +20,7 @@ class SpmsController extends GatewayController
     public function indexSpms()
     {
         settings()->createOutputBasedReport();
+        //dd(request());
         return view('spms.dashboard');
     }
 
@@ -44,9 +45,14 @@ class SpmsController extends GatewayController
         return view('spms.plans.execute_resolutions_and_directives');
     }
 
-    public function monitorStrategy()
+    public function monitorStrategySummary()
     {
-        return view('spms.plans.monitor_strategy');
+        return view('spms.plans.monitor_strategy_summary');
+    }
+
+    public function monitorStrategyDetailed()
+    {
+        return view('spms.plans.monitor_strategy_detailed');
     }
 
     public function monitorActivity()

@@ -7,8 +7,10 @@
         <template v-else>
             <div class="card profile-box flex-fill">
                 <div class="card-body table-responsive">
-                    <h3 class="card-title">Work Experience <a href="#" class="edit-icon" @click="editExperience()">
-                        <i class="fa fa-plus"></i></a></h3>
+                    <h3 class="card-title">Work Experience
+                        <a v-if="$store.getters.HAS_ANY_ACCESS(['employees.manage_work_experience'])" href="#" class="edit-icon" @click="editExperience()">
+                        <i class="fa fa-plus"></i></a>
+                    </h3>
                     <ExperienceInfoList
                         :employee-id="employeeId"
                         :experiences="experiences"

@@ -12,6 +12,10 @@ export default class MainActivity {
         this.objective = null;
         this.outcomeId = '';
         this.outcome = null;
+        this.outputId = '';
+        this.output = null;
+        this.indicatorId = '';
+        this.indicator = null;
         this.activities = [];
         this.directorateIds = [];
         this.createdBy = null;

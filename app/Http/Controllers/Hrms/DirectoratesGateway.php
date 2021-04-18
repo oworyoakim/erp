@@ -19,6 +19,11 @@ class DirectoratesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['directorates','directorates.view','directorates.create','directorates.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
+
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -49,6 +54,11 @@ class DirectoratesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['directorates.create']))
+            {
+                throw new Exception('Permission Denied!');
+            }
+
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -64,6 +74,11 @@ class DirectoratesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['directorates.update']))
+            {
+                throw new Exception('Permission Denied!');
+            }
+
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -79,6 +94,11 @@ class DirectoratesGateway extends GatewayController
     {
         try
         {
+            if (!Sentinel::hasAnyAccess(['directorates.view']))
+            {
+                throw new Exception('Permission Denied!');
+            }
+
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/show", $params);

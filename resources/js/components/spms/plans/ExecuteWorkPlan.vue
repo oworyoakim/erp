@@ -1,6 +1,6 @@
 <template>
     <div class="strategic-plan-execution">
-        <div class="-header pagerow" v-if="!activeWorkPlan">
+        <div class="row" v-if="!activeWorkPlan">
             <div class="col-sm-12 table-responsive">
                 <h5>Select a strategic plan to continue</h5>
                 <select class="form-control" @change="setActivePlan($event.target.value)">
@@ -56,6 +56,14 @@
                                     <span>{{ $moment(activeWorkPlan.startDate).format('MMM DD, YYYY') }}</span> -
                                     <span>{{ $moment(activeWorkPlan.endDate).format('MMM DD, YYYY') }}</span>
                                 </span>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="pull-left">Report Periods:</span>
+                                        <span class="pull-right">
+                                            <span class="mr-2" v-for="reportPeriod in activeWorkPlan.reportPeriods">
+                                                {{reportPeriod.name}},
+                                            </span>
+                                        </span>
                                     </li>
                                     <li class="list-group-item">
                                         Action:
@@ -152,6 +160,7 @@
                                         <th>FinancialYear</th>
                                         <th>StartDate</th>
                                         <th>EndDate</th>
+                                        <th>Report Periods</th>
                                         <th>Actions</th>
                                     </tr>
                                     </thead>
@@ -161,6 +170,7 @@
                                         <td>{{ workPlan.financialYear }}</td>
                                         <td>{{ $moment(workPlan.startDate).format('MMM DD, YYYY') }}</td>
                                         <td>{{ $moment(workPlan.endDate).format('MMM DD, YYYY') }}</td>
+                                        <td>{{ workPlan.reportPeriods.length }}</td>
                                         <td>
                                             <button type="button"
                                                     @click="setActiveWorkPlan(workPlan)"
@@ -220,7 +230,9 @@ export default {
             'ACTIVITY_SAVED',
             'STAGE_SAVED',
             'TASK_SAVED',
-        ], this.refreshData);
+        ],() => {
+            this.getWorkPlans();
+        });
         EventBus.$on(['MAIN_ACTIVITY_SAVED',], () => {
             this.$store.dispatch('GET_MAIN_ACTIVITIES', {workPlanId: this.activeWorkPlan.id}).then(() => {
                 //TODO: we need to update the state with the updated active main activity
@@ -359,9 +371,6 @@ export default {
         },
         getInterventions() {
             return this.$store.dispatch("GET_INTERVENTIONS", {planId: this.activePlan.id});
-        },
-        refreshData() {
-            this.$store.dispatch("GET_WORK_PLANS", this.activePlan.id);
         },
         editWorkPlan(workPlan = null) {
             EventBus.$emit("EDIT_WORK_PLAN", workPlan);

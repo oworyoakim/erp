@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Enterprise Resource Planner">
     <meta name="keywords" content="Access Control, ERP, HRMS, SPMS">
     <meta name="author" content="Owor Yoakim">
     <meta name="robots" content="noindex, nofollow">
+    <meta name="csrf-token" content="{{csrf_token()}}">
+    <meta name="base-url" content="{{ url('/') }}">
     <title>ERP - @yield('title')</title>
     <!-- Favicon -->
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico">
@@ -20,13 +22,13 @@
 </head>
 <body class="error-page">
 <!-- Main Wrapper -->
-<div class="main-wrapper">
+<div class="main-wrapper"  id="main-app">
     <div class="error-box">
         @yield('content')
-        @if(!empty($service))
-        <a href="{{route($service.'.dashboard')}}" class="btn btn-custom">Back to Home</a>
+        @if(!empty($service) && Sentinel::getUser()->canAccessModule($service))
+        <a href="{{route($service.'.dashboard')}}" class="btn btn-custom">Go Back</a>
         @else
-            <a href="{{route('service')}}" class="btn btn-custom">Select Service</a>
+            <a href="javascript:void(0);" @click="$store.dispatch('CHANGE_SERVICE','hrms')" class="btn btn-custom">Go Back</a>
         @endif
         <p class="mt-2">Or</p>
         <!--  Logout Form  -->

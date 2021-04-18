@@ -39,5 +39,22 @@ export default {
                 return Promise.reject(message);
             }
         },
+        async CHANGE_SERVICE({commit}, payload) {
+            try {
+                //await axios.post('/remove-service',{});
+                let response = await axios.post('/go-to-service', {
+                    service: payload
+                });
+                await swal(response.data);
+                location.reload();
+                //window.location.href = `/${payload}/dashboard`;
+                return Promise.resolve(response.data);
+            } catch (error) {
+                let message = resolveError(error);
+                console.error(message);
+                toastr.error(message);
+                return Promise.reject(message);
+            }
+        },
     }
 }

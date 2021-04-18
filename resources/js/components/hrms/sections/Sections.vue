@@ -7,7 +7,7 @@
                     <app-breadcrumb dashboard-link="/hrms" :list-items="breadcrumbItems"></app-breadcrumb>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <button type="button" class="btn add-btn" @click="editSection()"><i class="fa fa-plus"></i> New Section</button>
+                    <button v-if="$store.getters.HAS_ANY_ACCESS(['sections.create'])" type="button" class="btn add-btn" @click="editSection()"><i class="fa fa-plus"></i> New Section</button>
                 </div>
             </div>
         </div>

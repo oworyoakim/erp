@@ -7,13 +7,12 @@ class LeavePolicy {
         this.description = '';
         this.duration = '';
         this.withWeekend = '';
-        this.earnedLeave = true;
         this.carryForward = false;
         this.active = false;
         this.maxCarryForwardDuration = '';
         this.leaveType = null;
-        this.salaryScaleIds = null;
-        this.selectedSalaryScaleIds = [];
+        this.salaryScaleIds = [];
+        this.salaryScales = [];
     }
 }
 

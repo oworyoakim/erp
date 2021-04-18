@@ -9,7 +9,7 @@
                 <div class="card-body text-lg">
                     <h4 class="card-title">
                         Bank Details
-                        <button v-if="banks.length === 0" @click="editBank()" class="edit-icon">
+                        <button v-if="banks.length === 0 && $store.getters.HAS_ANY_ACCESS(['employees.manage_bank_info'])" @click="editBank()" class="edit-icon">
                             <i class="fa fa-plus"></i></button>
                     </h4>
                     <BankList :employee-id="employeeId" :banks="banks"/>

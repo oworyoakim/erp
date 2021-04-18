@@ -25,11 +25,13 @@ Route::get('/settings', 'HomeController@settings');
 
 Route::middleware('ensure.authenticated')->group(function () {
     Route::post('/logout', 'AccountController@logout')->name('logout');
-    Route::get('/service', 'AccountController@selectService')->name('service');
-    Route::post('/service', 'AccountController@setService')->name('service');
+    //Route::get('/service', 'AccountController@selectService')->name('service');
+    //Route::post('/service', 'AccountController@setService')->name('service');
 
     Route::middleware('ensure.service.selected')->group(function () {
-        Route::get('/service-change', 'AccountController@changeService')->name('service.change');
+        //Route::get('/service-change', 'AccountController@changeService')->name('service.change');
+        Route::post('/remove-service', 'AccountController@removeService')->name('remove-service');
+        Route::post('/go-to-service', 'AccountController@goToService')->name('go-to-service');
         Route::get('/user-data', 'AccountController@getUserData')->name('user-data');
         Route::get('/profile', 'AccountController@profile')->name('profile');
 
@@ -37,6 +39,7 @@ Route::middleware('ensure.authenticated')->group(function () {
         Route::prefix('hrms')->namespace('Hrms')->group(function () {
             Route::get('', 'HrmsController@indexHrms')->name('hrms.dashboard');
             Route::get('dashboard', 'HrmsController@indexHrms')->name('hrms.dashboard');
+            Route::get('employee-profile-view', 'HrmsController@employeeProfileView')->name('hrms.employee-profile-view');
             Route::get('dashboard-statistics', 'HrmsController@getDashboardStatistics')->name('hrms.dashboard.statistics');
             Route::get('form-selections-options', 'HrmsController@getFormSelectionsOptions')->name('hrms.form-selections-options');
 
@@ -163,6 +166,7 @@ Route::middleware('ensure.authenticated')->group(function () {
                 // leaves
                 Route::get('', 'HrmsController@leaves')->name('hrms.leaves.list');
                 Route::get('all-json', 'LeavesGateway@index');
+                Route::get('history', 'LeavesGateway@history');
 
                 // leaves/types
                 Route::prefix('types')->group( function () {
@@ -191,12 +195,12 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('all-json', 'LeaveApplicationsGateway@index');
                 Route::post('', 'LeaveApplicationsGateway@store');
                 Route::put('', 'LeaveApplicationsGateway@update');
-                //Route::patch('verify', 'LeaveApplicationsGateway@verify');
-                //Route::patch('return', 'LeaveApplicationsGateway@returnApplication');
-                //Route::patch('approve', 'LeaveApplicationsGateway@approve');
-                //Route::patch('decline', 'LeaveApplicationsGateway@decline');
-                //Route::patch('grant', 'LeaveApplicationsGateway@grant');
-                //Route::patch('reject', 'LeaveApplicationsGateway@reject');
+                Route::patch('verify', 'LeaveApplicationsGateway@verify');
+                Route::patch('return', 'LeaveApplicationsGateway@returnApplication');
+                Route::patch('approve', 'LeaveApplicationsGateway@approve');
+                Route::patch('decline', 'LeaveApplicationsGateway@decline');
+                Route::patch('grant', 'LeaveApplicationsGateway@grant');
+                Route::patch('reject', 'LeaveApplicationsGateway@reject');
                 //Route::delete('', 'LeaveApplicationsGateway@delete');
 
             });
@@ -242,8 +246,10 @@ Route::middleware('ensure.authenticated')->group(function () {
                 // Monitoring
                 Route::prefix('monitor')->group(function (){
                     Route::prefix('strategy')->group(function (){
-                        Route::get('', 'SpmsController@monitorStrategy')->name('spms.plans.monitor.strategy');
-                        Route::get('report', 'SpmsReportsGateway@strategyReport');
+                        Route::get('summary', 'SpmsController@monitorStrategySummary')->name('spms.plans.monitor.summary_strategy');
+                        Route::get('detailed', 'SpmsController@monitorStrategyDetailed')->name('spms.plans.monitor.detailed_strategy');
+                        Route::get('summary-report', 'SpmsReportsGateway@summaryStrategyReport');
+                        Route::get('detailed-report', 'SpmsReportsGateway@detailedStrategyReport');
                     });
 
                     Route::prefix('activity')->group(function () {
@@ -419,6 +425,10 @@ Route::middleware('ensure.authenticated')->group(function () {
                 Route::get('general', 'GeneralSettingsController@index')->name('settings.general');
                 Route::get('general/all-json', 'GeneralSettingsController@getSettings')->name('settings.general.all-json');
                 Route::put('general', 'GeneralSettingsController@update')->name('settings.general');
+                Route::get('modules', 'GeneralSettingsController@modules')->name('settings.modules');
+                Route::get('modules/list', 'ModulesController@index');
+                Route::post('modules', 'ModulesController@store');
+                Route::patch('modules', 'ModulesController@updateModulesAccess');
             });
         });
 

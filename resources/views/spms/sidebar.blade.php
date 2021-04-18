@@ -34,7 +34,8 @@
                 <a href="#"><i class="la la-bar-chart"></i> <span> MONITOR</span> <span
                         class="menu-arrow"></span></a>
                 <ul style="display: @if(Request::is('spms/plans/monitor*')) block  @else none @endif;">
-                    <li><a href="{{route('spms.plans.monitor.strategy')}}">Strategy</a></li>
+                    <li><a href="{{route('spms.plans.monitor.summary_strategy')}}">Summary Strategy Report</a></li>
+                    <li><a href="{{route('spms.plans.monitor.detailed_strategy')}}">Detailed Strategy Report</a></li>
                     <li><a href="{{route('spms.plans.monitor.activity')}}">Activity</a></li>
                     <li><a href="{{route('spms.plans.monitor.directives-and-resolutions')}}">Directives and Resolution</a></li>
                 </ul>

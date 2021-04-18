@@ -14,11 +14,11 @@
             <td>{{directorate.title}}</td>
             <td>{{directorate.description}}</td>
             <td class="text-right">
-                <a class="btn btn-info btn-sm" title="View Details" :href="'/hrms/directorates/view/' + directorate.id"><i
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['directorates.show','directorates.view'])"  class="btn btn-info btn-sm" title="View Details" :href="'/hrms/directorates/view/' + directorate.id"><i
                     class="fa fa-eye m-r-5"></i></a>
-                <a @click="editDirectorate(directorate)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['directorates.update'])"  @click="editDirectorate(directorate)" class="btn btn-info btn-sm" title="Edit" href="javascript:void(0)"><i
                     class="fa fa-pencil m-r-5"></i></a>
-                <a @click="deleteDirectorate(directorate)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
+                <a v-if="$store.getters.HAS_ANY_ACCESS(['directorates.delete'])"  @click="deleteDirectorate(directorate)" class="btn btn-danger btn-sm" title="Delete" href="javascript:void(0)"><i
                     class="fa fa-trash-o m-r-5"></i></a>
             </td>
         </tr>

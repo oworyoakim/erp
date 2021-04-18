@@ -22,6 +22,9 @@ class ExperienceInfoGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.experience'])){
+                throw new Exception("Permission Denied!");
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -37,6 +40,9 @@ class ExperienceInfoGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.experience'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();
@@ -52,6 +58,9 @@ class ExperienceInfoGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.experience'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $loggedInUser = Sentinel::getUser();
             $data['userId'] = $loggedInUser->getUserId();

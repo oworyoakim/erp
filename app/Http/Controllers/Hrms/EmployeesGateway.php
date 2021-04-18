@@ -29,6 +29,9 @@ class EmployeesGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees', 'employees.view', 'employees.create', 'employees.update', 'employees.delete'])){
+                throw new Exception("Permission Denied!");
+            }
             $params = $request->all();
 
             $responseData = $this->get($this->urlEndpoint, $params);
@@ -59,6 +62,9 @@ class EmployeesGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.create'])){
+                throw new Exception("Permission Denied!");
+            }
             $rules = [
                 'firstName' => 'required',
                 'lastName' => 'required',
@@ -123,6 +129,9 @@ class EmployeesGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.update'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
             $user = Sentinel::getUser();
             $data['updatedBy'] = $user->getUserId();
@@ -197,6 +206,9 @@ class EmployeesGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.view', 'employees.show'])){
+                throw new Exception("Permission Denied!");
+            }
             $params = $request->all();
 
             $responseData = $this->get("{$this->urlEndpoint}/show", $params);
@@ -212,6 +224,9 @@ class EmployeesGateway extends GatewayController
     {
         try
         {
+            if(!Sentinel::hasAnyAccess(['employees.activate'])){
+                throw new Exception("Permission Denied!");
+            }
             $data = $request->all();
 
             $responseData = $this->patch("{$this->urlEndpoint}/activate", $data);

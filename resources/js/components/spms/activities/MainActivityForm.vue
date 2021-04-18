@@ -1,5 +1,5 @@
 <template>
-    <app-main-modal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
+    <MainModal :title="title" :is-open="isEditing" @modal-closed="resetForm()">
         <form @submit.prevent="saveMainActivity" autocomplete="off">
             <div class="form-group row">
                 <label class="col-sm-4">Strategic Objective <span class="text-danger">*</span></label>
@@ -9,7 +9,7 @@
                         <option v-for="objective in objectivesOptions"
                                 :value="objective.value"
                                 :key="objective.value">
-                            {{objective.text}}
+                            {{ objective.text }}
                         </option>
                     </select>
                 </div>
@@ -22,7 +22,33 @@
                         <option v-for="outcome in outcomesOptions"
                                 :value="outcome.value"
                                 :key="outcome.value">
-                            {{outcome.text}}
+                            {{ outcome.text }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Output <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" v-model="mainActivity.outputId" required>
+                        <option value="">Select...</option>
+                        <option v-for="output in outputsOptions"
+                                :value="output.value"
+                                :key="output.value">
+                            {{ output.text }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label class="col-sm-4">Output Indicator <span class="text-danger">*</span></label>
+                <div class="col-sm-8">
+                    <select class="form-control" v-model="mainActivity.indicatorId" required>
+                        <option value="">Select...</option>
+                        <option v-for="indicator in indicatorsOptions"
+                                :value="indicator.value"
+                                :key="indicator.value">
+                            {{ indicator.text }}
                         </option>
                     </select>
                 </div>
@@ -71,7 +97,7 @@
                             :key="directorate.value"
                             v-model="mainActivity.directorateIds"
                             multiple>
-                        {{directorate.text}}
+                        {{ directorate.text }}
                     </label>
                     <!--                    <select class="form-control custom-select"-->
                     <!--                            v-model="mainActivity.directorateIds"-->
@@ -88,7 +114,7 @@
             </div>
             <div class="form-group row">
                 <div class="col-sm-12">
-                <label>Description</label>
+                    <label>Description</label>
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
                         v-model="mainActivity.description"
@@ -102,114 +128,148 @@
                 </button>
             </div>
         </form>
-    </app-main-modal>
+    </MainModal>
 </template>
 
 <script>
-    import {EventBus} from "../../../app";
-    import {mapGetters} from "vuex";
-    import {deepClone} from "../../../utils/helpers";
-    import MainActivity from "../../../models/smps/MainActivity";
+import {EventBus} from "../../../app";
+import {mapGetters} from "vuex";
+import {deepClone} from "../../../utils/helpers";
+import MainActivity from "../../../models/smps/MainActivity";
+import MainModal from "../../shared/MainModal";
 
-    export default {
-        components: {TinymceEditor: require('@tinymce/tinymce-vue').default,},
-        created() {
-            console.log("Initializes Main Activity Form");
-            EventBus.$on(["EDIT_MAIN_ACTIVITY"], this.editMainActivity);
-            this.$store.dispatch("GET_OBJECTIVES", {planId: this.workPlan.planId});
+export default {
+    components: {MainModal, TinymceEditor: require('@tinymce/tinymce-vue').default,},
+    created() {
+        console.log("Initializes Main Activity Form");
+        EventBus.$on(["EDIT_MAIN_ACTIVITY"], this.editMainActivity);
+        this.$store.dispatch("GET_OBJECTIVES", {planId: this.workPlan.planId});
+    },
+    data() {
+        return {
+            mainActivity: new MainActivity(),
+            employees: [],
+            isEditing: false,
+            isSending: false,
+        }
+    },
+    computed: {
+        ...mapGetters({
+            workPlan: "ACTIVE_WORK_PLAN",
+            outcomes: "OUTCOMES_OPTIONS",
+            outputs: "OUTPUTS",
+            objectives: "OBJECTIVES",
+            directorates: "DIRECTORATES_OPTIONS",
+        }),
+        directoratesOptions() {
+            return this.directorates.map((directorate) => {
+                return {
+                    text: directorate.title,
+                    value: directorate.id,
+                }
+            });
         },
-        data() {
-            return {
-                mainActivity: new MainActivity(),
-                employees: [],
-                isEditing: false,
-                isSending: false,
+        outcomesOptions() {
+            return this.outcomes.map((outcome) => {
+                return {
+                    text: outcome.name,
+                    value: outcome.id,
+                }
+            });
+        },
+        outputsOptions() {
+            return this.outputs.map((output) => {
+                return {
+                    text: output.name,
+                    value: output.id,
+                }
+            });
+        },
+
+        indicatorsOptions() {
+            if (!this.mainActivity.outputId) {
+                return [];
+            }
+            let output = this.outputs.find((output) => output.id === this.mainActivity.outputId);
+            if (!output) {
+                return [];
+            }
+            return output.indicators.map((indicator) => {
+                return {
+                    text: indicator.name,
+                    value: indicator.id,
+                }
+            });
+        },
+
+        objectivesOptions() {
+            return this.objectives.map((objective) => {
+                return {
+                    text: objective.name,
+                    value: objective.id,
+                }
+            });
+        },
+        title() {
+            return (!!this.mainActivity.id) ? "Edit Main Activity" : "Add Main Activity";
+        },
+        formInvalid() {
+            return this.isSending || !(!!this.mainActivity.objectiveId && !!this.mainActivity.outcomeId && !!this.mainActivity.title && !!this.mainActivity.code && !!this.mainActivity.quarter && !!this.mainActivity.indicatorId);
+        },
+    },
+    watch: {
+        "mainActivity.objectiveId"(newVal, oldVal) {
+            let objective = this.objectives.find((objective) => objective.id === this.mainActivity.objectiveId);
+            if (objective) {
+                this.$store.dispatch("GET_OUTCOMES_OPTIONS", {
+                    keyResultAreaId: objective.keyResultAreaId
+                });
+                this.$store.dispatch("GET_OUTPUTS", {
+                    objectiveId: objective.id
+                });
+               if(!this.mainActivity.id){
+                   this.mainActivity.outputId = '';
+                   this.mainActivity.indicatorId = '';
+               }
             }
         },
-        computed: {
-            ...mapGetters({
-                workPlan: "ACTIVE_WORK_PLAN",
-                outcomes: "OUTCOMES_OPTIONS",
-                objectives: "OBJECTIVES",
-                directorates: "DIRECTORATES_OPTIONS",
-            }),
-            directoratesOptions() {
-                return this.directorates.map((directorate) => {
-                    return {
-                        text: directorate.title,
-                        value: directorate.id,
-                    }
-                });
-            },
-            outcomesOptions() {
-                return this.outcomes.map((outcome) => {
-                    return {
-                        text: outcome.name,
-                        value: outcome.id,
-                    }
-                });
-            },
-
-            objectivesOptions() {
-                return this.objectives.map((objective) => {
-                    return {
-                        text: objective.name,
-                        value: objective.id,
-                    }
-                });
-            },
-            title() {
-                return (!!this.mainActivity.id) ? "Edit Main Activity" : "Add Main Activity";
-            },
-            formInvalid() {
-                return this.isSending || !(!!this.mainActivity.objectiveId && !!this.mainActivity.outcomeId && !!this.mainActivity.title && !!this.mainActivity.code && !!this.mainActivity.quarter);
-            },
-        },
-        watch: {
-            "mainActivity.objectiveId"(newVal, oldVal){
-                let objective = this.objectives.find((objective) => objective.id === this.mainActivity.objectiveId);
-                if(objective){
-                    this.$store.dispatch("GET_OUTCOMES_OPTIONS", {
-                        keyResultAreaId: objective.keyResultAreaId
-                    });
-                }
-            },
-        },
-        methods: {
-            editMainActivity(activity = null) {
-                if (activity) {
-                    this.mainActivity = deepClone(activity);
-                } else {
-                    this.mainActivity = new MainActivity();
-                }
-                this.isEditing = true;
-            },
-            async saveMainActivity() {
-                try {
-                    this.isSending = true;
-                    if (!this.mainActivity.workPlanId) {
-                        this.mainActivity.workPlanId = this.workPlan.id;
-                    }
-                    let response = await this.$store.dispatch('SAVE_MAIN_ACTIVITY', this.mainActivity);
-                    toastr.success(response);
-                    this.isSending = false;
-                    EventBus.$emit('MAIN_ACTIVITY_SAVED');
-                    this.resetForm();
-                } catch (error) {
-                    let message = document.createElement('div');
-                    //message.innerHTML = error.trim('"');
-                    message.innerHTML = error;
-                    await swal({content: message, icon: 'error'});
-                    this.isSending = false;
-                }
-            },
-            resetForm() {
+    },
+    methods: {
+        editMainActivity(activity = null) {
+            if (activity) {
+                this.mainActivity = deepClone(activity);
+            } else {
                 this.mainActivity = new MainActivity();
-                this.isEditing = false;
-                $('.modal-backdrop').remove();
             }
+            this.isEditing = true;
+        },
+        async saveMainActivity() {
+            try {
+                this.isSending = true;
+                if (!this.mainActivity.workPlanId) {
+                    this.mainActivity.workPlanId = this.workPlan.id;
+                }
+                let response = await this.$store.dispatch('SAVE_MAIN_ACTIVITY', this.mainActivity);
+                toastr.success(response);
+                this.isSending = false;
+                this.resetForm();
+                EventBus.$emit('MAIN_ACTIVITY_SAVED');
+            } catch (error) {
+                let message = document.createElement('div');
+                //message.innerHTML = error.trim('"');
+                message.innerHTML = error;
+                await swal({content: message, icon: 'error'});
+                this.isSending = false;
+            }
+        },
+        resetForm() {
+            this.mainActivity = new MainActivity();
+            this.isEditing = false;
+            $("body").removeClass('modal-open');
+            $('.modal-backdrop').remove();
         }
     }
+}
 </script>
 
 <style scoped>
