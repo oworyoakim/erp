@@ -17,6 +17,15 @@ class HrmsController extends GatewayController
 
     public function __construct()
     {
+        $this->middleware(function ($request, $next) {
+            $user = Sentinel::getUser();
+            $service = $user->current_module;
+            if ($service != 'hrms')
+            {
+                return redirect()->route("{$service}.dashboard");
+            }
+            return $next($request);
+        });
         $this->urlEndpoint = env('HRMS_APP_URL') . '/v1';
         $data = [
             'modules' => Module::all(['id','name','slug','description']),
