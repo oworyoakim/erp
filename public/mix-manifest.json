@@ -1,8 +1,8 @@
 {
     "/js/acl.js": "/js/acl.js",
     "/js/hrms.js": "/js/hrms.js",
+    "/css/hrms.css": "/css/hrms.css",
     "/css/spms.css": "/css/spms.css",
     "/css/acl.css": "/css/acl.css",
-    "/js/spms.js": "/js/spms.js",
-    "/css/hrms.css": "/css/hrms.css"
+    "/js/spms.js": "/js/spms.js"
 }

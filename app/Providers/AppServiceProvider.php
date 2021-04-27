@@ -27,9 +27,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $data = [
-            'modules' => Module::all(['id','name','slug','description']),
-        ];
-        View::share($data);
+
     }
 }

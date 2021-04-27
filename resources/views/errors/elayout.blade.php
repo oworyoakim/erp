@@ -28,7 +28,7 @@
         @if(!empty($service) && Sentinel::getUser()->canAccessModule($service))
         <a href="{{route($service.'.dashboard')}}" class="btn btn-custom">Go Back</a>
         @else
-            <a href="javascript:void(0);" @click="$store.dispatch('CHANGE_SERVICE','hrms')" class="btn btn-custom">Go Back</a>
+            <a href="{{route('hrms.dashboard')}}" class="btn btn-custom">Go Back</a>
         @endif
         <p class="mt-2">Or</p>
         <!--  Logout Form  -->

@@ -3,17 +3,36 @@
 namespace App\Http\Controllers\Spms;
 
 use App\Http\Controllers\GatewayController;
+use App\Models\Module;
+use App\Models\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\View;
 
 class SpmsController extends GatewayController
 {
     public function __construct()
     {
         $this->urlEndpoint = env('SPMS_APP_URL') . '/v1';
+        $this->middleware(function ($request, $next) {
+            $user = Sentinel::getUser();
+            $service = $user->current_module;
+            if ($service != 'spms' || !$user->canAccessModule($service))
+            {
+                User::where(['id' => $user->id])->update(['current_module' => 'hrms']);
+                $request->session()->put('service', 'hrms');
+                $request->session()->save();
+                return redirect()->route("hrms.dashboard");
+            }
+            return $next($request);
+        });
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
     }
 
 

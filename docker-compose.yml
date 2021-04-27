@@ -7,7 +7,7 @@ volumes:
 services:
 ### Apache2 PHP 7.4.6
   uneb_spms:
-    image: oworyoakim/uneb_spms:v3
+    image: oworyoakim/uneb_spms:v6
     container_name: ${SPMS_CACHE_KEY}
     restart: always
     environment:
@@ -40,7 +40,7 @@ services:
     networks:
       - unebnet
   uneb_hrms:
-    image: oworyoakim/uneb_hrms:v5
+    image: oworyoakim/uneb_hrms:v6
     container_name: ${HRMS_CACHE_KEY}
     restart: always
     environment:
@@ -73,7 +73,7 @@ services:
     networks:
       - unebnet
   uneb_erp:
-    image: oworyoakim/uneb_erp:v5
+    image: oworyoakim/uneb_erp:v6
     container_name: ${CACHE_KEY}
     restart: always
     depends_on:

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Module;
 use App\Models\User;
 use App\Traits\ValidatesHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
@@ -12,10 +13,34 @@ use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
 
 class UsersController extends Controller
 {
     use ValidatesHttpRequests;
+
+    public function __construct()
+    {
+        $this->middleware(function (Request $request, \Closure $next) {
+            $user = Sentinel::getUser();
+            $service = $user->current_module;
+            if ($service != 'acl' || !$user->canAccessModule($service))
+            {
+                if($request->ajax()){
+                    return response()->json("Sorry, you do not have access to the acl module!", Response::HTTP_FORBIDDEN);
+                }
+                User::where(['id' => $user->id])->update(['current_module' => 'hrms']);
+                $request->session()->put('service', 'hrms');
+                $request->session()->save();
+                return redirect()->route("hrms.dashboard");
+            }
+            return $next($request);
+        });
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
+    }
 
     public function index(Request $request)
     {

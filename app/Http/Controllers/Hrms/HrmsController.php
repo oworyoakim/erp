@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Hrms;
 
 use App\Http\Controllers\GatewayController;
+use App\Models\Module;
 use App\Models\Role;
 use App\Models\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\View;
 
 class HrmsController extends GatewayController
 {
@@ -16,6 +18,10 @@ class HrmsController extends GatewayController
     public function __construct()
     {
         $this->urlEndpoint = env('HRMS_APP_URL') . '/v1';
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
     }
 
     public function indexHrms()

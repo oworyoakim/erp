@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\UnauthorizedAccessException;
+use App\Models\Module;
 use App\Models\Setting;
+use App\Models\User;
 use App\Traits\ValidatesHttpRequests;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\View;
 use Intervention\Image\Facades\Image;
 use Exception;
 use stdClass;
@@ -17,6 +20,29 @@ use stdClass;
 class GeneralSettingsController extends Controller
 {
     use ValidatesHttpRequests;
+
+    public function __construct()
+    {
+        $this->middleware(function (Request $request, \Closure $next) {
+            $user = Sentinel::getUser();
+            $service = $user->current_module;
+            if ($service != 'acl' || !$user->canAccessModule($service))
+            {
+                if($request->ajax()){
+                    return response()->json("Sorry, you do not have access to the acl module!", Response::HTTP_FORBIDDEN);
+                }
+                User::where(['id' => $user->id])->update(['current_module' => 'hrms']);
+                $request->session()->put('service', 'hrms');
+                $request->session()->save();
+                return redirect()->route("hrms.dashboard");
+            }
+            return $next($request);
+        });
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
+    }
 
     public function index(Request $request)
     {
@@ -27,15 +53,10 @@ class GeneralSettingsController extends Controller
                 throw  new UnauthorizedAccessException('Permission Denied!');
             }
             return view('acl.settings.global');
-        } catch (UnauthorizedAccessException $ex)
+        } catch (UnauthorizedAccessException|Exception $ex)
         {
             $error = $ex->getMessage();
             return view('errors.401', ['error' => $error]);
-        } catch (Exception $ex)
-        {
-            Log::error("Settings: {$ex->getMessage()}");
-            $error = $ex->getMessage();
-            return view('errors.500', ['error' => $error]);
         }
     }
 
@@ -103,7 +124,7 @@ class GeneralSettingsController extends Controller
 
             session()->flash('success', "Settings Saved!");
             return redirect()->back();
-        } catch (Exception $ex)
+        } catch (UnauthorizedAccessException|Exception $ex)
         {
             session()->flash('error', $ex->getMessage());
             return redirect()->back()->withInput()->with(['error' => $ex->getMessage()]);
@@ -143,15 +164,10 @@ class GeneralSettingsController extends Controller
                 throw  new UnauthorizedAccessException('Permission Denied!');
             }
             return view('acl.settings.module');
-        } catch (UnauthorizedAccessException $ex)
+        } catch (UnauthorizedAccessException|Exception $ex)
         {
             $error = $ex->getMessage();
             return view('errors.401', ['error' => $error]);
-        } catch (Exception $ex)
-        {
-            Log::error("Settings: {$ex->getMessage()}");
-            $error = $ex->getMessage();
-            return view('errors.500', ['error' => $error]);
         }
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Module;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
@@ -11,11 +12,18 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Exception;
+use Illuminate\Support\Facades\View;
 use stdClass;
 
 class HomeController extends Controller
 {
-
+    public function __construct()
+    {
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
+    }
     public function index()
     {
         return view('acl.users.index');

@@ -45,14 +45,14 @@ export default {
                 let response = await axios.post('/go-to-service', {
                     service: payload
                 });
-                await swal(response.data);
+                await swal({title: "Response Status", text: response.data, icon: 'success'});
                 location.reload();
                 //window.location.href = `/${payload}/dashboard`;
                 return Promise.resolve(response.data);
             } catch (error) {
                 let message = resolveError(error);
                 console.error(message);
-                toastr.error(message);
+                await swal({title: "Response Status", text: message, icon: 'error'});
                 return Promise.reject(message);
             }
         },

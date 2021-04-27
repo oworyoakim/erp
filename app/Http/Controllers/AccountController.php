@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\ErpHelper;
+use App\Models\Module;
 use App\Models\Role;
 use App\Models\Setting;
 use App\Models\User;
@@ -31,6 +32,10 @@ class AccountController extends Controller
     public function __construct()
     {
         $this->urlEndpoint = env("HRMS_APP_URL");
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
     }
 
     public function login(Request $request)

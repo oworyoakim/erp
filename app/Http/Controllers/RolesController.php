@@ -3,17 +3,42 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\UnauthorizedAccessException;
+use App\Models\Module;
 use App\Models\Permission;
 use App\Models\Role;
+use App\Models\User;
 use Cartalyst\Sentinel\Laravel\Facades\Sentinel;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class RolesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function (Request $request, \Closure $next) {
+            $user = Sentinel::getUser();
+            $service = $user->current_module;
+            if ($service != 'acl' || !$user->canAccessModule($service))
+            {
+                if($request->ajax()){
+                    return response()->json("Sorry, you do not have access to the acl module!", Response::HTTP_FORBIDDEN);
+                }
+                User::where(['id' => $user->id])->update(['current_module' => 'hrms']);
+                $request->session()->put('service', 'hrms');
+                $request->session()->save();
+                return redirect()->route("hrms.dashboard");
+            }
+            return $next($request);
+        });
+        $data = [
+            'modules' => Module::all(['id','name','slug','description']),
+        ];
+        View::share($data);
+    }
 
     public function index(Request $request)
     {
