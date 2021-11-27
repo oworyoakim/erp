@@ -143,6 +143,30 @@ Route::middleware('ensure.authenticated')->group(function () {
             Route::get('related-persons', 'RelatedPersonInfoGateway@index');
             Route::post('related-persons', 'RelatedPersonInfoGateway@store');
             Route::put('related-persons', 'RelatedPersonInfoGateway@update');
+
+
+        });
+
+        // hrms/performance
+        Route::prefix('performance')->group(function(){
+
+            // performance/outputs-and-targets
+            Route::prefix('outputs-and-targets')->group(function (){
+                Route::get('', 'HrmsController@outputsAndTargets')->name('hrms.performance.outputs-and-targets');
+                Route::get('list', 'OutputsAndTargetsGateway@index');
+                Route::post('', 'OutputsAndTargetsGateway@store');
+                Route::put('', 'OutputsAndTargetsGateway@update');
+            });
+
+            // performance/appraisals
+            Route::prefix('appraisals')->group(function (){
+                Route::get('', 'HrmsController@appraisals')->name('hrms.performance.appraisals');
+                Route::get('{employeeId}/edit', 'HrmsController@appraisalForm')->name('hrms.performance.appraisal.form');
+                Route::get('list', 'AppraisalGateway@index');
+                Route::post('', 'AppraisalGateway@store');
+                Route::put('', 'AppraisalGateway@update');
+            });
+
         });
 
         // contacts

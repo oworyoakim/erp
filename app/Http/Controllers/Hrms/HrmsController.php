@@ -208,4 +208,19 @@ class HrmsController extends GatewayController
         return view("hrms.employee-profile", ['username' => $user->username]);
     }
 
+    public function appraisals()
+    {
+        return view('hrms.performance.appraisals');
+    }
+
+    public function appraisalForm($employeeId)
+    {
+        return view('hrms.performance.appraisal-form', compact('employeeId'));
+    }
+
+    public function outputsAndTargets()
+    {
+        return view('hrms.performance.outputs-and-targets');
+    }
+
 }

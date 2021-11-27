@@ -1,6 +1,6 @@
 <div class="sidebar-inner slimscroll">
     <div id="sidebar-menu" class="sidebar-menu">
-        <ul>
+        <ul class="sidebar-menu-container">
             {{--            Dashboard    --}}
             <li class="@if(Request::is('hrms/dashboard*')) active @endif">
                 <a href="{{route('hrms.dashboard')}}"><i class="la la-dashboard"></i><span>Dashboard</span>
@@ -92,12 +92,12 @@
             </li>
 
             {{--            Performance Management     --}}
-            <li class="submenu @if(Request::is('hrms.employees.list')) active @endif">
+            <li class="submenu @if(Request::is('hrms/performance*')) active @endif">
                 <a href="#"><i class="la la-leaf"></i> <span> PERFORMANCE</span> <span
                         class="menu-arrow"></span></a>
                 <ul style="display: @if(Request::is('hrms.employees.list')) block  @else none @endif;">
-                    <li><a href="{{route('hrms.employees.list')}}">Goal Setting</a></li>
-                    <li><a href="{{route('hrms.employees.list')}}">Appraisal</a></li>
+                    <li><a href="{{route('hrms.performance.outputs-and-targets')}}">Agreed Outputs & Targets</a></li>
+                    <li><a href="{{route('hrms.performance.appraisals')}}">Appraisals</a></li>
                     <li><a href="{{route('hrms.employees.list')}}">Training Assessment</a></li>
                     <li><a href="{{route('hrms.employees.list')}}">Improvement Plan</a></li>
                 </ul>

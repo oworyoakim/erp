@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mt-0">
         <!-- Page Header -->
         <div class="page-header">
             <div class="row align-items-center">
@@ -19,7 +19,7 @@
             <h4>Employee with username {{ username }} not found!</h4>
         </template>
         <template v-else>
-            <div class="card mb-0">
+            <div class="card mb-2">
                 <div class="card-body text-lg">
                     <div class="profile-view">
                         <div class="profile-img-wrap h-auto">
@@ -103,183 +103,245 @@
                     </div>
                 </div>
             </div>
-            <div class="card tab-box">
-                <div class="row user-tabs">
-                    <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
-                        <ul class="nav nav-tabs nav-tabs-bottom">
-                            <li class="nav-item">
-                                <a href="#employee-info" data-toggle="tab" class="nav-link active">
-                                    Personal
-                                    Info
-                                </a>
+            <div class="row">
+                <div class="col-lg-3 col-md-4">
+                    <div class="roles-menu mt-0">
+                        <ul>
+                            <li class="active">
+                                <a href="javascript:void(0);">Personal Info</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-contacts-info" data-toggle="tab"
-                                   class="nav-link">Contacts</a>
+                            <li>
+                                <a href="javascript:void(0);">Contacts</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-bank" @click="getBankInfo()" data-toggle="tab"
-                                   class="nav-link">Bank</a>
+                            <li>
+                                <a href="javascript:void(0);">Bank</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-education" @click="getEducationInfo()" data-toggle="tab"
-                                   class="nav-link">Education</a>
+                            <li>
+                                <a href="javascript:void(0);">Education</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-experience" @click="getExperienceInfo()" data-toggle="tab"
-                                   class="nav-link">Experience</a>
+                            <li>
+                                <a href="javascript:void(0);">Experience</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-related-persons" @click="getRelatedPersonsInfo()" data-toggle="tab"
-                                   class="nav-link">
-                                    Related Persons
-                                </a>
+                            <li>
+                                <a href="javascript:void(0);">Related Persons</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-leaves" @click="getLeavesInfo()" data-toggle="tab" class="nav-link">Leaves</a>
+                            <li>
+                                <a href="javascript:void(0);">Leaves</a>
                             </li>
-                            <li class="nav-item">
-                                <a href="#employee-documents" @click="getDocumentsInfo()" data-toggle="tab"
-                                   class="nav-link">Documents</a>
+                            <li>
+                                <a href="javascript:void(0);">Documents</a>
                             </li>
-                            <li class="nav-item">
-                                <a
-                                    href="#download-employee-profile"
-                                    data-toggle="tab"
-                                    class="nav-link"
-                                >Download Profile</a>
+                            <li>
+                                <a href="javascript:void(0);">Download Profile</a>
                             </li>
-                            <li class="nav-item">
-                                <a
-                                    href="#employee-subordinates"
-                                    data-toggle="tab"
-                                    class="nav-link"
-                                >Subordinates</a>
+                            <li>
+                                <a href="javascript:void(0);">Subordinates</a>
                             </li>
-                            <li class="nav-item">
-                                <a
-                                    href="#employee-delegations"
-                                    data-toggle="tab"
-                                    class="nav-link"
-                                >Delegations</a>
+                            <li>
+                                <a href="javascript:void(0);">Delegations</a>
+                            </li>
+                            <li>
+                                <a href="javascript:void(0);">Appraisals</a>
                             </li>
                         </ul>
                     </div>
                 </div>
-            </div>
-            <div class="tab-content">
-                <!-- Employee Info Tab -->
-                <div id="employee-info" class="pro-overview tab-pane fade active show">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <PersonalInfo :employee.sync="employee"/>
+                <div class="col-lg-9 col-md-8">
+                    <div class="card tab-box">
+                        <div class="row user-tabs">
+                            <div class="col-lg-12 col-md-12 col-sm-12 line-tabs">
+                                <ul class="nav nav-tabs nav-tabs-bottom">
+                                    <li class="nav-item">
+                                        <a href="#employee-info" data-toggle="tab" class="nav-link active">
+                                            Personal
+                                            Info
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-contacts-info" data-toggle="tab"
+                                           class="nav-link">Contacts</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-bank" @click="getBankInfo()" data-toggle="tab"
+                                           class="nav-link">Bank</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-education" @click="getEducationInfo()" data-toggle="tab"
+                                           class="nav-link">Education</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-experience" @click="getExperienceInfo()" data-toggle="tab"
+                                           class="nav-link">Experience</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-related-persons" @click="getRelatedPersonsInfo()"
+                                           data-toggle="tab"
+                                           class="nav-link">
+                                            Related Persons
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-leaves" @click="getLeavesInfo()" data-toggle="tab"
+                                           class="nav-link">Leaves</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="#employee-documents" @click="getDocumentsInfo()" data-toggle="tab"
+                                           class="nav-link">Documents</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a
+                                            href="#download-employee-profile"
+                                            data-toggle="tab"
+                                            class="nav-link"
+                                        >Download Profile</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a
+                                            href="#employee-subordinates"
+                                            data-toggle="tab"
+                                            class="nav-link"
+                                        >Subordinates</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a
+                                            href="#employee-delegations"
+                                            data-toggle="tab"
+                                            class="nav-link"
+                                        >Delegations</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a
+                                            href="#employee-appraisals"
+                                            data-toggle="tab"
+                                            class="nav-link"
+                                        >Appraisals</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <!-- /Employee Info Tab -->
+                    <div class="tab-content">
+                        <!-- Employee Info Tab -->
+                        <div id="employee-info" class="pro-overview tab-pane fade active show">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <PersonalInfo :employee.sync="employee"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Employee Info Tab -->
 
-                <!-- Contacts Info Tab -->
-                <div id="employee-contacts-info" class="pro-overview tab-pane fade">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <ContactsInfo
-                                :contactable-id="employee.id"
-                                :contacts.sync="employee.contacts"
-                            />
+                        <!-- Contacts Info Tab -->
+                        <div id="employee-contacts-info" class="pro-overview tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <ContactsInfo
+                                        :contactable-id="employee.id"
+                                        :contacts.sync="employee.contacts"
+                                    />
+                                </div>
+                                <div class="col-md-6">
+                                    <NextOfKinInfo :next-of-kin="employee.nextOfKin"/>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <NextOfKinInfo :next-of-kin="employee.nextOfKin" />
+                        <!-- /Contacts Info Tab -->
+
+                        <!-- Banks Tab -->
+                        <div class="tab-pane fade" id="employee-bank">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <BankInfo :employee-id="employee.id"/>
+                                </div>
+                            </div>
                         </div>
+                        <!-- /Banks Tab -->
+
+                        <!-- Education Tab -->
+                        <div class="tab-pane fade" id="employee-education">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <EducationInfo :employee-id="employee.id"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Education Tab -->
+
+                        <!-- Experience Tab -->
+                        <div class="tab-pane fade" id="employee-experience">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ExperienceInfo :employee-id="employee.id"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Experience Tab -->
+
+                        <!-- Related Persons Tab -->
+                        <div class="tab-pane fade" id="employee-related-persons">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <RelatedPersonsInfo :employee-id="employee.id"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Related Persons Tab -->
+
+                        <!-- Leaves Tab -->
+                        <div class="tab-pane fade" id="employee-leaves">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <EmployeeLeaveApplications :employee-id="employee.id"/>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <EmployeeLeaves :employee-id="employee.id"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Leaves Tab -->
+
+                        <!-- Documents Tab -->
+                        <div class="tab-pane fade" id="employee-documents">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <EmployeeDocuments :employee="employee" title="Employee Documents"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Documents Tab -->
+
+                        <!-- Profile Download Tab -->
+                        <div class="tab-pane fade" id="download-employee-profile">
+                            <app-download-employee-profile :employee="employee"></app-download-employee-profile>
+                        </div>
+                        <!-- /Profile Download  Tab -->
+
+                        <!-- Employee Subordinates Tab -->
+                        <div class="tab-pane fade" id="employee-subordinates">
+                            <div class="row staff-grid-row">
+                                <div v-for="subordinate in employee.subordinates"
+                                     class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
+                                    <EmployeeProfileWidget :employee.sync="subordinate" :key="subordinate.id"/>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /Employee Subordinates  Tab -->
+
+                        <!-- Delegations Tab -->
+                        <div class="tab-pane fade" id="employee-delegations">
+
+                        </div>
+                        <!-- /Delegations  Tab -->
+
+                        <!-- Appraisals Tab -->
+                        <div class="tab-pane fade" id="employee-appraisals">
+                            <h5>Employee Appraisals</h5>
+                        </div>
+                        <!-- /Appraisals  Tab -->
                     </div>
                 </div>
-                <!-- /Contacts Info Tab -->
-
-                <!-- Banks Tab -->
-                <div class="tab-pane fade" id="employee-bank">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <BankInfo :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Banks Tab -->
-
-                <!-- Education Tab -->
-                <div class="tab-pane fade" id="employee-education">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <EducationInfo :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Education Tab -->
-
-                <!-- Experience Tab -->
-                <div class="tab-pane fade" id="employee-experience">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <ExperienceInfo :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Experience Tab -->
-
-                <!-- Related Persons Tab -->
-                <div class="tab-pane fade" id="employee-related-persons">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <RelatedPersonsInfo :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Related Persons Tab -->
-
-                <!-- Leaves Tab -->
-                <div class="tab-pane fade" id="employee-leaves">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <EmployeeLeaveApplications :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <EmployeeLeaves :employee-id="employee.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Leaves Tab -->
-
-                <!-- Documents Tab -->
-                <div class="tab-pane fade" id="employee-documents">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <EmployeeDocuments :employee="employee" title="Employee Documents"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Documents Tab -->
-                <!-- Profile Download Tab -->
-                <div class="tab-pane fade" id="download-employee-profile">
-                    <app-download-employee-profile :employee="employee"></app-download-employee-profile>
-                </div>
-                <!-- /Profile Download  Tab -->
-
-                <!-- Employee Subordinates Tab -->
-                <div class="tab-pane fade" id="employee-subordinates">
-                    <div class="row staff-grid-row">
-                        <div v-for="subordinate in employee.subordinates"
-                             class="col-md-4 col-sm-6 col-12 col-lg-4 col-xl-3">
-                            <EmployeeProfileWidget :employee.sync="subordinate" :key="subordinate.id"/>
-                        </div>
-                    </div>
-                </div>
-                <!-- /Employee Subordinates  Tab -->
-
-                <!-- Delegations Tab -->
-                <div class="tab-pane fade" id="employee-delegations">
-
-                </div>
-                <!-- /Delegations  Tab -->
             </div>
         </template>
     </div>

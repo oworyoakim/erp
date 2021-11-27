@@ -49,6 +49,11 @@ import LeaveSettings from "./components/hrms/settings/LeaveSettings";
 import ApprovalsSettings from "./components/hrms/settings/ApprovalsSettings";
 import Delegations from "./components/hrms/delegations/Delegations";
 import ProfileItemHeader from "./components/hrms/employees/ProfileItemHeader";
+import EmployeeAppraisal from "./components/hrms/performance/appraisal/Index";
+import OutputsAndTargets from "./components/hrms/performance/outputs-and-targets/Index";
+import EmployeeAppraisalForm from "./components/hrms/performance/appraisal/EmployeeAppraisalForm";
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -98,6 +103,9 @@ Vue.component("app-delegations", Delegations);
 Vue.component("app-profile-item-header", ProfileItemHeader);
 Vue.component("app-leave-settings", LeaveSettings);
 Vue.component("app-approvals-settings", ApprovalsSettings);
+Vue.component("app-performance-appraisals", EmployeeAppraisal);
+Vue.component("app-performance-appraisal-form", EmployeeAppraisalForm);
+Vue.component("app-performance-outputs-and-targets", OutputsAndTargets);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -105,7 +113,6 @@ Vue.component("app-approvals-settings", ApprovalsSettings);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 import hrmsStore from './stores/hrms';
-import spmsStore from "./stores/spms";
 
 
 const app = new Vue({

@@ -13,7 +13,6 @@
             <div class="form-group row">
                 <label class="col-sm-4">Description</label>
                 <div class="col-sm-8">
-                    <textarea v-model="objective.description" class="form-control"></textarea>
                     <TinymceEditor
                         :api-key="$store.getters.TINYMCE_API_KEY"
                         :init="$store.getters.EDITOR_CONFIG"
